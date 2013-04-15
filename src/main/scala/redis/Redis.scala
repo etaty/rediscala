@@ -96,19 +96,18 @@ with Keys {
     val requestBuilder = ByteString.newBuilder
     requestBuilder.putBytes(("*" + (args.size + 1)).getBytes("UTF-8"))
     requestBuilder.putBytes(RedisProtocolReply.LS)
-    requestBuilder.putBytes(("$" + (command.size)).getBytes("UTF-8"))
-    requestBuilder.putBytes(RedisProtocolReply.LS)
-    requestBuilder.putBytes(command.getBytes("UTF-8"))
-    requestBuilder.putBytes(RedisProtocolReply.LS)
 
-    args foreach {
-      arg =>
-        requestBuilder.putBytes(("$" + (arg.size)).getBytes("UTF-8"))
-        requestBuilder.putBytes(RedisProtocolReply.LS)
-        requestBuilder ++= (arg)
-        requestBuilder.putBytes(RedisProtocolReply.LS)
+    val builder = (ByteString(command.getBytes("UTF-8")) +: args).foldLeft(requestBuilder) {
+      case (acc, arg) =>
+        acc.putBytes(("$" + (arg.size)).getBytes("UTF-8"))
+        acc.putBytes(RedisProtocolReply.LS)
+        acc ++= (arg)
+        acc.putBytes(RedisProtocolReply.LS)
+
+        acc
     }
-    requestBuilder.result()
+
+    builder.result()
   }
 
 }
