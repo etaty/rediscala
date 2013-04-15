@@ -45,22 +45,23 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
     case _ => stash()
   }
 
+  @tailrec
+  private def decodeReplies(bs: ByteString): ByteString = {
+    val r = RedisProtocolReply.decodeReply(bs)
+    if (r.nonEmpty) {
+      val result = r.get._1 match {
+        case Error(error) => akka.actor.Status.Failure(new RuntimeException(error)) // TODO runtime ???
+        case _ => r.get._1
+      }
+      queue.dequeue() ! result
+      decodeReplies(r.get._2)
+    } else {
+      bs
+    }
+  }
+
   def connected: Receive = {
     case Received(dataByteString) => {
-      @tailrec
-      def decodeReplies(bs: ByteString): ByteString = {
-        val r = RedisProtocolReply.decodeReply(bs)
-        if (r.nonEmpty) {
-          val result = r.get._1 match {
-            case Error(error) => akka.actor.Status.Failure(new RuntimeException(error)) // TODO runtime ???
-            case _ => r.get._1
-          }
-          queue.dequeue() ! result
-          decodeReplies(r.get._2)
-        } else {
-          bs
-        }
-      }
       buffer = decodeReplies(buffer ++ dataByteString).compact
     }
     case CommandFailed(cmd) => println("failed" + cmd)
