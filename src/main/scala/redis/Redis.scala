@@ -94,12 +94,12 @@ with Keys {
 
   def multiBulk(command: String, args: Seq[ByteString]): ByteString = {
     val requestBuilder = ByteString.newBuilder
-    requestBuilder.putBytes(("*" + (args.size + 1)).getBytes("UTF-8"))
+    requestBuilder.putBytes((s"*${args.size + 1}").getBytes("UTF-8"))
     requestBuilder.putBytes(RedisProtocolReply.LS)
 
     val builder = (ByteString(command.getBytes("UTF-8")) +: args).foldLeft(requestBuilder) {
       case (acc, arg) =>
-        acc.putBytes(("$" + (arg.size)).getBytes("UTF-8"))
+        acc.putBytes((s"$$${arg.size}").getBytes("UTF-8"))
         acc.putBytes(RedisProtocolReply.LS)
         acc ++= (arg)
         acc.putBytes(RedisProtocolReply.LS)
