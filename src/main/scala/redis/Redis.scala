@@ -45,22 +45,23 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
     case _ => stash()
   }
 
+  @tailrec
+  private def decodeReplies(bs: ByteString): ByteString = {
+    val r = RedisProtocolReply.decodeReply(bs)
+    if (r.nonEmpty) {
+      val result = r.get._1 match {
+        case Error(error) => akka.actor.Status.Failure(new RuntimeException(error)) // TODO runtime ???
+        case _ => r.get._1
+      }
+      queue.dequeue() ! result
+      decodeReplies(r.get._2)
+    } else {
+      bs
+    }
+  }
+
   def connected: Receive = {
     case Received(dataByteString) => {
-      @tailrec
-      def decodeReplies(bs: ByteString): ByteString = {
-        val r = RedisProtocolReply.decodeReply(bs)
-        if (r.nonEmpty) {
-          val result = r.get._1 match {
-            case Error(error) => akka.actor.Status.Failure(new RuntimeException(error)) // TODO runtime ???
-            case _ => r.get._1
-          }
-          queue.dequeue() ! result
-          decodeReplies(r.get._2)
-        } else {
-          bs
-        }
-      }
       buffer = decodeReplies(buffer ++ dataByteString).compact
     }
     case CommandFailed(cmd) => println("failed" + cmd)
@@ -89,26 +90,25 @@ with Keys {
   }
 
   def send(command: String)(implicit timeout: Timeout): Future[Any] = {
-    (redisClientActor ? Write(ByteString(command + "\r\n")))
+    (redisClientActor ? Write(ByteString(command)  ++ RedisProtocolReply.LS))
   }
 
   def multiBulk(command: String, args: Seq[ByteString]): ByteString = {
     val requestBuilder = ByteString.newBuilder
-    requestBuilder.putBytes(("*" + (args.size + 1)).getBytes("UTF-8"))
-    requestBuilder.putBytes(RedisProtocolReply.LS)
-    requestBuilder.putBytes(("$" + (command.size)).getBytes("UTF-8"))
-    requestBuilder.putBytes(RedisProtocolReply.LS)
-    requestBuilder.putBytes(command.getBytes("UTF-8"))
+    requestBuilder.putBytes((s"*${args.size + 1}").getBytes("UTF-8"))
     requestBuilder.putBytes(RedisProtocolReply.LS)
 
-    args foreach {
-      arg =>
-        requestBuilder.putBytes(("$" + (arg.size)).getBytes("UTF-8"))
-        requestBuilder.putBytes(RedisProtocolReply.LS)
-        requestBuilder ++= (arg)
-        requestBuilder.putBytes(RedisProtocolReply.LS)
+    val builder = (ByteString(command.getBytes("UTF-8")) +: args).foldLeft(requestBuilder) {
+      case (acc, arg) =>
+        acc.putBytes((s"$$${arg.size}").getBytes("UTF-8"))
+        acc.putBytes(RedisProtocolReply.LS)
+        acc ++= (arg)
+        acc.putBytes(RedisProtocolReply.LS)
+
+        acc
     }
-    requestBuilder.result()
+
+    builder.result()
   }
 
 }

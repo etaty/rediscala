@@ -6,3 +6,9 @@ target/
 .project*
 .settings*
 .worksheet/
+
+.*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
