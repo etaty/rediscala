@@ -89,7 +89,7 @@ with Keys {
   }
 
   def send(command: String)(implicit timeout: Timeout): Future[Any] = {
-    (redisClientActor ? Write(ByteString(command + "\r\n")))
+    (redisClientActor ? Write(ByteString(command)  ++ RedisProtocolReply.LS))
   }
 
   def multiBulk(command: String, args: Seq[ByteString]): ByteString = {
