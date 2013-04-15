@@ -1,13 +1,13 @@
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import org.specs2.mutable.Specification
+import org.specs2.mutable.{Specification, Tags}
 import redis.{Status, RedisClient}
 import scala.compat.Platform
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Await}
 import ExecutionContext.Implicits.global
 
-class RedisBench extends Specification {
+class RedisBench extends Specification with Tags {
 
   "Rediscala stupid benchmark" should {
     "bench 1" in {
@@ -33,6 +33,6 @@ class RedisBench extends Specification {
       }
       println("shutdown!!")
       actorSystem.shutdown()
-    }
+    } tag ("benchmark")
   }
 }
