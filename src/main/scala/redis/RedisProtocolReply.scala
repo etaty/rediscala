@@ -6,7 +6,12 @@ import scala.collection.mutable
 
 sealed trait Reply
 
-case class Status(status: String) extends Reply
+case class Status(status: String) extends Reply {
+  def toBoolean: Boolean = status match {
+    case "OK" => true
+    case _ => false
+  }
+}
 
 case class Error(error: String) extends Reply
 

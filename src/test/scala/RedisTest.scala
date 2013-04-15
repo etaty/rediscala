@@ -2,9 +2,8 @@ import akka.actor.ActorSystem
 import akka.util.{ByteString, Timeout}
 import org.specs2.mutable.Specification
 import redis.{Integer, Bulk, Status, RedisClient}
-import scala.compat.Platform
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Await}
+import scala.concurrent.{ExecutionContext, Await}
 import ExecutionContext.Implicits.global
 
 class RedisTest extends Specification {
