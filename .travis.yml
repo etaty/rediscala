@@ -1,4 +1,5 @@
 language: scala
+script: sbt ++$TRAVIS_SCALA_VERSION "test-only * -- -exclude benchmark --"
 scala:
   - "2.10.1"
   - "2.10.0"
