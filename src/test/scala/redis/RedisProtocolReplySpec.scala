@@ -1,6 +1,7 @@
+package redis
+
 import akka.util.ByteString
 import org.specs2.mutable._
-import redis.{Integer, MultiBulk, Bulk, RedisProtocolReply}
 
 class RedisProtocolReplySpec extends Specification {
 
@@ -23,11 +24,13 @@ class RedisProtocolReplySpec extends Specification {
   "Decode integer" should {
     "decode positive integer" in {
       val int = ByteString("6\r\n")
-      RedisProtocolReply.decodeInteger(int) mustEqual Some(6, ByteString())
+      RedisProtocolReply.decodeInteger(int) mustEqual Some(Integer(ByteString("6")), ByteString())
     }
     "decode negative integer" in {
       val int = ByteString("-6\r\n")
-      RedisProtocolReply.decodeInteger(int) mustEqual Some(-6, ByteString())
+      val decoded = RedisProtocolReply.decodeInteger(int)
+      decoded mustEqual Some(Integer(ByteString("-6")), ByteString())
+      decoded.get._1.toInt mustEqual -6
     }
   }
 
@@ -67,7 +70,7 @@ class RedisProtocolReplySpec extends Specification {
     }
     "decode different reply type" in {
       val diff = ByteString("5\r\n:1\r\n:2\r\n:3\r\n:4\r\n$6\r\nfoobar\r\n")
-      val multibulk = Some(Seq(Integer(1), Integer(2), Integer(3), Integer(4), Bulk(Some(ByteString("foobar")))))
+      val multibulk = Some(Seq(Integer(ByteString("1")), Integer(ByteString("2")), Integer(ByteString("3")), Integer(ByteString("4")), Bulk(Some(ByteString("foobar")))))
       RedisProtocolReply.decodeMultiBulk(diff) mustEqual Some(MultiBulk(multibulk), ByteString())
     }
   }

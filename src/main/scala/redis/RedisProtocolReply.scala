@@ -3,23 +3,34 @@ package redis
 import akka.util.ByteString
 import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.util.{Failure, Try}
 
-sealed trait Reply
+sealed trait RedisReply {
+  def asTry[A](implicit convert: RedisReplyConvert[A]): Try[A] = convert.to(this)
 
-case class Status(status: String) extends Reply {
-  def toBoolean: Boolean = status match {
-    case "OK" => true
-    case _ => false
-  }
+  def asOpt[A](implicit convert: RedisReplyConvert[A]): Option[A] = asTry(convert).toOption
 }
 
-case class Error(error: String) extends Reply
+case class Status(status: ByteString) extends RedisReply {
+  def toBoolean: Boolean = status.utf8String == "OK"
 
-case class Integer(int: Int) extends Reply
+  override def toString = status.utf8String
+}
 
-case class Bulk(response: Option[ByteString]) extends Reply
+case class Error(error: ByteString) extends RedisReply
 
-case class MultiBulk(responses: Option[Seq[Reply]]) extends Reply
+case class Integer(i: ByteString) extends RedisReply {
+  def toLong: Long = java.lang.Long.parseLong(i.utf8String)
+
+  def toInt: Int = java.lang.Integer.parseInt(i.utf8String)
+
+  def toBoolean = i == 1
+}
+
+case class Bulk(response: Option[ByteString]) extends RedisReply
+
+case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply
+
 
 object RedisProtocolReply {
   val ERROR = '-'
@@ -30,14 +41,14 @@ object RedisProtocolReply {
 
   val LS = "\r\n".getBytes("UTF-8")
 
-  def decodeReply(bs: ByteString): Option[(Reply, ByteString)] = {
+  def decodeReply(bs: ByteString): Option[(RedisReply, ByteString)] = {
     if (bs.isEmpty) {
       None
     } else {
       bs.head match {
-        case ERROR => decodeString(bs.tail).map(r => (Error(r._1.utf8String), r._2))
-        case INTEGER => decodeInteger(bs.tail).map(r => (Integer(r._1), r._2))
-        case STATUS => decodeString(bs.tail).map(r => (Status(r._1.utf8String), r._2))
+        case ERROR => decodeString(bs.tail).map(r => (Error(r._1), r._2))
+        case INTEGER => decodeInteger(bs.tail)
+        case STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
         case BULK => decodeBulk(bs.tail)
         case MULTIBULK => decodeMultiBulk(bs.tail)
         case _ => throw new Exception("Redis Protocol error: Got " + bs.head + " as initial reply byte")
@@ -45,9 +56,9 @@ object RedisProtocolReply {
     }
   }
 
-  def decodeInteger(bs: ByteString): Option[(Int, ByteString)] = {
+  def decodeInteger(bs: ByteString): Option[(Integer, ByteString)] = {
     decodeString(bs).map(r => {
-      val i = java.lang.Integer.parseInt(r._1.utf8String)
+      val i = Integer(r._1)
       (i, r._2)
     })
   }
@@ -65,7 +76,7 @@ object RedisProtocolReply {
 
   def decodeBulk(bs: ByteString): Option[(Bulk, ByteString)] = {
     decodeInteger(bs).flatMap(r => {
-      val i = r._1
+      val i = r._1.toInt
       val tail = r._2
       if (i < 0) {
         Some(Bulk(None), tail)
@@ -80,7 +91,7 @@ object RedisProtocolReply {
 
   def decodeMultiBulk(bs: ByteString): Option[(MultiBulk, ByteString)] = {
     decodeInteger(bs).flatMap(r => {
-      val i = r._1
+      val i = r._1.toInt
       val tail = r._2
       if (i < 0) {
         Some(MultiBulk(None), tail)
@@ -88,7 +99,7 @@ object RedisProtocolReply {
         Some(MultiBulk(Some(Nil)), tail)
       } else {
         @tailrec
-        def bulks(bs: ByteString, i: Int, acc: mutable.Buffer[Reply]): Option[(MultiBulk, ByteString)] = {
+        def bulks(bs: ByteString, i: Int, acc: mutable.Buffer[RedisReply]): Option[(MultiBulk, ByteString)] = {
           if (i > 0) {
             val reply = decodeReply(bs)
             if (reply.nonEmpty) {

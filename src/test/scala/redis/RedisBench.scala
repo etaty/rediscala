@@ -1,21 +1,20 @@
-import akka.actor.ActorSystem
-import akka.util.Timeout
+package redis
+
 import org.specs2.mutable.{Specification, Tags}
-import redis.{Status, RedisClient}
 import scala.compat.Platform
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Await}
-import ExecutionContext.Implicits.global
+import scala.concurrent.{Future, Await}
+import akka.util.Timeout
+import org.specs2.time.NoTimeConversions
 
-class RedisBench extends Specification with Tags {
+class RedisBench extends Specification with Tags with NoTimeConversions {
+
+  import Common._
 
   "Rediscala stupid benchmark" should {
     "bench 1" in {
-      implicit val timeout = Timeout(FiniteDuration(5, "s"))
-      implicit val actorSystem = ActorSystem("BadShakespearean")
-      val redis = new RedisClient()
 
-      val n = 100000
+      val n = 10000
       for (i <- 1 to 10) yield {
         val t = System.currentTimeMillis
         println("start")
@@ -30,9 +29,11 @@ class RedisBench extends Specification with Tags {
         val d = System.currentTimeMillis - t
         println("* - number of ops/s: " + n / (d / 1000.0) + "\n")
         Platform.collectGarbage()
+
+        true mustEqual true // TODO remove that hack for spec2
       }
-      println("shutdown!!")
-      actorSystem.shutdown()
+
     } tag ("benchmark")
   }
+  //step(actorSystem.shutdown())
 }
