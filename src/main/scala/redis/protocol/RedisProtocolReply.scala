@@ -1,9 +1,10 @@
-package redis
+package redis.protocol
 
 import akka.util.ByteString
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.util.{Failure, Try}
+import scala.util.Try
+import redis.RedisReplyConvert
 
 sealed trait RedisReply {
   def asTry[A](implicit convert: RedisReplyConvert[A]): Try[A] = convert.to(this)
@@ -17,7 +18,9 @@ case class Status(status: ByteString) extends RedisReply {
   override def toString = status.utf8String
 }
 
-case class Error(error: ByteString) extends RedisReply
+case class Error(error: ByteString) extends RedisReply {
+  override def toString = error.utf8String
+}
 
 case class Integer(i: ByteString) extends RedisReply {
   def toLong: Long = java.lang.Long.parseLong(i.utf8String)
@@ -25,6 +28,8 @@ case class Integer(i: ByteString) extends RedisReply {
   def toInt: Int = java.lang.Integer.parseInt(i.utf8String)
 
   def toBoolean = i == 1
+
+  override def toString = i.utf8String
 }
 
 case class Bulk(response: Option[ByteString]) extends RedisReply

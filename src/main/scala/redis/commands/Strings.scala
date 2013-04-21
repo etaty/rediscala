@@ -3,9 +3,7 @@ package redis.commands
 import akka.util.{ByteString, Timeout}
 import redis._
 import scala.concurrent.{ExecutionContext, Future}
-import redis.Integer
-import redis.Status
-import redis.Bulk
+import redis.protocol.{RedisReply, Bulk, Integer, Status}
 
 trait Strings {
   self: RedisClient =>

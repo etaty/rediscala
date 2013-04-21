@@ -1,4 +1,4 @@
-package redis
+package redis.protocol
 
 import akka.util.ByteString
 import org.specs2.mutable._

@@ -1,9 +1,8 @@
 package redis
 
-import akka.util.ByteString
 import org.specs2.mutable.Specification
 import scala.concurrent.Await
-import scala.util.{Failure, Success}
+import scala.util.Success
 
 class RedisTest extends Specification {
 

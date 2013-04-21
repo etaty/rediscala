@@ -14,7 +14,7 @@ class RedisBench extends Specification with Tags with NoTimeConversions {
   "Rediscala stupid benchmark" should {
     "bench 1" in {
 
-      val n = 10000
+      val n = 100000
       for (i <- 1 to 10) yield {
         val t = System.currentTimeMillis
         println("start")

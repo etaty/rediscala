@@ -1,8 +1,9 @@
 package redis.commands
 
 import akka.util.Timeout
-import redis.{Status, RedisClient}
+import redis.{RedisClient}
 import scala.concurrent.{ExecutionContext, Future}
+import redis.protocol.Status
 
 trait Connection {
   self: RedisClient =>

@@ -2,20 +2,24 @@ package redis
 
 import akka.actor._
 import akka.io.Tcp._
-import akka.io.Tcp.CommandFailed
-import akka.io.Tcp.Connect
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Received
-import akka.io.Tcp.Register
 import akka.io.Tcp
 import akka.util.{ByteString, Timeout}
 import java.net.{InetAddress, InetSocketAddress}
-import redis.commands.{Keys, Connection, Strings}
+import redis.commands._
 import scala.annotation.tailrec
 import scala.collection.mutable
 import akka.pattern.ask
 import scala.concurrent._
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
+import akka.routing.RoundRobinRouter
+import redis.protocol._
+import akka.io.Tcp.Connected
+import akka.io.Tcp.Register
+import akka.io.Tcp.Connect
+import scala.util.Failure
+import akka.io.Tcp.CommandFailed
+import scala.util.Success
+import akka.io.Tcp.Received
 
 class RedisClientActor(host: String, port: Int) extends Actor with Stash {
 
@@ -76,11 +80,11 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
 
   /**
    * Send back the commandFailed
-   *@param c
+   * @param c
    */
   def commandFailed(c: CommandFailed) {
     c.cmd match {
-      case write @ Write(_, NoAck(sender: ActorRef)) => {
+      case write@Write(_, NoAck(sender: ActorRef)) => {
         //queue.dequeueFirst(_ == sender)
         //sender ! akka.actor.Status.Failure(new RuntimeException(c.toString))
         tcpWorker ! write
@@ -97,34 +101,16 @@ class RedisClient(val host: String, val port: Int)(implicit actorSystem: ActorSy
 with Strings
 with Connection
 with Keys {
-  val redisClientActor: ActorRef = actorSystem.actorOf(Props(classOf[RedisClientActor], host, port).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+  val redisClientRouteur: ActorRef = actorSystem.actorOf(Props(classOf[RedisClientActor], host, port).withDispatcher("rediscala.rediscala-client-worker-dispatcher").withRouter(RoundRobinRouter(5)))
 
   def this()(implicit actorSystem: ActorSystem) = this("localhost", 6379)
 
   def send(command: String, args: Seq[ByteString])(implicit timeout: Timeout): Future[Any] = {
-    redisClientActor ? multiBulk(command, args)
+    redisClientRouteur ? RedisProtocolRequest.multiBulk(command, args)
   }
 
   def send(command: String)(implicit timeout: Timeout): Future[Any] = {
-    redisClientActor ? (ByteString(command) ++ RedisProtocolReply.LS)
-  }
-
-  def multiBulk(command: String, args: Seq[ByteString]): ByteString = {
-    val requestBuilder = ByteString.newBuilder
-    requestBuilder.putBytes((s"*${args.size + 1}").getBytes("UTF-8"))
-    requestBuilder.putBytes(RedisProtocolReply.LS)
-
-    val builder = (ByteString(command.getBytes("UTF-8")) +: args).foldLeft(requestBuilder) {
-      case (acc, arg) =>
-        acc.putBytes((s"$$${arg.size}").getBytes("UTF-8"))
-        acc.putBytes(RedisProtocolReply.LS)
-        acc ++= (arg)
-        acc.putBytes(RedisProtocolReply.LS)
-
-        acc
-    }
-
-    builder.result()
+    redisClientRouteur ? RedisProtocolRequest.inline(command)
   }
 
 }
@@ -149,9 +135,9 @@ object Redis {
 
     implicit object StringReplyConvert extends RedisReplyConvert[String] {
       def to(reply: RedisReply) = reply match {
-        case Integer(x) => Success(x.utf8String)
-        case Status(s) => Success(s.utf8String)
-        case Error(e) => Success(e.utf8String)
+        case i: Integer => Success(i.toString)
+        case s: Status => Success(s.toString)
+        case e: Error => Success(e.toString)
         case Bulk(b) => b.map(x => Success(x.utf8String)).getOrElse(Failure(new NoSuchElementException()))
         case MultiBulk(mb) => Failure(new NoSuchElementException()) // TODO find better ?
       }
