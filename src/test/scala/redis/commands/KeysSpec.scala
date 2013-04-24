@@ -3,9 +3,7 @@ package redis.commands
 import org.specs2.mutable.Specification
 import redis._
 
-class KeysSpec extends Specification {
-
-  import Common._
+class KeysSpec extends RedisSpec {
 
   sequential
 
@@ -26,6 +24,5 @@ class KeysSpec extends Specification {
       //redis.get("key").map(x => println(x))
       //Await.result(redis.get("key"), timeOut) mustEqual Bulk(None)
     }
-    //step(actorSystem.shutdown())
   }
 }

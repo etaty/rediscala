@@ -8,5 +8,6 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
  
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.2-M3",
+  "com.typesafe.akka" %% "akka-testkit" % "2.2-M3",
   "org.specs2" %% "specs2" % "1.14" % "test"
 )

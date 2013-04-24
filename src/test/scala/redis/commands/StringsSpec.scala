@@ -1,14 +1,12 @@
 package redis.commands
 
 import org.specs2.mutable.Specification
-import redis.Common
+import redis.{RedisSpec, Common}
 import scala.concurrent.Await
 
-class StringsSpec extends Specification {
+class StringsSpec extends RedisSpec {
 
-  import Common._
-
-  //sequential
+  sequential
 
   "Strings commands" should {
     /*
@@ -35,6 +33,5 @@ class StringsSpec extends Specification {
       //redis.get("key").map(x => println(x))
       //Await.result(redis.get("key"), timeOut) mustEqual Bulk(None)
     }
-    //step(actorSystem.shutdown())
   }
 }

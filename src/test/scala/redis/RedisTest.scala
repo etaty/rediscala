@@ -1,12 +1,9 @@
 package redis
 
-import org.specs2.mutable.Specification
 import scala.concurrent.Await
 import scala.util.Success
 
-class RedisTest extends Specification {
-
-  import Common._
+class RedisTest extends RedisSpec {
 
   sequential
 
@@ -30,6 +27,5 @@ class RedisTest extends Specification {
       import Redis.Convert._
       Await.result(redis.get("key").map(_.asTry[String]), timeOut).isFailure mustEqual true //specs2 1.15 will have matchers for Try
     }
-    //step(actorSystem.shutdown())
   }
 }
