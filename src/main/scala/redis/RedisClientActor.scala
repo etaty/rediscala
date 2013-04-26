@@ -8,13 +8,12 @@ import java.net.{InetAddress, InetSocketAddress}
 import scala.collection.mutable
 import akka.util.{ByteStringBuilder, ByteString}
 import scala.annotation.tailrec
-import redis.protocol.RedisProtocolReply
+import redis.protocol.{RedisProtocolReply, Error}
 import java.lang.RuntimeException
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
-import redis.protocol.Error
 import akka.io.Tcp.Received
 
 class RedisClientActor(host: String, port: Int) extends Actor with Stash {
@@ -82,7 +81,7 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
     val r = RedisProtocolReply.decodeReply(bs)
     if (r.nonEmpty) {
       val result = r.get._1 match {
-        case Error(error) => akka.actor.Status.Failure(new RuntimeException(error.toString())) // TODO runtime ???
+        case e: Error => akka.actor.Status.Failure(RedisReplyErrorException(e.toString()))
         case _ => r.get._1
       }
       queue.dequeue() ! result
@@ -91,5 +90,6 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
       bs
     }
   }
-
 }
+
+case class RedisReplyErrorException(message: String) extends RuntimeException(message)
