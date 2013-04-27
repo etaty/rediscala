@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, Stash, Actor}
 import akka.event.Logging
 import akka.io.Tcp
 import akka.io.Tcp._
-import java.net.{InetAddress, InetSocketAddress}
+import java.net.InetSocketAddress
 import scala.collection.mutable
 import akka.util.{ByteStringBuilder, ByteString}
 import scala.annotation.tailrec
@@ -16,7 +16,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 
-class RedisClientActor(host: String, port: Int) extends Actor with Stash {
+class RedisClientActor(address: InetSocketAddress) extends Actor with Stash {
 
   import context._
 
@@ -24,10 +24,7 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
 
   val tcp = akka.io.IO(Tcp)(context.system)
 
-  val remote = new InetSocketAddress(InetAddress.getByName(host), port)
-
   var tcpWorker: ActorRef = null
-  tcp ! Connect(remote)
 
   val queue = mutable.Queue[ActorRef]()
 
@@ -37,13 +34,21 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
 
   var readyToWrite = true
 
+  override def preStart() {
+    tcp ! Connect(address)
+  }
+
+  override def postStop() {
+    tcp ! Close
+  }
+
   def receive = {
     case Connected(remoteAddr, localAddr) => {
-      println("connected")
       sender ! Register(self)
       tcpWorker = sender
       become(writing)
       unstashAll()
+      log.debug("Connected to " + remoteAddr)
     }
     case c: CommandFailed => log.error(c.toString) // TODO failed connection
     case _ => stash()
@@ -56,18 +61,18 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
     }
     case write: ByteString => {
       if (readyToWrite) {
-        tcpWorker ! Write(write, true)
+        tcpWorker ! Write(write, WriteAck)
         readyToWrite = false
       } else {
         bufferWrite.append(write)
       }
       queue enqueue (sender)
     }
-    case true => {
+    case WriteAck => {
       if (bufferWrite.length == 0) {
         readyToWrite = true
       } else {
-        tcpWorker ! Write(bufferWrite.result(), true)
+        tcpWorker ! Write(bufferWrite.result(), WriteAck)
         bufferWrite.clear()
       }
     }
@@ -91,5 +96,7 @@ class RedisClientActor(host: String, port: Int) extends Actor with Stash {
     }
   }
 }
+
+object WriteAck
 
 case class RedisReplyErrorException(message: String) extends RuntimeException(message)

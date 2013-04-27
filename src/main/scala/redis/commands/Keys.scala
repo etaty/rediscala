@@ -8,8 +8,7 @@ import redis.protocol.Integer
 import redis.protocol.Status
 import redis.protocol.Bulk
 
-trait Keys {
-  self: RedisClient =>
+trait Keys extends Request {
 
   def del(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("DEL", keys.map(ByteString.apply).toSeq).mapTo[Integer].map(_.toLong)

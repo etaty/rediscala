@@ -16,7 +16,7 @@ class RedisSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags 
 
   implicit val timeout = Timeout(10 seconds)
   val timeOut = 10 seconds
-  val redis = new RedisClient()
+  val redis = RedisClient()
 
   override def map(fs: => Fragments) = fs ^ Step(system.shutdown())
 }

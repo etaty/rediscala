@@ -26,7 +26,7 @@ class RedisBench extends RedisSpec {
     } tag ("benchmark")
   }
 
-  def timed(desc: String, n: Int)(benchmark: ⇒ Unit) = {
+  def timed(desc: String, n: Int)(benchmark: ⇒ Unit) {
     println("* " + desc)
     val t = System.currentTimeMillis
     benchmark

@@ -5,8 +5,7 @@ import redis._
 import scala.concurrent.{ExecutionContext, Future}
 import redis.protocol.{RedisReply, Bulk, Integer, Status}
 
-trait Strings {
-  self: RedisClient =>
+trait Strings extends Request {
 
   def append(key: String, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     ??? //send("APPEND", Seq(ByteString(key), value)).mapTo[Integer].map(_.toLong)
