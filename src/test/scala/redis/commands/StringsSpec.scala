@@ -161,14 +161,15 @@ class StringsSpec extends RedisSpec {
     }
 
     "MSETNX" in {
-      val r = redis.del("msetnxKey", "msetnxKey2").flatMap(d => {
-        d mustEqual 2
-        redis.msetnx(Map("msetnxKey" -> "Hello", "msetnxKey2" -> "World")).flatMap(ok => {
-          ok mustEqual true
-          redis.msetnx(Map("msetnxKey3" -> "Hello", "msetnxKey2" -> "already set !!"))
-        })
-      })
-      Await.result(r, timeOut) mustEqual false
+      val r = for {
+        _ <- redis.del("msetnxKey", "msetnxKey2")
+        msetnx <- redis.msetnx(Map("msetnxKey" -> "Hello", "msetnxKey2" -> "World"))
+        msetnxFalse <- redis.msetnx(Map("msetnxKey3" -> "Hello", "msetnxKey2" -> "already set !!"))
+      } yield {
+        msetnx mustEqual true
+        msetnxFalse mustEqual false
+      }
+      Await.result(r, timeOut)
     }
 
     "PSETEX" in {
