@@ -4,12 +4,12 @@ import akka.util.ByteString
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.Try
-import redis.RedisReplyConvert
+import redis.RedisReplyConverter
 
 sealed trait RedisReply {
-  def asTry[A](implicit convert: RedisReplyConvert[A]): Try[A] = convert.to(this)
+  def asTry[A](implicit convert: RedisReplyConverter[A]): Try[A] = convert.to(this)
 
-  def asOpt[A](implicit convert: RedisReplyConvert[A]): Option[A] = asTry(convert).toOption
+  def asOpt[A](implicit convert: RedisReplyConverter[A]): Option[A] = asTry(convert).toOption
 }
 
 case class Status(status: ByteString) extends RedisReply {

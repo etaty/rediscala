@@ -6,10 +6,8 @@ import redis.commands._
 import akka.pattern.ask
 import scala.concurrent._
 import scala.util.Try
-import akka.routing.RoundRobinRouter
+import akka.routing.{Broadcast, RoundRobinRouter}
 import redis.protocol._
-import scala.util.Failure
-import scala.util.Success
 import java.net.InetSocketAddress
 
 
@@ -23,51 +21,58 @@ trait Request {
   def send(command: String)(implicit timeout: Timeout): Future[Any] = {
     redisConnection ? RedisProtocolRequest.inline(command)
   }
+
+  // TODO build an aggregate actor to hold the replies and compare them (should fail if all replies are not the same)
+  def sendBroadcast(command: String, args: Seq[ByteString])(implicit timeout: Timeout): Future[Any] = {
+    redisConnection ? Broadcast(RedisProtocolRequest.multiBulk(command, args))
+  }
+
+  def sendBroadcast(command: String)(implicit timeout: Timeout): Future[Any] = {
+    redisConnection ? Broadcast(RedisProtocolRequest.inline(command))
+  }
 }
 
 trait RedisCommands extends Strings with Connection with Keys
 
+/**
+ *
+ * @param host
+ * @param port
+ * @param connections number of connections opened to Redis (1 is a perfect number as Redis server is fully asynchronous)
+ * @param system
+ */
 case class RedisClient(host: String = "localhost", port: Int = 6379, connections: Int = 4)(implicit system: ActorSystem) extends RedisCommands {
 
-  val address = new InetSocketAddress(host, port)
+  val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor]).withDispatcher("rediscala.rediscala-client-worker-dispatcher").withRouter(RoundRobinRouter(connections)))
 
-  val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor], address).withDispatcher("rediscala.rediscala-client-worker-dispatcher").withRouter(RoundRobinRouter(1)))
+  connect(host, port)
+
+  def stop() {
+    system stop redisConnection
+  }
+
+  def connect(host: String = "localhost", port: Int = 6379) {
+    connect(new InetSocketAddress(host, port))
+  }
+
+  def connect(address: InetSocketAddress) {
+    redisConnection ! Broadcast(address)
+  }
 
   def disconnect() {
-    system stop redisConnection
+    redisConnection ! Broadcast("disconnect")
   }
 
 }
 
 trait RedisValue
 
-trait RedisValueConvert[A] {
+trait RedisValueConverter[A] {
   def from(a: A): ByteString
 }
 
-trait RedisReplyConvert[A] {
+trait RedisReplyConverter[A] {
   def to(redisReply: RedisReply): Try[A]
 }
 
-object Redis {
-
-  object Convert {
-
-    implicit object StringConvert extends RedisValueConvert[String] {
-      def from(s: String): ByteString = ByteString(s)
-    }
-
-    implicit object StringReplyConvert extends RedisReplyConvert[String] {
-      def to(reply: RedisReply): Try[String] = reply match {
-        case i: Integer => Success(i.toString)
-        case s: Status => Success(s.toString)
-        case e: Error => Success(e.toString)
-        case Bulk(b) => b.map(x => Success(x.utf8String)).getOrElse(Failure(new NoSuchElementException()))
-        case MultiBulk(mb) => Failure(new NoSuchElementException()) // TODO find better ?
-      }
-    }
-
-  }
-
-}
 

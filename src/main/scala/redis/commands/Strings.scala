@@ -58,7 +58,7 @@ trait Strings extends Request {
     ??? //send("PSETEX", Seq(ByteString(key), value)).mapTo[Status].map(_.toBoolean)
 
   // TODO finish implementation : expire time && [NX|XX]
-  def set[A](key: String, value: A)(implicit convert: RedisValueConvert[A], timeout: Timeout, ec: ExecutionContext): Future[Status] =
+  def set[A](key: String, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Status] =
     send("SET", Seq(ByteString(key), convert.from(value))).mapTo[Status]
 
   def setbit(key: String, offset: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
