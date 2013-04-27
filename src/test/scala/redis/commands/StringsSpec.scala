@@ -189,7 +189,10 @@ class StringsSpec extends RedisSpec {
         r <- redis.set("setKey", "value")
         ex <- redis.set("setKey", "value", exSeconds = Some(2))
         px <- redis.set("setKey", "value", pxMilliseconds = Some(1))
-        nxTrue <- redis.set("setKey", "value", NX = true)
+        nxTrue <- {
+          Thread.sleep(20)
+          redis.set("setKey", "value", NX = true)
+        }
         xx <- redis.set("setKey", "value", XX = true)
         nxFalse <- redis.set("setKey", "value", NX = true)
       } yield {
@@ -228,14 +231,14 @@ class StringsSpec extends RedisSpec {
     }
 
     "SETNX" in {
-      val r = redis.del("setnxKey").flatMap(d => {
-        redis.setnx("setnxKey", "Hello").flatMap(s1 => {
-          s1 mustEqual true
-          redis.setnx("setnxKey", "World").map(s2 => {
-            s2 mustEqual false
-          })
-        })
-      })
+      val r = for {
+        _ <- redis.del("setnxKey")
+        s1 <- redis.setnx("setnxKey", "Hello")
+        s2 <- redis.setnx("setnxKey", "World")
+      } yield {
+        s1 mustEqual true
+        s2 mustEqual false
+      }
       Await.result(r, timeOut)
     }
 
