@@ -2,6 +2,7 @@ package redis.commands
 
 import redis._
 import scala.concurrent.Await
+import akka.util.ByteString
 
 class ConnectionSpec extends RedisSpec {
 
@@ -15,7 +16,7 @@ class ConnectionSpec extends RedisSpec {
     }
     "ECHO" in {
       val hello = "Hello World!"
-      Await.result(redis.echo(hello), timeOut).asTry[String].get mustEqual hello
+      Await.result(redis.echo(hello), timeOut) mustEqual Some(ByteString(hello))
     }
     "PING" in {
       Await.result(redis.ping(), timeOut) mustEqual "PONG"

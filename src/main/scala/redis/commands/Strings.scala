@@ -3,12 +3,16 @@ package redis.commands
 import akka.util.{ByteString, Timeout}
 import redis._
 import scala.concurrent.{ExecutionContext, Future}
-import redis.protocol.{RedisReply, Bulk, Integer, Status}
+import redis.protocol._
+import redis.protocol.MultiBulk
+import redis.protocol.Integer
+import redis.protocol.Status
+import redis.protocol.Bulk
 
 trait Strings extends Request {
 
-  def append(key: String, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    ??? //send("APPEND", Seq(ByteString(key), value)).mapTo[Integer].map(_.toLong)
+  def append[A](key: String, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    send("APPEND", Seq(ByteString(key), convert.from(value))).mapTo[Integer].map(_.toLong)
 
   def bitcount(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("BITCOUNT", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
@@ -16,7 +20,18 @@ trait Strings extends Request {
   def bitcount(key: String, start: Long, end: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("BITCOUNT", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString))).mapTo[Integer].map(_.toLong)
 
-  // TODO "AND OR XOR NOT"
+  def bitopAND(destkey: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    bitop("AND", destkey, keys: _*)
+
+  def bitopOR(destkey: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    bitop("OR", destkey, keys: _*)
+
+  def bitopXOR(destkey: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    bitop("XOR", destkey, keys: _*)
+
+  def bitopNOT(destkey: String, key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    bitop("NOT", destkey, key)
+
   def bitop(operation: String, destkey: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("BITOP", (Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply)).toSeq).mapTo[Integer].map(_.toLong)
 
@@ -26,55 +41,70 @@ trait Strings extends Request {
   def decrby(key: String, decrement: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("DECRBY", Seq(ByteString(key), ByteString(decrement.toString))).mapTo[Integer].map(_.toLong)
 
-  def get(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Bulk] =
-    send("GET", Seq(ByteString(key))).mapTo[Bulk]
+  def get(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
+    send("GET", Seq(ByteString(key))).mapTo[Bulk].map(_.response)
 
-  def getbit(key: String, offset: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("GETBIT", Seq(ByteString(key), ByteString(offset.toString))).mapTo[Integer].map(_.toLong)
+  def getbit(key: String, offset: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("GETBIT", Seq(ByteString(key), ByteString(offset.toString))).mapTo[Integer].map(_.toBoolean)
 
   def getrange(key: String, start: Long, end: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("GETRANGE", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString))).mapTo[Bulk].map(_.response)
 
-  def getset(key: String, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
+  def getset[A](key: String, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("GETSET", Seq(ByteString(key), ByteString(value.toString))).mapTo[Bulk].map(_.response)
 
   def incr(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("INCR", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
   def incrby(key: String, increment: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("INCRBY", Seq(ByteString(key), ByteString(increment))).mapTo[Integer].map(_.toLong)
+    send("INCRBY", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Integer].map(_.toLong)
 
   def incrbyfloat(key: String, increment: Double)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Bulk].map(_.response)
 
-  def mget(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("MGET", keys.map(ByteString.apply).toSeq).mapTo[Integer].map(_.toLong)
+  def mget(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[MultiBulk] =
+    send("MGET", keys.map(ByteString.apply).toSeq).mapTo[MultiBulk]
 
-  def mset[A](keysValues: Map[String, A])(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] = ??? // TODO tuple or map ?
+  def mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("MSET", keysValues.foldLeft(Seq[ByteString]())({
+      case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
+    })).mapTo[Status].map(_.toBoolean)
 
-  def msetnx = ??? // TODO
+  def msetnx[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("MSETNX", keysValues.foldLeft(Seq[ByteString]())({
+      case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
+    })).mapTo[Integer].map(_.toBoolean)
 
-  def psetex(key: String, milliseconds: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    ??? //send("PSETEX", Seq(ByteString(key), value)).mapTo[Status].map(_.toBoolean)
+  def psetex[A](key: String, milliseconds: Long, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("PSETEX", Seq(ByteString(key), ByteString(milliseconds.toString), convert.from(value))).mapTo[Status].map(_.toBoolean)
 
-  // TODO finish implementation : expire time && [NX|XX]
-  def set[A](key: String, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Status] =
-    send("SET", Seq(ByteString(key), convert.from(value))).mapTo[Status]
+  def set[A](key: String, value: A, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None, NX: Boolean = false, XX: Boolean = false)
+            (implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] = {
+    val seq = if (NX) Seq(ByteString("NX")) else if (XX) Seq(ByteString("XX")) else Seq.empty[ByteString]
+    val options: Seq[ByteString] = exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
+      .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
+      .getOrElse(seq)
+    val args = ByteString(key) +: convert.from(value) +: options
+    send("SET", args).mapTo[RedisReply].map({
+      case s: Status => s.toBoolean
+      case _ => false
+    })
+  }
 
-  def setbit(key: String, offset: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    ??? //send("SETBIT", Seq(ByteString(key), ByteString(offset), value)).mapTo[Integer].map(_.toLong)
+  def setbit[A](key: String, offset: Long, value: Boolean)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("SETBIT", Seq(ByteString(key), ByteString(offset.toString), ByteString(if (value) "1" else "0"))).mapTo[Integer].map(_.toBoolean)
 
-  def setex(key: String, seconds: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    ??? //send("SETEX", Seq(ByteString(key), ByteString(seconds), value)).mapTo[Status].map(_.toBoolean)
+  def setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("SETEX", Seq(ByteString(key), ByteString(seconds.toString), convert.from(value))).mapTo[Status].map(_.toBoolean)
 
-  def setnx(key: String, seconds: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    ??? //send("SETNX", Seq(ByteString(key), ByteString(seconds), value)).mapTo[Integer].map(_.toBoolean)
+  def setnx[A](key: String, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("SETNX", Seq(ByteString(key), convert.from(value))).mapTo[Integer].map(_.toBoolean)
 
-  def setrange(key: String, offset: Long, value: RedisReply)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    ??? //send("SETNX", Seq(ByteString(key), ByteString(offset), value)).mapTo[Integer].map(_.toBoolean)
+  def setrange[A](key: String, offset: Long, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    send("SETRANGE", Seq(ByteString(key), ByteString(offset.toString), convert.from(value))).mapTo[Integer].map(_.toLong)
 
-  def strlen(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    send("STRLEN", Seq(ByteString(key))).mapTo[Integer].map(_.toBoolean)
+  def strlen(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    send("STRLEN", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
 }
 

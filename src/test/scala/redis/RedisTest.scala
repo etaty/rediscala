@@ -2,6 +2,7 @@ package redis
 
 import scala.concurrent.Await
 import scala.util.Success
+import akka.util.ByteString
 
 class RedisTest extends RedisSpec {
 
@@ -14,17 +15,16 @@ class RedisTest extends RedisSpec {
       Await.result(redis.ping(), timeOut) mustEqual "PONG"
     }
     "set" in {
-      Await.result(redis.set("key", "value").map(_.toBoolean), timeOut) mustEqual true
-      Await.result(redis.set("key", "value").map(_.asTry[String]), timeOut) mustEqual Success("OK")
+      Await.result(redis.set("key", "value"), timeOut) mustEqual true
     }
     "get" in {
-      Await.result(redis.get("key").map(_.asTry[String]), timeOut) mustEqual Success("value")
+      Await.result(redis.get("key"), timeOut) mustEqual Some(ByteString("value"))
     }
     "del" in {
       Await.result(redis.del("key"), timeOut) mustEqual 1
     }
     "get not found" in {
-      Await.result(redis.get("key").map(_.asTry[String]), timeOut).isFailure mustEqual true //specs2 1.15 will have matchers for Try
+      Await.result(redis.get("key"), timeOut) mustEqual None
     }
   }
 }

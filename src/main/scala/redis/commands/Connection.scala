@@ -9,8 +9,8 @@ trait Connection extends Request {
   def auth[A](value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Status] =
     sendBroadcast("AUTH", Seq(convert.from(value))).mapTo[Status]
 
-  def echo[A](value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Bulk] =
-    send("ECHO", Seq(convert.from(value))).mapTo[Bulk]
+  def echo[A](value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
+    send("ECHO", Seq(convert.from(value))).mapTo[Bulk].map(_.response)
 
   def ping()(implicit timeout: Timeout, ec: ExecutionContext): Future[String] =
     send("PING").mapTo[Status].map(_.toString)

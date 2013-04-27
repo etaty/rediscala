@@ -38,7 +38,6 @@ class RedisClientActor extends Actor with Stash {
     tcp ! Close
   }
 
-  // TODO on disconnect => clean
   def initConnectedBuffer() {
     bufferRead = ByteString.empty
     bufferWrite.clear()

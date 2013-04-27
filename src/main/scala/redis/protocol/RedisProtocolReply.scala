@@ -6,11 +6,7 @@ import scala.collection.mutable
 import scala.util.Try
 import redis.RedisReplyConverter
 
-sealed trait RedisReply {
-  def asTry[A](implicit convert: RedisReplyConverter[A]): Try[A] = convert.to(this)
-
-  def asOpt[A](implicit convert: RedisReplyConverter[A]): Option[A] = asTry(convert).toOption
-}
+sealed trait RedisReply
 
 case class Status(status: ByteString) extends RedisReply {
   def toBoolean: Boolean = status.utf8String == "OK"
@@ -27,14 +23,18 @@ case class Integer(i: ByteString) extends RedisReply {
 
   def toInt: Int = java.lang.Integer.parseInt(i.utf8String)
 
-  def toBoolean = i == 1
+  def toBoolean = toInt == 1
 
   override def toString = i.utf8String
 }
 
 case class Bulk(response: Option[ByteString]) extends RedisReply
 
-case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply
+case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply {
+  def asTry[A](implicit convert: RedisReplyConverter[A]): Try[A] = convert.to(this)
+
+  def asOpt[A](implicit convert: RedisReplyConverter[A]): Option[A] = asTry(convert).toOption
+}
 
 
 object RedisProtocolReply {
