@@ -65,14 +65,4 @@ case class RedisClient(host: String = "localhost", port: Int = 6379, connections
 
 }
 
-trait RedisValue
-
-trait RedisValueConverter[A] {
-  def from(a: A): ByteString
-}
-
-trait RedisReplyConverter[A] {
-  def to(redisReply: RedisReply): Try[A]
-}
-
 

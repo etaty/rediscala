@@ -3,27 +3,31 @@ package redis
 import akka.util.ByteString
 import redis.protocol._
 import scala.util.Try
-import redis.protocol.Error
-import redis.protocol.Integer
-import scala.util.Failure
-import redis.protocol.Status
-import scala.util.Success
-import redis.protocol.Bulk
+
+trait RedisValue
+
+trait RedisValueConverter[A] {
+  def from(a: A): ByteString
+}
+
+trait MultiBulkConverter[A] {
+  def to(redisReply: MultiBulk): Try[A]
+}
 
 object Converter {
 
-  implicit object StringConvert extends RedisValueConverter[String] {
+  implicit object StringConverter extends RedisValueConverter[String] {
     def from(s: String): ByteString = ByteString(s)
   }
 
-  implicit object StringReplyConvert extends RedisReplyConverter[String] {
-    def to(reply: RedisReply): Try[String] = reply match {
-      case i: Integer => Success(i.toString)
-      case s: Status => Success(s.toString)
-      case e: Error => Success(e.toString)
-      case Bulk(b) => b.map(x => Success(x.utf8String)).getOrElse(Failure(new NoSuchElementException()))
-      case MultiBulk(mb) => Failure(new NoSuchElementException()) // TODO find better ?
-    }
+  implicit object ByteStringConverter extends RedisValueConverter[ByteString] {
+    def from(bs: ByteString): ByteString = bs
+  }
+
+  implicit object SeqStringMultiBulkConverter extends MultiBulkConverter[Seq[String]] {
+    def to(reply: MultiBulk): Try[Seq[String]] = Try(reply.responses.map(r => {
+      r.map(_.toString)
+    }).get)
   }
 
 }

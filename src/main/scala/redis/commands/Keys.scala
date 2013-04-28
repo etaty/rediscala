@@ -7,6 +7,7 @@ import redis.protocol._
 import redis.protocol.Integer
 import redis.protocol.Status
 import redis.protocol.Bulk
+import scala.util.Try
 
 trait Keys extends Request {
 
@@ -25,8 +26,8 @@ trait Keys extends Request {
   def expireat(key: String, seconds: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
     send("EXPIREAT", Seq(ByteString(key), ByteString(seconds.toString))).mapTo[Integer].map(_.toBoolean)
 
-  def keys(pattern: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[Seq[RedisReply]]] =
-    send("KEYS", Seq(ByteString(pattern))).mapTo[MultiBulk].map(_.responses)
+  def keys(pattern: String)(implicit convert: MultiBulkConverter[Seq[String]], timeout: Timeout, ec: ExecutionContext): Future[Try[Seq[String]]] =
+    send("KEYS", Seq(ByteString(pattern))).mapTo[MultiBulk].map(_.asTry[Seq[String]])
 
   def migrate(host: String, port: String, key: String, destinationDB: String, timeOut: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[String] =
     send("MIGRATE", Seq(ByteString(host), ByteString(port), ByteString(key), ByteString(destinationDB), ByteString(timeOut.toString))).mapTo[Status].map(_.toString)
@@ -51,14 +52,14 @@ trait Keys extends Request {
   def randomkey()(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("RANDOMKEY").mapTo[Bulk].map(_.response)
 
-  def rename(key: String, newkey: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[String] =
-    send("RENAME", Seq(ByteString(key), ByteString(newkey))).mapTo[Status].map(_.toString)
+  def rename(key: String, newkey: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("RENAME", Seq(ByteString(key), ByteString(newkey))).mapTo[Status].map(_.toBoolean)
 
-  def renamenx(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    send("RENAMENX", Seq(ByteString(key))).mapTo[Integer].map(_.toBoolean)
+  def renamenx(key: String, newkey: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("RENAMENX", Seq(ByteString(key), ByteString(newkey))).mapTo[Integer].map(_.toBoolean)
 
-  def restore(key: String, ttl: Long, serializedValue: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    send("RESTORE", Seq(ByteString(key), ByteString(ttl.toString), ByteString(serializedValue))).mapTo[Status].map(_.toBoolean)
+  def restore[A](key: String, ttl: Long = 0, serializedValue: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+    send("RESTORE", Seq(ByteString(key), ByteString(ttl.toString), convert.from(serializedValue))).mapTo[Status].map(_.toBoolean)
 
   def sort = ??? // TODO
 

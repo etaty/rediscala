@@ -4,7 +4,7 @@ import akka.util.ByteString
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.Try
-import redis.RedisReplyConverter
+import redis.MultiBulkConverter
 
 sealed trait RedisReply
 
@@ -28,12 +28,15 @@ case class Integer(i: ByteString) extends RedisReply {
   override def toString = i.utf8String
 }
 
-case class Bulk(response: Option[ByteString]) extends RedisReply
+case class Bulk(response: Option[ByteString]) extends RedisReply {
+  // looks wrong
+  override def toString = response.map(_.utf8String).get
+}
 
 case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply {
-  def asTry[A](implicit convert: RedisReplyConverter[A]): Try[A] = convert.to(this)
+  def asTry[A](implicit convert: MultiBulkConverter[A]): Try[A] = convert.to(this)
 
-  def asOpt[A](implicit convert: RedisReplyConverter[A]): Option[A] = asTry(convert).toOption
+  def asOpt[A](implicit convert: MultiBulkConverter[A]): Option[A] = asTry(convert).toOption
 }
 
 

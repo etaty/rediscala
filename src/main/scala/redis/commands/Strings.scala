@@ -91,7 +91,7 @@ trait Strings extends Request {
     })
   }
 
-  def setbit[A](key: String, offset: Long, value: Boolean)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
+  def setbit(key: String, offset: Long, value: Boolean)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
     send("SETBIT", Seq(ByteString(key), ByteString(offset.toString), ByteString(if (value) "1" else "0"))).mapTo[Integer].map(_.toBoolean)
 
   def setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
