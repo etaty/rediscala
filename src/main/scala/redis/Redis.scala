@@ -32,7 +32,7 @@ trait Request {
   }
 }
 
-trait RedisCommands extends Strings with Connection with Keys
+trait RedisCommands extends Keys with Strings with Hashes with Connection
 
 /**
  *

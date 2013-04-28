@@ -59,8 +59,8 @@ trait Strings extends Request {
   def incrby(key: String, increment: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("INCRBY", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Integer].map(_.toLong)
 
-  def incrbyfloat(key: String, increment: Double)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
-    send("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Bulk].map(_.response)
+  def incrbyfloat(key: String, increment: Double)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[Double]] =
+    send("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Bulk].map(_.response.map(v => java.lang.Double.valueOf(v.utf8String)))
 
   def mget(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[MultiBulk] =
     send("MGET", keys.map(ByteString.apply).toSeq).mapTo[MultiBulk]

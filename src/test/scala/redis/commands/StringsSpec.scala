@@ -133,7 +133,7 @@ class StringsSpec extends RedisSpec {
       val r = redis.set("incrbyfloatKey", "10.50").flatMap(_ => {
         redis.incrbyfloat("incrbyfloatKey", 0.15)
       })
-      Await.result(r, timeOut) mustEqual Some(ByteString("10.65"))
+      Await.result(r, timeOut) mustEqual Some(10.65)
     }
 
     "MGET" in {

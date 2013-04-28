@@ -6,16 +6,28 @@ import scala.collection.mutable
 import scala.util.Try
 import redis.MultiBulkConverter
 
-sealed trait RedisReply
+sealed trait RedisReply {
+  def toByteString: ByteString
+
+  def asOptByteString: Option[ByteString]
+}
 
 case class Status(status: ByteString) extends RedisReply {
   def toBoolean: Boolean = status.utf8String == "OK"
 
   override def toString = status.utf8String
+
+  def toByteString: ByteString = status
+
+  def asOptByteString: Option[ByteString] = Some(status)
 }
 
 case class Error(error: ByteString) extends RedisReply {
   override def toString = error.utf8String
+
+  def toByteString: ByteString = error
+
+  def asOptByteString: Option[ByteString] = Some(error)
 }
 
 case class Integer(i: ByteString) extends RedisReply {
@@ -26,14 +38,26 @@ case class Integer(i: ByteString) extends RedisReply {
   def toBoolean = toInt == 1
 
   override def toString = i.utf8String
+
+  def toByteString: ByteString = i
+
+  def asOptByteString: Option[ByteString] = Some(i)
 }
 
 case class Bulk(response: Option[ByteString]) extends RedisReply {
   // looks wrong
   override def toString = response.map(_.utf8String).get
+
+  def toByteString: ByteString = response.get
+
+  def asOptByteString: Option[ByteString] = response
 }
 
 case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply {
+  def toByteString: ByteString = throw new NoSuchElementException()
+
+  def asOptByteString: Option[ByteString] = throw new NoSuchElementException()
+
   def asTry[A](implicit convert: MultiBulkConverter[A]): Try[A] = convert.to(this)
 
   def asOpt[A](implicit convert: MultiBulkConverter[A]): Option[A] = asTry(convert).toOption
