@@ -5,7 +5,6 @@ import akka.util.{ByteString, Timeout}
 import redis.commands._
 import akka.pattern.ask
 import scala.concurrent._
-import scala.util.Try
 import akka.routing.{Broadcast, RoundRobinRouter}
 import redis.protocol._
 import java.net.InetSocketAddress
@@ -32,7 +31,7 @@ trait Request {
   }
 }
 
-trait RedisCommands extends Keys with Strings with Hashes with Connection
+trait RedisCommands extends Keys with Strings with Hashes with Lists with Connection
 
 /**
  *

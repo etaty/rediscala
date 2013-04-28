@@ -12,7 +12,7 @@ import scala.util.Try
 trait Keys extends Request {
 
   def del(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("DEL", keys.map(ByteString.apply).toSeq).mapTo[Integer].map(_.toLong)
+    send("DEL", keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
   def dump(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("DUMP", Seq(ByteString(key))).mapTo[Bulk].map(_.response)

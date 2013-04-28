@@ -33,7 +33,7 @@ trait Strings extends Request {
     bitop("NOT", destkey, key)
 
   def bitop(operation: String, destkey: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("BITOP", (Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply)).toSeq).mapTo[Integer].map(_.toLong)
+    send("BITOP", (Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply))).mapTo[Integer].map(_.toLong)
 
   def decr(key: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("DECR", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
@@ -63,7 +63,7 @@ trait Strings extends Request {
     send("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Bulk].map(_.response.map(v => java.lang.Double.valueOf(v.utf8String)))
 
   def mget(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[MultiBulk] =
-    send("MGET", keys.map(ByteString.apply).toSeq).mapTo[MultiBulk]
+    send("MGET", keys.map(ByteString.apply)).mapTo[MultiBulk]
 
   def mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
     send("MSET", keysValues.foldLeft(Seq[ByteString]())({

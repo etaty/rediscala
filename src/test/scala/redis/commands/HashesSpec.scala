@@ -9,7 +9,7 @@ class HashesSpec extends RedisSpec {
 
   import Converter._
 
-  "hashes commands" should {
+  "Hashes commands" should {
     "HDEL" in {
       val r = for {
         _ <- redis.hset("hdelKey", "field", "value")

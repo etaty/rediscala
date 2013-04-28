@@ -9,7 +9,7 @@ class KeysSpec extends RedisSpec {
 
   import Converter._
 
-  "keys commands" should {
+  "Keys commands" should {
     "DEL" in {
       val r = for {
         s <- redis.set("delKey", "value")

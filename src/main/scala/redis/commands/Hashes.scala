@@ -9,7 +9,7 @@ import scala.util.Try
 trait Hashes extends Request {
 
   def hdel(key: String, fields: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
-    send("HDEL", ByteString(key) +: fields.map(ByteString.apply).toSeq).mapTo[Integer].map(_.toLong)
+    send("HDEL", ByteString(key) +: fields.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
   def hexists(key: String, field: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
     send("HEXISTS", Seq(ByteString(key), ByteString(field))).mapTo[Integer].map(_.toBoolean)
@@ -33,7 +33,7 @@ trait Hashes extends Request {
     send("HLEN", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
   def hmget(key: String, fields: String*)(implicit convert: MultiBulkConverter[Seq[Option[ByteString]]], timeout: Timeout, ec: ExecutionContext): Future[Try[Seq[Option[ByteString]]]] =
-    send("HMGET", ByteString(key) +: fields.map(ByteString.apply).toSeq).mapTo[MultiBulk].map(_.asTry[Seq[Option[ByteString]]])
+    send("HMGET", ByteString(key) +: fields.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[Option[ByteString]]])
 
   def hmset[A](key: String, keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
     send("HMSET", ByteString(key) +: keysValues.foldLeft(Seq.empty[ByteString])({
