@@ -84,7 +84,7 @@ class KeysSpec extends RedisSpec {
         k2 <- redis.keys("keysKey?")
         k3 <- redis.keys("keysKeyNomatch")
       } yield {
-        k mustEqual Success(Seq("keysKey2", "keysKey"))
+        k.get must haveTheSameElementsAs(Seq("keysKey2", "keysKey"))
         k2 mustEqual Success(Seq("keysKey2"))
         k3 mustEqual Success(Seq())
       }
