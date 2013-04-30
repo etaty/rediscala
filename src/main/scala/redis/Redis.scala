@@ -22,6 +22,7 @@ trait Request {
   }
 
   // TODO build an aggregate actor to hold the replies and compare them (should fail if all replies are not the same)
+  // why not build a routeur with an Aggregate command ? (like Broadcast command)
   def sendBroadcast(command: String, args: Seq[ByteString])(implicit timeout: Timeout): Future[Any] = {
     redisConnection ? Broadcast(RedisProtocolRequest.multiBulk(command, args))
   }
@@ -31,7 +32,7 @@ trait Request {
   }
 }
 
-trait RedisCommands extends Keys with Strings with Hashes with Lists with Connection
+trait RedisCommands extends Keys with Strings with Hashes with Lists with Sets with Connection
 
 /**
  *
