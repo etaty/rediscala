@@ -4,6 +4,7 @@ import akka.util.ByteString
 import redis.protocol._
 import scala.util.Try
 import scala.annotation.tailrec
+import scala.collection.mutable
 
 trait RedisValue
 
@@ -60,6 +61,28 @@ object Converter {
         }
       }
       recur(s, Map.empty[String, ByteString])
+    }
+  }
+
+  implicit object SeqByteStringDoubleMultiBulkConverter extends MultiBulkConverter[Seq[(ByteString, Double)]] {
+    def to(reply: MultiBulk): Try[Seq[(ByteString, Double)]] = Try(reply.responses.map(r => {
+      val seq = r.map(_.toByteString)
+      seqToSeqTuple2(seq)
+    }).get)
+
+    def seqToSeqTuple2(s: Seq[ByteString]): Seq[(ByteString, Double)] = {
+      require(s.length % 2 == 0, "odd number of elements")
+      val queue = mutable.Queue[(ByteString, Double)]()
+      @tailrec
+      def recur(s: Seq[ByteString]) {
+        if (s.nonEmpty) {
+          val score = java.lang.Double.valueOf(s.tail.head.utf8String)
+          queue.enqueue((s.head, score))
+          recur(s.tail.tail)
+        }
+      }
+      recur(s)
+      queue.toSeq
     }
   }
 

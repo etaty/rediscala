@@ -4,7 +4,7 @@ package redis.commands
 import redis.{RedisValueConverter, MultiBulkConverter, Request}
 import akka.util.{ByteString, Timeout}
 import scala.concurrent.{Future, ExecutionContext}
-import redis.protocol.{Status, MultiBulk, Bulk, Integer}
+import redis.protocol.{MultiBulk, Bulk, Integer}
 import scala.util.Try
 
 trait Sets extends Request {
