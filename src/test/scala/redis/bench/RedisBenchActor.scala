@@ -3,7 +3,7 @@ package redis.bench
 import scala.compat.Platform
 import scala.concurrent._
 import scala.concurrent.duration._
-import redis.{WriteAck, RedisClientActor, RedisSpec}
+import redis.{RedisSpec}
 import akka.actor.{Props, ActorRef}
 import java.net.InetSocketAddress
 import akka.io.Tcp._
@@ -13,6 +13,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.util.ByteString
 import akka.pattern.ask
+import redis.actors.{WriteAck, RedisClientActor}
 
 
 class RedisBenchActor extends RedisSpec {

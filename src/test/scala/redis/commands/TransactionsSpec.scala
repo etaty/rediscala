@@ -3,6 +3,7 @@ package redis.commands
 import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
+import redis.actors.ReplyErrorException
 
 class TransactionsSpec extends RedisSpec {
 

@@ -6,8 +6,6 @@ import scala.util.Try
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-trait RedisValue
-
 trait RedisValueConverter[A] {
   def from(a: A): ByteString
 }

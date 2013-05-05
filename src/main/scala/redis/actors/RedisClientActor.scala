@@ -1,4 +1,4 @@
-package redis
+package redis.actors
 
 import akka.actor.{ActorRef, Stash, Actor}
 import akka.event.Logging

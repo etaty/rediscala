@@ -4,6 +4,7 @@ import redis._
 import scala.concurrent.{Await, Future}
 import akka.util.ByteString
 import redis.protocol.{Bulk, MultiBulk}
+import redis.actors.ReplyErrorException
 
 class StringsSpec extends RedisSpec {
 

@@ -7,6 +7,7 @@ import akka.pattern.ask
 import scala.concurrent._
 import redis.protocol._
 import java.net.InetSocketAddress
+import redis.actors.RedisClientActor
 
 
 trait Request {
