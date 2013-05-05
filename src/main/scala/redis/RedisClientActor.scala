@@ -55,7 +55,7 @@ class RedisClientActor extends Actor with Stash {
       tcpWorker = sender
       become(writing)
       unstashAll()
-      log.debug("Connected to " + remoteAddr)
+      log.info("Connected to " + remoteAddr)
     }
     case c: CommandFailed => log.error(c.toString) // TODO failed connection
     case _ => stash()
@@ -83,43 +83,65 @@ class RedisClientActor extends Actor with Stash {
         bufferWrite.clear()
       }
     }
+    case Transaction(commands) => {
+      if (readyToWrite) {
+        val b = new ByteStringBuilder
+        commands.foreach(b.append)
+        tcpWorker ! Write(b.result(), WriteAck)
+        readyToWrite = false
+      } else {
+        commands.foreach(bufferWrite.append)
+      }
+      commands.foreach(_ => {
+        queue enqueue (sender)
+      })
+    }
     case c: ConnectionClosed =>
       log.info(s"ConnectionClosed $c")
       queue foreach {
         sender =>
           sender ! Failure(NoConnectionException)
       }
+      queue.clear()
       become(closed)
     case c: CommandFailed => log.error("CommandFailed ... " + c) // O/S buffer was full
     case ignored => log.error(s"ignored : $ignored")
   }
 
+  // todo transaction + connection closed !
   def closed: Receive = {
     case write: ByteString =>
-      log.info("refused")
+      log.error("refused  : " + write)
       sender ! Failure(NoConnectionException)
     case address: InetSocketAddress => {
       log.info(s"Connect to $address")
       tcp ! Connect(address)
       become(receive)
     }
+    case m => log.error(m.toString)
   }
 
   @tailrec
   private def decodeReplies(bs: ByteString): ByteString = {
-    val r = RedisProtocolReply.decodeReply(bs)
-    if (r.nonEmpty) {
-      val result = r.get._1 match {
-        case e: Error => Failure(ReplyErrorException(e.toString()))
-        case _ => r.get._1
+    if (bs.nonEmpty) {
+      val r = RedisProtocolReply.decodeReply(bs)
+      if (r.nonEmpty) {
+        val result = r.get._1 match {
+          case e: Error => Failure(ReplyErrorException(e.toString()))
+          case _ => r.get._1
+        }
+        queue.dequeue() ! result
+        decodeReplies(r.get._2)
+      } else {
+        bs
       }
-      queue.dequeue() ! result
-      decodeReplies(r.get._2)
     } else {
       bs
     }
   }
 }
+
+case class Transaction(commands: Seq[ByteString])
 
 object WriteAck
 

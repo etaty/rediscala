@@ -6,13 +6,18 @@ import scala.concurrent.duration._
 
 class RedisBench extends RedisSpec {
 
+  import Converter._
+
   "Rediscala stupid benchmark" should {
     "bench 1" in {
-      val n = 200000
-      for (i <- 1 to 10) yield {
-        timed(s"ping $n times (run $i)", n) {
-          val results = for (i <- 1 to n) yield {
+      val n = 100000
+      for (i <- 1 to 1) yield {
+        redis.set("i", "0")
+        val ops = n //* i / 10
+        timed(s"ping $ops times (run $i)", ops) {
+          val results = for (_ <- 1 to ops) yield {
             redis.ping()
+            //redis.incr("i")
             //redis.set("mykey", "myvalue") //.map(x => println(x))
             //redis.get("mykey").map(x => println(x))
           }
@@ -28,10 +33,12 @@ class RedisBench extends RedisSpec {
 
   def timed(desc: String, n: Int)(benchmark: ⇒ Unit) {
     println("* " + desc)
-    val t = System.currentTimeMillis
+    val start = System.currentTimeMillis
     benchmark
-    val d = System.currentTimeMillis - t
+    val stop = System.currentTimeMillis
+    val elapsedSeconds = (stop - start) / 1000.0
+    val opsPerSec = n / elapsedSeconds
 
-    println("* - number of ops/s: " + n / (d / 1000.0) + "\n")
+    println(s"* - number of ops/s: $opsPerSec ( $n ops in $elapsedSeconds)")
   }
 }

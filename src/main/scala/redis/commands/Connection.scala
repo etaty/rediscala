@@ -7,7 +7,7 @@ import redis.protocol.{Bulk, Status}
 
 trait Connection extends Request {
   def auth[A](value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Status] =
-    sendBroadcast("AUTH", Seq(convert.from(value))).mapTo[Status]
+    send("AUTH", Seq(convert.from(value))).mapTo[Status]
 
   def echo[A](value: A)(implicit convert: RedisValueConverter[A], timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("ECHO", Seq(convert.from(value))).mapTo[Bulk].map(_.response)
@@ -17,8 +17,8 @@ trait Connection extends Request {
 
   // commands sent after will fail with [[redis.protocol.NoConnectionException]]
   def quit()(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    sendBroadcast("QUIT").mapTo[Status].map(_.toBoolean)
+    send("QUIT").mapTo[Status].map(_.toBoolean)
 
   def select(index: Int)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] =
-    sendBroadcast("SELECT", Seq(ByteString(index.toString))).mapTo[Status].map(_.toBoolean)
+    send("SELECT", Seq(ByteString(index.toString))).mapTo[Status].map(_.toBoolean)
 }
