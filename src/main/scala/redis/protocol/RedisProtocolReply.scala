@@ -50,6 +50,8 @@ case class Bulk(response: Option[ByteString]) extends RedisReply {
 
   def toByteString: ByteString = response.get
 
+  def toOptString: Option[String] = response.map(_.utf8String)
+
   def asOptByteString: Option[ByteString] = response
 }
 

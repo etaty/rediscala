@@ -1,6 +1,5 @@
 package redis.commands
 
-
 import redis.{RedisValueConverter, MultiBulkConverter, Request}
 import akka.util.{ByteString, Timeout}
 import scala.concurrent.{Future, ExecutionContext}
@@ -51,7 +50,7 @@ trait Sets extends Request {
   def sunion(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], timeout: Timeout, ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
     send("SUNION", ByteString(key) +: keys.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def sunionstore(destination: String, key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], timeout: Timeout, ec: ExecutionContext): Future[Long] =
+  def sunionstore(destination: String, key: String, keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] =
     send("SUNIONSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
 }
