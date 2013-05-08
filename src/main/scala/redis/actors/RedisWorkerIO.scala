@@ -6,7 +6,6 @@ import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
 import akka.io.Tcp._
-import akka.actor.Status.Failure
 import redis.protocol.{RedisProtocolReply, RedisReply}
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
@@ -33,7 +32,10 @@ trait RedisWorkerIO extends Actor with Stash {
   var readyToWrite = true
 
   override def postStop() {
-    tcp ! Close
+    log.info("RedisWorkerIO stop")
+    if (tcpWorker != null) {
+      tcpWorker ! Close
+    }
   }
 
   def initConnectedBuffer() {
