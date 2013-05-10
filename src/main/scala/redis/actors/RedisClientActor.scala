@@ -5,8 +5,9 @@ import scala.collection.mutable
 import akka.util.{ByteStringBuilder, ByteString}
 import redis.protocol.{RedisReply, Error}
 import akka.actor.Status.Failure
+import java.net.InetSocketAddress
 
-class RedisClientActor extends RedisWorkerIO {
+class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
   val queue = mutable.Queue[ActorRef]()
 
   def writing: Receive = {
@@ -35,10 +36,13 @@ class RedisClientActor extends RedisWorkerIO {
   def onConnectionClosed() {
     queue foreach {
       sender =>
+        println("lol")
         sender ! Failure(NoConnectionException)
     }
     queue.clear()
   }
+
+  def address: InetSocketAddress = addr
 }
 
 case class Transaction(commands: Seq[ByteString])

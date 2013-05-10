@@ -10,12 +10,13 @@ import redis.protocol.{RedisProtocolReply, RedisReply}
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
-import akka.actor.Status.Failure
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 import scala.annotation.tailrec
 
 trait RedisWorkerIO extends Actor with Stash {
+
+  def address: InetSocketAddress
 
   import context._
 
@@ -30,6 +31,11 @@ trait RedisWorkerIO extends Actor with Stash {
   var bufferWrite: ByteStringBuilder = new ByteStringBuilder
 
   var readyToWrite = true
+
+  override def preStart() {
+    log.info(s"Connect to $address")
+    tcp ! Connect(address)
+  }
 
   override def postStop() {
     log.info("RedisWorkerIO stop")
@@ -47,10 +53,6 @@ trait RedisWorkerIO extends Actor with Stash {
   def receive = connecting
 
   def connecting: Receive = {
-    case address: InetSocketAddress => {
-      log.info(s"Connect to $address")
-      tcp ! Connect(address)
-    }
     case Connected(remoteAddr, localAddr) => {
       initConnectedBuffer()
       sender ! Register(self)
@@ -59,6 +61,7 @@ trait RedisWorkerIO extends Actor with Stash {
       unstashAll()
       log.info("Connected to " + remoteAddr)
     }
+    case Reconnect => preStart()
     case c: CommandFailed => log.error(c.toString) // TODO failed connection
     case _ => stash()
   }
@@ -78,22 +81,13 @@ trait RedisWorkerIO extends Actor with Stash {
       bufferRead = decodeReplies(bufferRead ++ dataByteString).compact
     }
     case c: ConnectionClosed =>
-      log.info(s"ConnectionClosed $c")
+      log.warning(s"ConnectionClosed $c")
       onConnectionClosed()
-      become(closed)
+      // todo finish cleaning
+      context.system.scheduler.scheduleOnce(reconnectDuration, self, Reconnect)
+      become(connecting)
     case c: CommandFailed => log.error("CommandFailed ... " + c) // O/S buffer was full
     case ignored => log.error(s"ignored : $ignored")
-  }
-
-  def closed: Receive = {
-    case address: InetSocketAddress => {
-      log.info(s"Connect to $address")
-      tcp ! Connect(address)
-      become(connecting)
-    }
-    case message =>
-      log.error(s"NoConnectionException : $message")
-      sender ! Failure(NoConnectionException)
   }
 
   def writing: Receive
@@ -110,6 +104,10 @@ trait RedisWorkerIO extends Actor with Stash {
       bufferWrite.append(byteString)
     }
   }
+
+  import scala.concurrent.duration.{DurationInt, FiniteDuration}
+
+  def reconnectDuration: FiniteDuration = 2 seconds
 
   private def writeWorker(byteString: ByteString) {
     tcpWorker ! Write(byteString, WriteAck)
@@ -133,5 +131,7 @@ trait RedisWorkerIO extends Actor with Stash {
 
 
 object WriteAck
+
+object Reconnect
 
 object NoConnectionException extends Exception

@@ -25,9 +25,9 @@ class RedisBenchActor extends RedisSpec {
       for (i <- 1 to 1) yield {
         val ops = n //* i / 10
 
-        val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActorBench]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActorBench], new InetSocketAddress("localhost", 6379)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
-        redisConnection ! new InetSocketAddress("localhost", 6379)
+        //redisConnection ! new InetSocketAddress("localhost", 6379)
 
         Thread.sleep(2000)
 
@@ -55,8 +55,8 @@ class RedisBenchActor extends RedisSpec {
   }
 }
 
-class RedisClientActorBench extends RedisClientActor {
-  var receivedData = 0;
+class RedisClientActorBench(addr: InetSocketAddress) extends RedisClientActor(addr) {
+  var receivedData = 0
 
   override def receive = {
     case Received(dataByteString) => {

@@ -24,7 +24,7 @@ trait Request {
   }
 }
 
-trait RedisCommands extends Keys with Strings with Hashes with Lists with Sets with SortedSets with Connection
+trait RedisCommands extends Keys with Strings with Hashes with Lists with Sets with SortedSets with PubSub with Connection with Server
 
 /**
  *
@@ -34,29 +34,15 @@ trait RedisCommands extends Keys with Strings with Hashes with Lists with Sets w
  */
 case class RedisClient(host: String = "localhost", port: Int = 6379)(implicit system: ActorSystem) extends RedisCommands with Transactions {
 
-  val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
-
-  connect(host, port)
+  val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor], new InetSocketAddress(host, port)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
   def send(request: ByteString)(implicit timeout: Timeout): Future[Any] =
     redisConnection ? request
 
-  def stop() {
+  // will disconnect from the server
+  def disconnect() {
     system stop redisConnection
   }
 
-  def connect(host: String = "localhost", port: Int = 6379) {
-    connect(new InetSocketAddress(host, port))
-  }
-
-  def connect(address: InetSocketAddress) {
-    redisConnection ! address
-  }
-
-  def disconnect() {
-    redisConnection ! "disconnect"
-  }
-
 }
-
 
