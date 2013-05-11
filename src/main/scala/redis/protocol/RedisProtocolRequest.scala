@@ -3,7 +3,8 @@ package redis.protocol
 import akka.util.ByteString
 
 object RedisProtocolRequest {
-  val LS = "\r\n".getBytes("UTF-8")
+  val LS_STRING = "\r\n"
+  val LS = LS_STRING.getBytes("UTF-8")
 
   def multiBulk(command: String, args: Seq[ByteString]): ByteString = {
     val requestBuilder = ByteString.newBuilder
@@ -23,5 +24,5 @@ object RedisProtocolRequest {
     builder.result()
   }
 
-  def inline(command: String): ByteString = (ByteString(command) ++ LS)
+  def inline(command: String): ByteString = ByteString(command + LS_STRING)
 }

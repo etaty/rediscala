@@ -11,7 +11,7 @@ import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
-import akka.util.ByteString
+import akka.util.{ByteStringBuilder, ByteString}
 import akka.pattern.ask
 import redis.actors.{WriteAck, RedisClientActor}
 
@@ -22,7 +22,7 @@ class RedisBenchActor extends RedisSpec {
   "Rediscala stupid benchmark" should {
     "bench 1" in {
       val n = 100000
-      for (i <- 1 to 1) yield {
+      for (i <- 1 to 10) yield {
         val ops = n //* i / 10
 
         val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActorBench], new InetSocketAddress("localhost", 6379)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
@@ -87,9 +87,14 @@ class RedisClientActorBench(addr: InetSocketAddress) extends RedisClientActor(ad
   def crazyWrite(i: Int) {
     receivedData = ("+PONG\r\n".length) * i
 
-    val ii = i / 100
-    for (_ <- 1 to 100) {
-      val write = ByteString("PING\r\n" * ii)
+    val bs = ByteString("PING\r\n")
+    val ii = i / 10
+    for (_ <- 1 to 10) {
+      val bufferWrite: ByteStringBuilder = new ByteStringBuilder
+      for (_ <- 1 to ii) {
+        bufferWrite.append(bs)
+      }
+      val write = bufferWrite.result() //ByteString("PING\r\n" * ii)
 
       tcpWorker ! Write(write, WriteAck)
     }

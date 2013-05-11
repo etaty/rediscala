@@ -10,10 +10,10 @@ class RedisBench extends RedisSpec {
 
   "Rediscala stupid benchmark" should {
     "bench 1" in {
-      val n = 100000
-      for (i <- 1 to 1) yield {
+      val n = 200000
+      for (i <- 1 to 10) yield {
         redis.set("i", "0")
-        val ops = n //* i / 10
+        val ops = n * i / 10
         timed(s"ping $ops times (run $i)", ops) {
           val results = for (_ <- 1 to ops) yield {
             redis.ping()

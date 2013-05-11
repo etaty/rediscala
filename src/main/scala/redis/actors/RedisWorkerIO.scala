@@ -28,7 +28,7 @@ trait RedisWorkerIO extends Actor with Stash {
 
   var bufferRead: ByteString = ByteString.empty
 
-  var bufferWrite: ByteStringBuilder = new ByteStringBuilder
+  val bufferWrite: ByteStringBuilder = new ByteStringBuilder
 
   var readyToWrite = true
 

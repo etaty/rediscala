@@ -3,8 +3,7 @@ package redis.commands
 import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
-import redis.actors.{NoConnectionException, ReplyErrorException}
-import akka.io.Tcp.PeerClosed
+import redis.actors.ReplyErrorException
 
 class ConnectionSpec extends RedisSpec {
 
@@ -24,6 +23,7 @@ class ConnectionSpec extends RedisSpec {
       Await.result(redis.ping(), timeOut) mustEqual "PONG"
     }
     "QUIT" in {
+      // todo test that the TCP connection is reset.
       val f = redis.quit()
       Thread.sleep(1000)
       val ping = redis.ping()
