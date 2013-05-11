@@ -36,7 +36,6 @@ class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
   def onConnectionClosed() {
     queue foreach {
       sender =>
-        println("lol")
         sender ! Failure(NoConnectionException)
     }
     queue.clear()

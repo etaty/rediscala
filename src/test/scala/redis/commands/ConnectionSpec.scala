@@ -4,6 +4,7 @@ import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
 import redis.actors.{NoConnectionException, ReplyErrorException}
+import akka.io.Tcp.PeerClosed
 
 class ConnectionSpec extends RedisSpec {
 
@@ -24,10 +25,10 @@ class ConnectionSpec extends RedisSpec {
     }
     "QUIT" in {
       val f = redis.quit()
-      val fail = redis.ping()
+      Thread.sleep(1000)
+      val ping = redis.ping()
       Await.result(f, timeOut) mustEqual true
-      Await.result(fail, timeOut) must throwA[NoConnectionException.type]
-      Await.result(redis.ping(), timeOut) mustEqual "PONG"
+      Await.result(ping, timeOut) mustEqual "PONG"
     }
     "SELECT" in {
       Await.result(redis.select(1), timeOut) mustEqual true
