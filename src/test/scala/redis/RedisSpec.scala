@@ -7,7 +7,7 @@ import akka.testkit.TestKit
 import org.specs2.specification.{Step, Fragments}
 import akka.actor.ActorSystem
 
-class RedisSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
+abstract class RedisSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
 
   import scala.concurrent._
   import scala.concurrent.duration._
