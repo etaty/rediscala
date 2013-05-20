@@ -33,7 +33,7 @@ class BListsSpec extends RedisSpec {
           redis.rpush("blpopBlock", "a", "b", "c")
           blpop
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual Success(Some("blpopBlock", ByteString("a")))
           redisB.disconnect()
         }
@@ -44,7 +44,7 @@ class BListsSpec extends RedisSpec {
         val r = redis.del("blpopBlockTimeout").flatMap(_ => {
           redisB.brpop(Seq("blpopBlockTimeout"), 1.seconds)
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual Success(None)
           redisB.disconnect()
         }
@@ -74,7 +74,7 @@ class BListsSpec extends RedisSpec {
           redis.rpush("brpopBlock", "a", "b", "c")
           brpop
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual Success(Some("brpopBlock", ByteString("c")))
           redisB.disconnect()
         }
@@ -85,7 +85,7 @@ class BListsSpec extends RedisSpec {
         val r = redis.del("brpopBlockTimeout").flatMap(_ => {
           redisB.brpop(Seq("brpopBlockTimeout"), 1.seconds)
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual Success(None)
           redisB.disconnect()
         }
@@ -114,7 +114,7 @@ class BListsSpec extends RedisSpec {
           redis.rpush("brpopplushBlock1", "a", "b", "c")
           brpopplush
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual Some(ByteString("c"))
           redisB.disconnect()
         }
@@ -125,7 +125,7 @@ class BListsSpec extends RedisSpec {
         val r = redis.del("brpopplushBlockTimeout").flatMap(_ => {
           redisB.brpopplush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
         })
-        within(1.seconds, 3.seconds) {
+        within(1.seconds, 4.seconds) {
           Await.result(r, timeOut) mustEqual None
           redisB.disconnect()
         }
