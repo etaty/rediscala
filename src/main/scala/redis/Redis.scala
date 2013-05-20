@@ -1,9 +1,8 @@
 package redis
 
 import akka.actor._
-import akka.util.{ByteString, Timeout}
+import akka.util.ByteString
 import redis.commands._
-import akka.pattern.ask
 import scala.concurrent._
 import redis.protocol._
 import java.net.InetSocketAddress
@@ -13,13 +12,13 @@ import redis.actors.RedisClientActor
 trait Request {
   def redisConnection: ActorRef
 
-  def send(request: ByteString)(implicit timeout: Timeout): Future[Any]
+  def send(request: ByteString): Future[Any]
 
-  def send(command: String, args: Seq[ByteString])(implicit timeout: Timeout): Future[Any] = {
+  def send(command: String, args: Seq[ByteString]): Future[Any] = {
     send(RedisProtocolRequest.multiBulk(command, args))
   }
 
-  def send(command: String)(implicit timeout: Timeout): Future[Any] = {
+  def send(command: String): Future[Any] = {
     send(RedisProtocolRequest.inline(command))
   }
 }
@@ -36,8 +35,11 @@ case class RedisClient(host: String = "localhost", port: Int = 6379)(implicit sy
 
   val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor], new InetSocketAddress(host, port)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
-  def send(request: ByteString)(implicit timeout: Timeout): Future[Any] =
-    redisConnection ? request
+  def send(request: ByteString): Future[Any] = {
+    val promise = Promise[RedisReply]()
+    redisConnection ! Operation(request, promise)
+    promise.future
+  }
 
   // will disconnect from the server
   def disconnect() {
@@ -46,3 +48,21 @@ case class RedisClient(host: String = "localhost", port: Int = 6379)(implicit sy
 
 }
 
+case class RedisBlockingClient(host: String = "localhost", port: Int = 6379)(implicit system: ActorSystem) extends BLists {
+
+  val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActor], new InetSocketAddress(host, port)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+
+  def send(request: ByteString): Future[Any] = {
+    val promise = Promise[RedisReply]()
+    redisConnection ! Operation(request, promise)
+    promise.future
+  }
+
+  // will disconnect from the server
+  def disconnect() {
+    system stop redisConnection
+  }
+
+}
+
+case class Operation(request: ByteString, promise: Promise[RedisReply])

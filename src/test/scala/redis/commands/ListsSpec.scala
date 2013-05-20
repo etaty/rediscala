@@ -10,17 +10,6 @@ class ListsSpec extends RedisSpec {
   import Converter._
 
   "Lists commands" should {
-    "BLPOP" in {
-      todo
-    }
-
-    "BRPOP" in {
-      todo
-    }
-
-    "BRPOPLPUSH" in {
-      todo
-    }
 
     "LINDEX" in {
       val r = for {

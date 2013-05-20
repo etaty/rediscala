@@ -84,4 +84,10 @@ object Converter {
     }
   }
 
+  implicit object OptionTupleStringByteStringMultiBulkConverter extends MultiBulkConverter[Option[(String, ByteString)]] {
+    def to(reply: MultiBulk): Try[Option[(String, ByteString)]] = Try(reply.responses.map(r => {
+      Some(r.head.toString, r.tail.head.toByteString)
+    }).getOrElse(None))
+  }
+
 }

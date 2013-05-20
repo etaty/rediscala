@@ -63,8 +63,8 @@ class RedisClientActorBench(addr: InetSocketAddress) extends RedisClientActor(ad
       //println(dataByteString.utf8String)
       receivedData = receivedData - dataByteString.length
 
-      if (receivedData <= 0)
-        queue.dequeue() ! "PONG"
+      //if (receivedData <= 0)
+        //queue.dequeue() ! "PONG"
     }
     case address: InetSocketAddress => {
       log.info(s"Connect to $address")
@@ -78,7 +78,7 @@ class RedisClientActorBench(addr: InetSocketAddress) extends RedisClientActor(ad
     }
     case crazyPing: Int => {
       crazyWrite(crazyPing)
-      queue enqueue (sender)
+      //queue enqueue (sender)
     }
     case c: CommandFailed => log.error(c.toString) // TODO failed connection
     case e => log.error(e.toString)

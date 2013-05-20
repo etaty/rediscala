@@ -6,39 +6,40 @@ import akka.util.{ByteStringBuilder, ByteString}
 import redis.protocol.{RedisReply, Error}
 import akka.actor.Status.Failure
 import java.net.InetSocketAddress
+import redis.Operation
+import scala.concurrent.Promise
 
 class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
-  val queue = mutable.Queue[ActorRef]()
+  val queuePromise = mutable.Queue[Promise[RedisReply]]()
 
   def writing: Receive = {
-    case bs: ByteString => {
-      write(bs)
-      queue enqueue (sender)
-    }
-    case Transaction(commands) => {
+    case Operation(request, promise) =>
+      write(request)
+      queuePromise enqueue (promise)
+    case transactions: Seq[Operation] => {
       val buffer = new ByteStringBuilder
-      commands.foreach(buffer.append)
-      write(buffer.result())
-      commands.foreach(_ => {
-        queue enqueue (sender)
+      transactions.foreach(operation => {
+        buffer.append(operation.request)
+        queuePromise enqueue (operation.promise)
       })
+      write(buffer.result())
     }
   }
 
   def onReceivedReply(reply: RedisReply) {
-    val result = reply match {
-      case e: Error => Failure(ReplyErrorException(e.toString()))
-      case _ => reply
+    reply match {
+      case e: Error => queuePromise.dequeue().failure(ReplyErrorException(e.toString()))
+      case _ => queuePromise.dequeue().success(reply)
     }
-    queue.dequeue() ! result
+    //queue.dequeue() ! result
   }
 
   def onConnectionClosed() {
-    queue foreach {
-      sender =>
-        sender ! Failure(NoConnectionException)
+    queuePromise foreach {
+      promise =>
+        promise.failure(NoConnectionException)
     }
-    queue.clear()
+    queuePromise.clear()
   }
 
   def address: InetSocketAddress = addr

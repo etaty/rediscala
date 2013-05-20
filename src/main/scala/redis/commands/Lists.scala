@@ -8,12 +8,6 @@ import scala.util.Try
 
 trait Lists extends Request {
 
-  def blpop(keys: String*)(implicit timeout: Timeout, ec: ExecutionContext): Future[Long] = ??? // TODO Blocking (put on a separate actor !)
-
-  def brpop(key: String, field: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Boolean] = ??? // TODO Blocking (put on a separate actor !)
-
-  def brpopplush(key: String, field: String)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] = ??? // TODO Blocking (put on a separate actor !)
-
   def lindex(key: String, index: Long)(implicit timeout: Timeout, ec: ExecutionContext): Future[Option[ByteString]] =
     send("LINDEX", Seq(ByteString(key), ByteString(index.toString))).mapTo[Bulk].map(_.response)
 
