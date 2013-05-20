@@ -3,7 +3,7 @@ rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://t
 
 A Redis driver for Scala (2.10+) and (AKKA 2.2+)
 
-Always wrap answers in a Future.
+Always wrap replies in Futures.
 
 Use Pipelining. Blocking command are moved into their own connection.
 
@@ -21,6 +21,6 @@ There are still rooms for improvements
   * server
   * keys : MIGRATE, MOVE, OBJECT, SORT
 * handling of connection failure
-* Performance 
-  * Replies should be processed in their own thread-actor
+* Performance
+  * Maybe replies should be processed in their own thread-actor (benchmark needed)
 * docs (as always :p )
