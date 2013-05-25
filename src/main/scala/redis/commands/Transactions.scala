@@ -88,7 +88,7 @@ case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Prom
     commands ++= operations.map(op => Operation(op._1, ignoredPromise()))
     commands += execOp
 
-    redisConnection ! commands.result()
+    redisConnection ! redis.Transaction(commands.result())
   }
 
   def ignoredPromise() = Promise[RedisReply]()

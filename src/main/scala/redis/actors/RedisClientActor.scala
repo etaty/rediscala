@@ -1,12 +1,10 @@
 package redis.actors
 
-import akka.actor.ActorRef
 import scala.collection.mutable
 import akka.util.{ByteStringBuilder, ByteString}
 import redis.protocol.{RedisReply, Error}
-import akka.actor.Status.Failure
 import java.net.InetSocketAddress
-import redis.Operation
+import redis.{Transaction, Operation}
 import scala.concurrent.Promise
 
 class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
@@ -16,9 +14,9 @@ class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
     case Operation(request, promise) =>
       write(request)
       queuePromise enqueue (promise)
-    case transactions: Seq[Operation] => {
+    case Transaction(commands) => {
       val buffer = new ByteStringBuilder
-      transactions.foreach(operation => {
+      commands.foreach(operation => {
         buffer.append(operation.request)
         queuePromise enqueue (operation.promise)
       })
@@ -44,8 +42,6 @@ class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
 
   def address: InetSocketAddress = addr
 }
-
-case class Transaction(commands: Seq[ByteString])
 
 case class ReplyErrorException(message: String) extends Exception(message)
 

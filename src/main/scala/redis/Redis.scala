@@ -66,3 +66,5 @@ case class RedisBlockingClient(host: String = "localhost", port: Int = 6379)(imp
 }
 
 case class Operation(request: ByteString, promise: Promise[RedisReply])
+
+case class Transaction(commands: Seq[Operation])
