@@ -27,13 +27,13 @@ class BListsSpec extends RedisSpec {
 
       "blocking" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("blpopBlock").flatMap(_ => {
-          val blpop = redisB.blpop(Seq("blpopBlock"))
-          Thread.sleep(1000)
-          redis.rpush("blpopBlock", "a", "b", "c")
-          blpop
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("blpopBlock").flatMap(_ => {
+            val blpop = redisB.blpop(Seq("blpopBlock"))
+            Thread.sleep(1000)
+            redis.rpush("blpopBlock", "a", "b", "c")
+            blpop
+          })
           Await.result(r, timeOut) mustEqual Success(Some("blpopBlock", ByteString("a")))
           redisB.disconnect()
         }
@@ -41,10 +41,10 @@ class BListsSpec extends RedisSpec {
 
       "blocking timeout" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("blpopBlockTimeout").flatMap(_ => {
-          redisB.brpop(Seq("blpopBlockTimeout"), 1.seconds)
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("blpopBlockTimeout").flatMap(_ => {
+            redisB.brpop(Seq("blpopBlockTimeout"), 1.seconds)
+          })
           Await.result(r, timeOut) mustEqual Success(None)
           redisB.disconnect()
         }
@@ -68,13 +68,13 @@ class BListsSpec extends RedisSpec {
 
       "blocking" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("brpopBlock").flatMap(_ => {
-          val brpop = redisB.brpop(Seq("brpopBlock"))
-          Thread.sleep(1000)
-          redis.rpush("brpopBlock", "a", "b", "c")
-          brpop
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("brpopBlock").flatMap(_ => {
+            val brpop = redisB.brpop(Seq("brpopBlock"))
+            Thread.sleep(1000)
+            redis.rpush("brpopBlock", "a", "b", "c")
+            brpop
+          })
           Await.result(r, timeOut) mustEqual Success(Some("brpopBlock", ByteString("c")))
           redisB.disconnect()
         }
@@ -82,10 +82,10 @@ class BListsSpec extends RedisSpec {
 
       "blocking timeout" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("brpopBlockTimeout").flatMap(_ => {
-          redisB.brpop(Seq("brpopBlockTimeout"), 1.seconds)
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("brpopBlockTimeout").flatMap(_ => {
+            redisB.brpop(Seq("brpopBlockTimeout"), 1.seconds)
+          })
           Await.result(r, timeOut) mustEqual Success(None)
           redisB.disconnect()
         }
@@ -108,13 +108,13 @@ class BListsSpec extends RedisSpec {
 
       "blocking" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("brpopplushBlock1", "brpopplushBlock2").flatMap(_ => {
-          val brpopplush = redisB.brpopplush("brpopplushBlock1", "brpopplushBlock2")
-          Thread.sleep(1000)
-          redis.rpush("brpopplushBlock1", "a", "b", "c")
-          brpopplush
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("brpopplushBlock1", "brpopplushBlock2").flatMap(_ => {
+            val brpopplush = redisB.brpopplush("brpopplushBlock1", "brpopplushBlock2")
+            Thread.sleep(1000)
+            redis.rpush("brpopplushBlock1", "a", "b", "c")
+            brpopplush
+          })
           Await.result(r, timeOut) mustEqual Some(ByteString("c"))
           redisB.disconnect()
         }
@@ -122,10 +122,10 @@ class BListsSpec extends RedisSpec {
 
       "blocking timeout" in {
         val redisB = RedisBlockingClient()
-        val r = redis.del("brpopplushBlockTimeout").flatMap(_ => {
-          redisB.brpopplush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
-        })
         within(1.seconds, 4.seconds) {
+          val r = redis.del("brpopplushBlockTimeout").flatMap(_ => {
+            redisB.brpopplush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
+          })
           Await.result(r, timeOut) mustEqual None
           redisB.disconnect()
         }
