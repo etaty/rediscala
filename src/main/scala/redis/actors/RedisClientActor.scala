@@ -1,7 +1,7 @@
 package redis.actors
 
 import scala.collection.mutable
-import akka.util.{ByteStringBuilder, ByteString}
+import akka.util.ByteStringBuilder
 import redis.protocol.{RedisReply, Error}
 import java.net.InetSocketAddress
 import redis.{Transaction, Operation}
