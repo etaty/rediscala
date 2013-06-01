@@ -24,6 +24,7 @@ trait RedisWorkerIO extends Actor {
 
   val tcp = akka.io.IO(Tcp)(context.system)
 
+  // todo watch tcpWorker
   var tcpWorker: ActorRef = null
 
   var bufferRead: ByteString = ByteString.empty
@@ -61,7 +62,11 @@ trait RedisWorkerIO extends Actor {
       log.info("Connected to " + remoteAddr)
     }
     case Reconnect => preStart()
-    case c: CommandFailed => log.error(c.toString) // TODO failed connection
+    case c: CommandFailed => {
+      log.error(c.toString)
+      cleanState()
+      scheduleReconnect()
+    }
   }
 
   def connected: Receive = writing orElse reading
@@ -73,12 +78,23 @@ trait RedisWorkerIO extends Actor {
     }
     case c: ConnectionClosed =>
       log.warning(s"ConnectionClosed $c")
-      onConnectionClosed()
-      readyToWrite = false
-      // todo finish cleaning
-      context.system.scheduler.scheduleOnce(reconnectDuration, self, Reconnect)
-      become(receive)
-    case c: CommandFailed => log.error("CommandFailed ... " + c) // O/S buffer was full
+      cleanState()
+      scheduleReconnect()
+    case c: CommandFailed =>
+      log.error("CommandFailed ... " + c) // O/S buffer was full
+      cleanState()
+      scheduleReconnect()
+  }
+
+  def scheduleReconnect() {
+    log.info(s"Trying to reconnect in $reconnectDuration")
+    this.context.system.scheduler.scheduleOnce(reconnectDuration, self, Reconnect)
+    become(receive)
+  }
+
+  def cleanState() {
+    onConnectionClosed()
+    readyToWrite = false
   }
 
   def writing: Receive
@@ -134,4 +150,4 @@ object WriteAck
 
 object Reconnect
 
-object NoConnectionException extends Exception
+object NoConnectionException extends RuntimeException("No Connection established")
