@@ -146,7 +146,7 @@ trait RedisWorkerIO extends Actor {
 }
 
 
-object WriteAck
+object WriteAck extends Event
 
 object Reconnect
 

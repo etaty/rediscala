@@ -20,7 +20,7 @@ There are still rooms for improvements
   * scriptings
   * server
   * keys : MIGRATE, MOVE, OBJECT, SORT
-* handling of connection failure
+* --handling of connection failure-- (actor tests)
 * Performance
   * Maybe replies should be processed in their own thread-actor (benchmark needed)
 * docs (as always :p )
