@@ -3,9 +3,49 @@ rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://t
 
 A Redis driver for Scala (2.10+) and (AKKA 2.2+)
 
-Always wrap replies in Futures.
+Replies are wrapped in Futures.
 
-Use Pipelining. Blocking command are moved into their own connection.
+Rediscala uses redis pipelining. Blocking command are moved into their own connection.
+
+### Set up your project dependencies
+
+If you use SBT, you just have to edit `build.sbt` and add the following:
+
+```scala
+resolvers += "rediscala" at "https://github.com/etaty/rediscala/raw/master/dist/snapshots/"
+
+libraryDependencies ++= Seq(
+  "rediscala" %% "rediscala" % "0.1-SNAPSHOT"
+)
+```
+
+### Connect to the database
+
+```scala
+import redis.RedisClient
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+
+object Main extends App {
+  implicit val akkaSystem = akka.actor.ActorSystem()
+
+  val redis = RedisClient()
+
+  val futurePong = redis.ping()
+  println("Ping sent!")
+  futurePong.map(pong => {
+    println(s"Redis replied with a $pong")
+  })
+  Await.result(futurePong, 5 seconds)
+
+  akkaSystem.shutdown()
+}
+```
+
+### Examples
+
+https://github.com/etaty/rediscala-demo
 
 ### Performance
 
