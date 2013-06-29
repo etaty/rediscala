@@ -1,7 +1,6 @@
 package redis
 
 import scala.concurrent.Await
-import scala.util.Success
 import akka.util.ByteString
 
 class RedisTest extends RedisSpec {

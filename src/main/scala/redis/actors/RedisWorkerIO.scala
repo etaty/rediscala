@@ -7,12 +7,13 @@ import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
 import akka.io.Tcp._
 import redis.protocol.{RedisProtocolReply, RedisReply}
+import scala.annotation.tailrec
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
-import scala.annotation.tailrec
+import scala.concurrent.Future
 
 trait RedisWorkerIO extends Actor {
 
@@ -27,7 +28,7 @@ trait RedisWorkerIO extends Actor {
   // todo watch tcpWorker
   var tcpWorker: ActorRef = null
 
-  var bufferRead: ByteString = ByteString.empty
+  var processedReplies = Future.successful(ByteString.empty)
 
   val bufferWrite: ByteStringBuilder = new ByteStringBuilder
 
@@ -46,7 +47,7 @@ trait RedisWorkerIO extends Actor {
   }
 
   def initConnectedBuffer() {
-    bufferRead = ByteString.empty
+    processedReplies = Future.successful(ByteString.empty)
     readyToWrite = true
   }
 
@@ -74,7 +75,7 @@ trait RedisWorkerIO extends Actor {
   def reading: Receive = {
     case WriteAck => tryWrite()
     case Received(dataByteString) => {
-      bufferRead = decodeReplies(bufferRead ++ dataByteString).compact
+      processedReplies = processReplies(processedReplies, dataByteString)
     }
     case c: ConnectionClosed =>
       log.warning(s"ConnectionClosed $c")
@@ -142,6 +143,12 @@ trait RedisWorkerIO extends Actor {
     } else {
       bs
     }
+  }
+
+  def processReplies(buffer: Future[ByteString], byteStringInput: ByteString) : Future[ByteString] = {
+    buffer.map(buf => {
+      decodeReplies(buf ++ byteStringInput).compact
+    })
   }
 }
 

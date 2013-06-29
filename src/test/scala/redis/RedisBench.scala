@@ -12,12 +12,13 @@ class RedisBench extends RedisSpec {
     "bench 1" in {
       val n = 200000
       for (i <- 1 to 10) yield {
-        //redis.set("i", "0")
+        redis.set("i", "0")
         val ops = n * i / 10
         timed(s"ping $ops times (run $i)", ops) {
           val results = for (_ <- 1 to ops) yield {
             redis.ping()
             //redis.incr("i")
+            //redis.get("i")
             //redis.set("mykey", "myvalue") //.map(x => println(x))
             //redis.get("mykey").map(x => println(x))
           }
