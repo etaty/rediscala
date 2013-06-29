@@ -5,7 +5,7 @@ A Redis driver for Scala (2.10+) and (AKKA 2.2+)
 
 Replies are wrapped in Futures.
 
-Rediscala uses redis pipelining. Blocking command are moved into their own connection.
+Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
 
 ### Set up your project dependencies
 
@@ -62,5 +62,5 @@ There are still rooms for improvements
   * keys : MIGRATE, MOVE, OBJECT, SORT
 * --handling of connection failure-- (actor tests)
 * Performance
-  * Maybe replies should be processed in their own thread-actor (benchmark needed)
+  * Maybe request should be encoded in their own scala future (benchmark needed)
 * docs (as always :p )
