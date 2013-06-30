@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>protocol - Rediscala API 0.1-SNAPSHOT - redis.protocol</title>
+          <meta name="description" content="protocol - Rediscala API 0.1 - SNAPSHOT - redis.protocol" />
+          <meta name="keywords" content="protocol Rediscala API 0.1 SNAPSHOT redis.protocol" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'redis.protocol.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="redis">redis</a></p>
+        <h1>protocol</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">protocol</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.protocol.Bulk" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BulkextendsRedisReplywithProductwithSerializable"></a>
+      <a id="Bulk:Bulk"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Bulk.html"><span class="name">Bulk</span></a><span class="params">(<span name="response">response: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="akka.util.ByteString">ByteString</span>]</span>)</span><span class="result"> extends <a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.Error" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorextendsRedisReplywithProductwithSerializable"></a>
+      <a id="Error:Error"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Error.html"><span class="name">Error</span></a><span class="params">(<span name="error">error: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result"> extends <a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.Integer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IntegerextendsRedisReplywithProductwithSerializable"></a>
+      <a id="Integer:Integer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Integer.html"><span class="name">Integer</span></a><span class="params">(<span name="i">i: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result"> extends <a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.MultiBulk" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultiBulkextendsRedisReplywithProductwithSerializable"></a>
+      <a id="MultiBulk:MultiBulk"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="MultiBulk.html"><span class="name">MultiBulk</span></a><span class="params">(<span name="responses">responses: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a>]]</span>)</span><span class="result"> extends <a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.RedisReply" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RedisReplyextendsAnyRef"></a>
+      <a id="RedisReply:RedisReply"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisReply.html"><span class="name">RedisReply</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.Status" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StatusextendsRedisReplywithProductwithSerializable"></a>
+      <a id="Status:Status"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Status.html"><span class="name">Status</span></a><span class="params">(<span name="status">status: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result"> extends <a href="RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="redis.protocol.RedisProtocolReply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisProtocolReply"></a>
+      <a id="RedisProtocolReply:RedisProtocolReply"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisProtocolReply$.html"><span class="name">RedisProtocolReply</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol.RedisProtocolRequest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisProtocolRequest"></a>
+      <a id="RedisProtocolRequest:RedisProtocolRequest"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisProtocolRequest$.html"><span class="name">RedisProtocolRequest</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>
