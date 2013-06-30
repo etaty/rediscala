@@ -1,11 +1,11 @@
 rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala)
 =========
 
-A Redis driver for Scala (2.10+) and (AKKA 2.2+)
+A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+)
 
-Replies are wrapped in Futures.
+ * Replies are wrapped in Futures.
 
-Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
+ * Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
 
 ### Set up your project dependencies
 
@@ -47,6 +47,10 @@ object Main extends App {
 
 https://github.com/etaty/rediscala-demo
 
+### Scaladoc
+
+[Rediscala scaladoc API](http://etaty.github.io/rediscala/0.1-SNAPSHOT/api/index.html#package)
+
 ### Performance
 
 Between 200 000 and 150 000 pings/seconds with one client on a 2.6GHz Intel Core i7 (8 threads)
@@ -63,4 +67,3 @@ There are still rooms for improvements
 * --handling of connection failure-- (actor tests)
 * Performance
   * Maybe request should be encoded in their own scala future (benchmark needed)
-* docs (as always :p )
