@@ -1,5 +1,9 @@
 import sbt._
 import Keys._
+import com.typesafe.sbt.SbtGhPages._
+import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.typesafe.sbt.SbtSite._
+import sbtunidoc.Plugin._
 
 object Resolvers {
   val typesafe = Seq(
@@ -27,7 +31,7 @@ object Dependencies {
 }
 
 object RediscalaBuild extends Build {
-  override lazy val settings = super.settings ++
+  lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
       name := "rediscala",
       version := "0.1-SNAPSHOT",
@@ -42,13 +46,24 @@ object RediscalaBuild extends Build {
             Some(Resolver.file("snapshots", new File(localPublishRepo + "/snapshots")))
           else Some(Resolver.file("releases", new File(localPublishRepo + "/releases")))
       },
-      publishMavenStyle := true
-    )
+      publishMavenStyle := true,
+      git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
+
+      scalacOptions in (Compile, doc) <++= baseDirectory in LocalProject("rediscala") map { bd =>
+        Seq(
+          "-sourcepath", bd.getAbsolutePath,
+          "-doc-source-url", "https://github.com/etaty/rediscala/tree/master€{FILE_PATH}.scala"
+        )
+      }
+    ) ++ site.settings ++ site.includeScaladoc() ++ ghpages.settings
 
   lazy val root = Project(id = "rediscala",
     base = file("."),
-    settings = Project.defaultSettings ++ Seq(
+    settings = standardSettings ++ Seq(
       libraryDependencies ++= Dependencies.rediscalaDependencies
     )
   )
+
+
+
 }

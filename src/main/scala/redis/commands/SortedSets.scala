@@ -1,7 +1,7 @@
 package redis.commands
 
 import redis.{RedisValueConverter, MultiBulkConverter, Request}
-import akka.util.{ByteString, Timeout}
+import akka.util.ByteString
 import scala.concurrent.{Future, ExecutionContext}
 import redis.protocol.{MultiBulk, Bulk, Integer}
 import scala.util.Try
