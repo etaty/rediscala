@@ -132,14 +132,10 @@ trait RedisWorkerIO extends Actor {
 
   @tailrec
   private def decodeReplies(bs: ByteString): ByteString = {
-    if (bs.nonEmpty) {
-      val r = RedisProtocolReply.decodeReply(bs)
-      if (r.nonEmpty) {
-        onReceivedReply(r.get._1)
-        decodeReplies(r.get._2)
-      } else {
-        bs
-      }
+    val r = RedisProtocolReply.decodeReply(bs)
+    if (r.nonEmpty) {
+      onReceivedReply(r.get._1)
+      decodeReplies(r.get._2)
     } else {
       bs
     }
