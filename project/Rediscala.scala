@@ -31,10 +31,14 @@ object Dependencies {
 }
 
 object RediscalaBuild extends Build {
+  val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
+
+  val v = "0.1-SNAPSHOT"
+
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
       name := "rediscala",
-      version := "0.1-SNAPSHOT",
+      version := v,
       organization := "com.etaty.rediscala",
       scalaVersion := "2.10.2",
       resolvers ++= Resolvers.resolversList,
@@ -51,11 +55,18 @@ object RediscalaBuild extends Build {
 
       scalacOptions in (Compile, doc) <++= baseDirectory in LocalProject("rediscala") map { bd =>
         Seq(
-          "-sourcepath", bd.getAbsolutePath,
-          "-doc-source-url", "https://github.com/etaty/rediscala/tree/master€{FILE_PATH}.scala"
+          "-sourcepath", bd.getAbsolutePath
+        )
+      },
+      scalacOptions in (Compile, doc) <++= version in LocalProject("rediscala") map { version =>
+        val branch = if(version.trim.endsWith("SNAPSHOT")) "master" else version
+        Seq[String](
+          "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala",
+          "-doc-title", "Rediscala API",
+          "-doc-version", version
         )
       }
-    ) ++ site.settings ++ site.includeScaladoc() ++ ghpages.settings
+    ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings
 
   lazy val root = Project(id = "rediscala",
     base = file("."),
@@ -63,7 +74,5 @@ object RediscalaBuild extends Build {
       libraryDependencies ++= Dependencies.rediscalaDependencies
     )
   )
-
-
 
 }
