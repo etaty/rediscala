@@ -12,10 +12,10 @@ Rediscala uses redis pipelining. Blocking redis commands are moved into their ow
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
 ```scala
-resolvers += "rediscala" at "https://github.com/etaty/rediscala/raw/master/dist/snapshots/"
+resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/snapshots/"
 
 libraryDependencies ++= Seq(
-  "rediscala" %% "rediscala" % "0.1-SNAPSHOT"
+  "com.etaty.rediscala" %% "rediscala" % "0.1-SNAPSHOT"
 )
 ```
 
