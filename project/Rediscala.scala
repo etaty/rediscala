@@ -31,8 +31,6 @@ object Dependencies {
 }
 
 object RediscalaBuild extends Build {
-  import com.github.theon.coveralls.CoverallsPlugin.CoverallsKeys._
-
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
   val v = "0.1-SNAPSHOT"
@@ -67,17 +65,24 @@ object RediscalaBuild extends Build {
           "-doc-title", "Rediscala API",
           "-doc-version", version
         )
-      }
-    ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings ++
+      },
+      testOptions in Test += Tests.Argument("exclude", "benchmark")
+  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings ++
     ScctPlugin.instrumentSettings ++
-    com.github.theon.coveralls.CoverallsPlugin.coverallsSettings ++
-    Seq(coverallsToken := "Cbu9O5USghPdSKXQk0zwdkerkPT4azjvz")
+    com.github.theon.coveralls.CoverallsPlugin.coverallsSettings
+
+  lazy val BenchTest = config("bench") extend(Test)
+
+
 
   lazy val root = Project(id = "rediscala",
     base = file("."),
     settings = standardSettings ++ Seq(
       libraryDependencies ++= Dependencies.rediscalaDependencies
     )
+  ).configs(BenchTest)
+  .settings(inConfig(BenchTest)(Defaults.testTasks): _*)
+  .settings(testOptions in BenchTest := Seq(Tests.Argument("include", "benchmark"))
   )
 
 }
