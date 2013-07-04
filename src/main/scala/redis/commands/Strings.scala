@@ -33,7 +33,7 @@ trait Strings extends Request {
     bitop("NOT", destkey, key)
 
   def bitop(operation: String, destkey: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
-    send("BITOP", (Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply))).mapTo[Integer].map(_.toLong)
+    send("BITOP", Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
   def decr(key: String)(implicit ec: ExecutionContext): Future[Long] =
     send("DECR", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)

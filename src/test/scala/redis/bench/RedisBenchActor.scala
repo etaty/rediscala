@@ -15,7 +15,7 @@ import akka.util.{ByteStringBuilder, ByteString}
 import akka.pattern.ask
 import redis.actors.{WriteAck, RedisClientActor}
 
-
+/*
 class RedisBenchActor extends RedisSpec {
 
 
@@ -101,3 +101,4 @@ class RedisClientActorBench(addr: InetSocketAddress) extends RedisClientActor(ad
   }
 
 }
+*/

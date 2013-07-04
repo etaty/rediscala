@@ -34,10 +34,10 @@ class RedisBench extends RedisSpec {
 
   def timed(desc: String, n: Int)(benchmark: ⇒ Unit) {
     println("* " + desc)
-    val start = System.currentTimeMillis
+    val start = System.nanoTime()
     benchmark
-    val stop = System.currentTimeMillis
-    val elapsedSeconds = (stop - start) / 1000.0
+    val stop = System.nanoTime()
+    val elapsedSeconds = (stop - start) / (1000.0 * 1000 * 1000)
     val opsPerSec = n / elapsedSeconds
 
     println(s"* - number of ops/s: $opsPerSec ( $n ops in $elapsedSeconds)")

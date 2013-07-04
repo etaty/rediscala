@@ -31,6 +31,8 @@ object Dependencies {
 }
 
 object RediscalaBuild extends Build {
+  import com.github.theon.coveralls.CoverallsPlugin.CoverallsKeys._
+
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
   val v = "0.1-SNAPSHOT"
@@ -66,7 +68,10 @@ object RediscalaBuild extends Build {
           "-doc-version", version
         )
       }
-    ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings
+    ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings ++
+    ScctPlugin.instrumentSettings ++
+    com.github.theon.coveralls.CoverallsPlugin.coverallsSettings ++
+    Seq(coverallsToken := "Cbu9O5USghPdSKXQk0zwdkerkPT4azjvz")
 
   lazy val root = Project(id = "rediscala",
     base = file("."),
