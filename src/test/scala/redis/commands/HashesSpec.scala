@@ -92,8 +92,8 @@ class HashesSpec extends RedisSpec {
 
     "HLEN" in {
       val r = for {
-        _ <- redis.hset("hkeysKey", "field", "value")
-        hLength <- redis.hlen("hkeysKey")
+        _ <- redis.hset("hlenKey", "field", "value")
+        hLength <- redis.hlen("hlenKey")
       } yield {
         hLength mustEqual 1
       }
@@ -154,8 +154,8 @@ class HashesSpec extends RedisSpec {
       val r = for {
         _ <- redis.hdel("hvalsKey", "field")
         empty <- redis.hvals("hvalsKey")
-        _ <- redis.hset("hsetnxKey", "field", "value")
-        some <- redis.hvals("hsetnxKey")
+        _ <- redis.hset("hvalsKey", "field", "value")
+        some <- redis.hvals("hvalsKey")
       } yield {
         empty mustEqual Success(Seq())
         some mustEqual Success(Seq(ByteString("value")))
