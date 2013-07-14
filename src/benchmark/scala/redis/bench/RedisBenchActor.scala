@@ -1,4 +1,4 @@
-package redis.bench
+package redis.benchold
 
 import scala.compat.Platform
 import scala.concurrent._
