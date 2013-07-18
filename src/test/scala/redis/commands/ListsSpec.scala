@@ -30,9 +30,13 @@ class ListsSpec extends RedisSpec {
         _ <- redis.lpush("linsertKey", "World", "Hello")
         length <- redis.linsertBefore("linsertKey", "World", "There")
         list <- redis.lrange("linsertKey", 0, -1)
+        length4 <- redis.linsertAfter("linsertKey", "World", "!!!")
+        list4 <- redis.lrange("linsertKey", 0, -1)
       } yield {
         length mustEqual 3
         list mustEqual Success(Seq(ByteString("Hello"), ByteString("There"), ByteString("World")))
+        length4 mustEqual 4
+        list4 mustEqual Success(Seq(ByteString("Hello"), ByteString("There"), ByteString("World"), ByteString("!!!")))
       }
       Await.result(r, timeOut)
     }
