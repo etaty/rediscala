@@ -1,6 +1,7 @@
 package redis.commands
 
 import redis._
+import redis.api._
 import scala.concurrent.Await
 import akka.util.ByteString
 

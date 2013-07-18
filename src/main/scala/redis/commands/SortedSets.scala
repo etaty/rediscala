@@ -5,6 +5,7 @@ import akka.util.ByteString
 import scala.concurrent.{Future, ExecutionContext}
 import redis.protocol.{MultiBulk, Bulk, Integer}
 import scala.util.Try
+import redis.api._
 
 trait SortedSets extends Request {
 
@@ -100,17 +101,4 @@ trait SortedSets extends Request {
     zStoreWeighted("ZUNIONSTORE", destination, keys, aggregate)
 
 }
-
-trait Aggregate
-
-case object SUM extends Aggregate
-
-case object MIN extends Aggregate
-
-case object MAX extends Aggregate
-
-case class Limit(value: Double, inclusive: Boolean = true) {
-  def toByteString: ByteString = ByteString(if (inclusive) value.toString else "(" + value.toString)
-}
-
 
