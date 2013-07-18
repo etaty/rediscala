@@ -7,8 +7,6 @@ import scala.util.Success
 
 class SetsSpec extends RedisSpec {
 
-  import Converter._
-
   "Sets commands" should {
     "SADD" in {
       val r = for {

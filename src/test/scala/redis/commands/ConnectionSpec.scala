@@ -9,8 +9,6 @@ class ConnectionSpec extends RedisSpec {
 
   sequential
 
-  import Converter._
-
   "Connection commands" should {
     "AUTH" in {
       Await.result(redis.auth("no password"), timeOut) must throwA[ReplyErrorException]("ERR Client sent AUTH, but no password is set")

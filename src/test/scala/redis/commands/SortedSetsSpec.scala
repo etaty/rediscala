@@ -7,8 +7,6 @@ import akka.util.ByteString
 
 class SortedSetsSpec extends RedisSpec {
 
-  import Converter._
-
   "Sorted Sets commands" should {
     "ZADD" in {
       val r = for {

@@ -8,8 +8,6 @@ import redis.protocol.{Bulk, Status, MultiBulk}
 
 class TransactionsSpec extends RedisSpec {
 
-  import Converter._
-
   "Transactions commands" should {
     "basic" in {
       val redisTransaction = redis.transaction()

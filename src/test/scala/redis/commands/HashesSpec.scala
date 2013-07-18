@@ -7,8 +7,6 @@ import scala.util.Success
 
 class HashesSpec extends RedisSpec {
 
-  import Converter._
-
   "Hashes commands" should {
     "HDEL" in {
       val r = for {

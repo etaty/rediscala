@@ -8,8 +8,6 @@ import redis.actors.ReplyErrorException
 
 class StringsSpec extends RedisSpec {
 
-  import Converter._
-
   "Strings commands" should {
     "APPEND" in {
       val r = redis.set("appendKey", "Hello").flatMap(_ => {

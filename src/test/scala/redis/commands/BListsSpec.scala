@@ -8,8 +8,6 @@ import scala.concurrent.duration._
 
 class BListsSpec extends RedisSpec {
 
-  import Converter._
-
   "Blocking Lists commands" should {
     "BLPOP" in {
       "already containing elements" in {

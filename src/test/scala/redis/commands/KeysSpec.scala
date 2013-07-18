@@ -7,8 +7,6 @@ import scala.util.Success
 
 class KeysSpec extends RedisSpec {
 
-  import Converter._
-
   "Keys commands" should {
     "DEL" in {
       val r = for {

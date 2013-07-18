@@ -10,11 +10,7 @@ trait RedisValueConverter[A] {
   def from(a: A): ByteString
 }
 
-trait MultiBulkConverter[A] {
-  def to(redisReply: MultiBulk): Try[A]
-}
-
-object Converter {
+object RedisValueConverter {
 
   implicit object StringConverter extends RedisValueConverter[String] {
     def from(s: String): ByteString = ByteString(s)
@@ -23,6 +19,14 @@ object Converter {
   implicit object ByteStringConverter extends RedisValueConverter[ByteString] {
     def from(bs: ByteString): ByteString = bs
   }
+
+}
+
+trait MultiBulkConverter[A] {
+  def to(redisReply: MultiBulk): Try[A]
+}
+
+object MultiBulkConverter {
 
   implicit object SeqStringMultiBulkConverter extends MultiBulkConverter[Seq[String]] {
     def to(reply: MultiBulk): Try[Seq[String]] = Try(reply.responses.map(r => {

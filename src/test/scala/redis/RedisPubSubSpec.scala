@@ -9,8 +9,6 @@ class RedisPubSubSpec extends RedisSpec {
 
   sequential
 
-  import Converter._
-
   "PubSub test" should {
     "PubSub" in {
 

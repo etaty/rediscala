@@ -7,8 +7,6 @@ class RedisTest extends RedisSpec {
 
   sequential
 
-  import Converter._
-
   "basic test" should {
     "ping" in {
       Await.result(redis.ping(), timeOut) mustEqual "PONG"

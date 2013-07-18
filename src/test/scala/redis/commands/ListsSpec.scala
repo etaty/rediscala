@@ -7,8 +7,6 @@ import scala.util.Success
 
 class ListsSpec extends RedisSpec {
 
-  import Converter._
-
   "Lists commands" should {
 
     "LINDEX" in {
