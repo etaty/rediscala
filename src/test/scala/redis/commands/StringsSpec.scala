@@ -206,15 +206,17 @@ class StringsSpec extends RedisSpec {
     }
 
     "SETBIT" in {
-      val r = redis.getbit("setbitKey", 1).flatMap(b => {
-        redis.setbit("setbitKey", 1, !b).flatMap(bb => {
-          b mustEqual bb
-          redis.getbit("setbitKey", 1).map(bbb => {
-            b mustEqual (!bbb)
-          })
-        })
-      })
-      Await.result(r, timeOut)
+      val r = for {
+        setTrue <- redis.setbit("setbitKey", 1, value = true)
+        getTrue <- redis.getbit("setbitKey", 1)
+        setFalse <- redis.setbit("setbitKey", 1, value = false)
+        getFalse <- redis.getbit("setbitKey", 1)
+      } yield {
+        setTrue mustEqual true
+        getTrue mustEqual true
+        setFalse mustEqual false
+        getFalse mustEqual false
+      }
     }
 
     "SETEX" in {
