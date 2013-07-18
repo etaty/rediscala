@@ -16,6 +16,38 @@ object RedisValueConverter {
     def from(s: String): ByteString = ByteString(s)
   }
 
+  implicit object ShortConverter extends RedisValueConverter[Short] {
+    def from(i: Short): ByteString = ByteString(i.toString)
+  }
+
+  implicit object IntConverter extends RedisValueConverter[Int] {
+    def from(i: Int): ByteString = ByteString(i.toString)
+  }
+
+  implicit object LongConverter extends RedisValueConverter[Long] {
+    def from(i: Long): ByteString = ByteString(i.toString)
+  }
+
+  implicit object FloatConverter extends RedisValueConverter[Float] {
+    def from(f: Float): ByteString = ByteString(f.toString)
+  }
+
+  implicit object DoubleConverter extends RedisValueConverter[Double] {
+    def from(d: Double): ByteString = ByteString(d.toString)
+  }
+
+  implicit object CharConverter extends RedisValueConverter[Char] {
+    def from(c: Char): ByteString = ByteString(c)
+  }
+
+  implicit object ByteConverter extends RedisValueConverter[Byte] {
+    def from(b: Byte): ByteString = ByteString(b)
+  }
+
+  implicit object ArrayByteConverter extends RedisValueConverter[Array[Byte]] {
+    def from(b: Array[Byte]): ByteString = ByteString(b)
+  }
+
   implicit object ByteStringConverter extends RedisValueConverter[ByteString] {
     def from(bs: ByteString): ByteString = bs
   }
