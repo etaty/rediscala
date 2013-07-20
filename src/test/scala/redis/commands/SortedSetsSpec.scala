@@ -71,13 +71,17 @@ class SortedSetsSpec extends RedisSpec {
         _ <- redis.del("zinterstoreKey2")
         z1 <- redis.zadd("zinterstoreKey1", 1.0 -> "one", (2, "two"))
         z2 <- redis.zadd("zinterstoreKey2", 1.0 -> "one", (2, "two"), (3, "three"))
-        i <- redis.zinterstoreWeighted("zinterstoreKeyOut", Seq(("zinterstoreKey1", 2), ("zinterstoreKey2", 3)))
+        zinterstore <- redis.zinterstore("zinterstoreKeyOut", "zinterstoreKey1", Seq("zinterstoreKey2"))
+        zinterstoreWeighted <- redis.zinterstoreWeighted("zinterstoreKeyOutWeighted", Seq(("zinterstoreKey1", 2), ("zinterstoreKey2", 3)))
         zr <- redis.zrangeWithscores("zinterstoreKeyOut", 0, -1)
+        zrWeighted <- redis.zrangeWithscores("zinterstoreKeyOutWeighted", 0, -1)
       } yield {
         z1 mustEqual 2
         z2 mustEqual 3
-        i mustEqual 2
-        zr.get mustEqual Seq((ByteString("one"), 5), (ByteString("two"), 10))
+        zinterstore mustEqual 2
+        zinterstoreWeighted mustEqual 2
+        zr.get mustEqual Seq((ByteString("one"), 2), (ByteString("two"), 4))
+        zrWeighted.get mustEqual Seq((ByteString("one"), 5), (ByteString("two"), 10))
       }
       Await.result(r, timeOut)
     }
@@ -103,13 +107,17 @@ class SortedSetsSpec extends RedisSpec {
         _ <- redis.del("zrangebyscoreKey")
         z1 <- redis.zadd("zrangebyscoreKey", 1.0 -> "one", (2, "two"), (3, "three"))
         zr1 <- redis.zrangebyscore("zrangebyscoreKey", Limit(Double.NegativeInfinity), Limit(Double.PositiveInfinity))
+        zr1Limit <- redis.zrangebyscore("zrangebyscoreKey", Limit(Double.NegativeInfinity), Limit(Double.PositiveInfinity), Some(1, 2))
         zr2 <- redis.zrangebyscore("zrangebyscoreKey", Limit(1), Limit(2))
+        zr2WithScores <- redis.zrangebyscoreWithscores("zrangebyscoreKey", Limit(1), Limit(2))
         zr3 <- redis.zrangebyscore("zrangebyscoreKey", Limit(1, inclusive = false), Limit(2))
         zr4 <- redis.zrangebyscore("zrangebyscoreKey", Limit(1, inclusive = false), Limit(2, inclusive = false))
       } yield {
         z1 mustEqual 3
         zr1.get mustEqual Seq(ByteString("one"), ByteString("two"), ByteString("three"))
+        zr1Limit.get mustEqual Seq(ByteString("two"), ByteString("three"))
         zr2.get mustEqual Seq(ByteString("one"), ByteString("two"))
+        zr2WithScores.get mustEqual Seq((ByteString("one"), 1), (ByteString("two"), 2))
         zr3.get mustEqual Seq(ByteString("two"))
         zr4.get mustEqual Seq()
       }
@@ -179,11 +187,13 @@ class SortedSetsSpec extends RedisSpec {
         zr1 <- redis.zrevrange("zrevrangeKey", 0, -1)
         zr2 <- redis.zrevrange("zrevrangeKey", 2, 3)
         zr3 <- redis.zrevrange("zrevrangeKey", -2, -1)
+        zr3WithScores <- redis.zrevrangeWithscores("zrevrangeKey", -2, -1)
       } yield {
         z1 mustEqual 3
         zr1.get mustEqual Seq(ByteString("three"), ByteString("two"), ByteString("one"))
         zr2.get mustEqual Seq(ByteString("one"))
         zr3.get mustEqual Seq(ByteString("two"), ByteString("one"))
+        zr3WithScores.get mustEqual Seq((ByteString("two"), 2), (ByteString("one"), 1))
       }
       Await.result(r, timeOut)
     }
@@ -194,12 +204,14 @@ class SortedSetsSpec extends RedisSpec {
         z1 <- redis.zadd("zrevrangebyscoreKey", 1.0 -> "one", (2, "two"), (3, "three"))
         zr1 <- redis.zrevrangebyscore("zrevrangebyscoreKey", Limit(Double.PositiveInfinity), Limit(Double.NegativeInfinity))
         zr2 <- redis.zrevrangebyscore("zrevrangebyscoreKey", Limit(2), Limit(1))
+        zr2WithScores <- redis.zrevrangebyscoreWithscores("zrevrangebyscoreKey", Limit(2), Limit(1))
         zr3 <- redis.zrevrangebyscore("zrevrangebyscoreKey", Limit(2), Limit(1, inclusive = false))
         zr4 <- redis.zrevrangebyscore("zrevrangebyscoreKey", Limit(2, inclusive = false), Limit(1, inclusive = false))
       } yield {
         z1 mustEqual 3
         zr1.get mustEqual Seq(ByteString("three"), ByteString("two"), ByteString("one"))
         zr2.get mustEqual Seq(ByteString("two"), ByteString("one"))
+        zr2WithScores.get mustEqual Seq((ByteString("two"), 2), (ByteString("one"), 1))
         zr3.get mustEqual Seq(ByteString("two"))
         zr4.get mustEqual Seq()
       }
@@ -240,13 +252,17 @@ class SortedSetsSpec extends RedisSpec {
         _ <- redis.del("zunionstoreKey2")
         z1 <- redis.zadd("zunionstoreKey1", 1.0 -> "one", (2, "two"))
         z2 <- redis.zadd("zunionstoreKey2", 1.0 -> "one", (2, "two"), (3, "three"))
-        i <- redis.zinterstoreWeighted("zunionstoreKeyOut", Seq(("zunionstoreKey1", 2), ("zunionstoreKey2", 3)))
+        zunionstore <- redis.zunionstore("zunionstoreKeyOut", "zunionstoreKey1", Seq("zunionstoreKey2"))
         zr <- redis.zrangeWithscores("zunionstoreKeyOut", 0, -1)
+        zunionstoreWeighted <- redis.zunionstoreWeighted("zunionstoreKeyOutWeighted", Seq(("zunionstoreKey1", 2), ("zunionstoreKey2", 3)))
+        zrWeighted <- redis.zrangeWithscores("zunionstoreKeyOutWeighted", 0, -1)
       } yield {
         z1 mustEqual 2
         z2 mustEqual 3
-        i mustEqual 2
-        zr.get mustEqual Seq((ByteString("one"), 5), (ByteString("two"), 10))
+        zunionstore mustEqual 3
+        zr.get mustEqual Seq((ByteString("one"), 2), (ByteString("three"), 3), (ByteString("two"), 4))
+        zunionstoreWeighted mustEqual 3
+        zrWeighted.get mustEqual Seq((ByteString("one"), 5), (ByteString("three"), 9), (ByteString("two"), 10))
       }
       Await.result(r, timeOut)
     }

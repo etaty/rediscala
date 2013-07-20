@@ -24,7 +24,7 @@ trait SortedSets extends Request {
     send("ZINCRBY", Seq(ByteString(key), ByteString(increment.toString), convert.from(member))).mapTo[Bulk].map(_.response.map(v => java.lang.Double.valueOf(v.utf8String)).get)
 
   private def zStore(command: String, destination: String, key: String, keys: Seq[String], aggregate: Aggregate = SUM)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Long] =
-    send(command, (ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply)) ++ Seq(ByteString("AGGREGATE"), ByteString(aggregate.toString))).mapTo[Integer].map(_.toLong)
+    send(command, (ByteString(destination) +: ByteString((1 + keys.size).toString) +: ByteString(key) +: keys.map(ByteString.apply)) ++ Seq(ByteString("AGGREGATE"), ByteString(aggregate.toString))).mapTo[Integer].map(_.toLong)
 
   def zinterstore(destination: String, key: String, keys: Seq[String], aggregate: Aggregate = SUM)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Long] =
     zStore("ZINTERSTORE", destination, key, keys, aggregate)
