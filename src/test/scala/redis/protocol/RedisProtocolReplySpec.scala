@@ -2,8 +2,16 @@ package redis.protocol
 
 import akka.util.ByteString
 import org.specs2.mutable._
+import java.lang.Exception
 
 class RedisProtocolReplySpec extends Specification {
+
+  "Decode reply" should {
+    "fail" in {
+      val bs = ByteString("!!")
+      RedisProtocolReply.decodeReply(bs) must throwA[Exception]
+    }
+  }
 
   "Decode String" should {
     "decode simple string" in {
