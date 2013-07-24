@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>redis - Rediscala API 0.5-SNAPSHOT - redis</title>
+          <meta name="description" content="redis - Rediscala API 0.5 - SNAPSHOT - redis" />
+          <meta name="keywords" content="redis Rediscala API 0.5 SNAPSHOT redis" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../index.html';
+            var hash = 'redis.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../lib/package_big.png" />
+        
+        <h1>redis</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">redis</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.MultiBulkConverter" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="MultiBulkConverter[A]extendsAnyRef"></a>
+      <a id="MultiBulkConverter[A]:MultiBulkConverter[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MultiBulkConverter.html"><span class="name">MultiBulkConverter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.Operation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OperationextendsProductwithSerializable"></a>
+      <a id="Operation:Operation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Operation.html"><span class="name">Operation</span></a><span class="params">(<span name="request">request: <span class="extype" name="akka.util.ByteString">ByteString</span></span>, <span name="promise">promise: <span class="extype" name="scala.concurrent.Promise">Promise</span>[<a href="protocol/RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.RedisBlockingClient" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisBlockingClientextendsBListswithProductwithSerializable"></a>
+      <a id="RedisBlockingClient:RedisBlockingClient"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisBlockingClient.html"><span class="name">RedisBlockingClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="commands/BLists.html" class="extype" name="redis.commands.BLists">BLists</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.RedisClient" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisClientextendsRedisCommandswithTransactionswithProductwithSerializable"></a>
+      <a id="RedisClient:RedisClient"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisClient.html"><span class="name">RedisClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a> with <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt"></p>
+    </li><li name="redis.RedisCommands" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RedisCommandsextendsKeyswithStringswithHasheswithListswithSetswithSortedSetswithPubSubwithConnectionwithServer"></a>
+      <a id="RedisCommands:RedisCommands"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisCommands.html"><span class="name">RedisCommands</span></a><span class="result"> extends <a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a> with <a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a> with <a href="commands/Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a> with <a href="commands/Lists.html" class="extype" name="redis.commands.Lists">Lists</a> with <a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a> with <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a> with <a href="commands/PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a> with <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a> with <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.RedisValueConverter" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RedisValueConverter[A]extendsAnyRef"></a>
+      <a id="RedisValueConverter[A]:RedisValueConverter[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisValueConverter.html"><span class="name">RedisValueConverter</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.Request" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RequestextendsAnyRef"></a>
+      <a id="Request:Request"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Request.html"><span class="name">Request</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.Transaction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransactionextendsProductwithSerializable"></a>
+      <a id="Transaction:Transaction"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Transaction.html"><span class="name">Transaction</span></a><span class="params">(<span name="commands">commands: <span class="extype" name="scala.Seq">Seq</span>[<a href="Operation.html" class="extype" name="redis.Operation">Operation</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="redis.MultiBulkConverter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultiBulkConverter"></a>
+      <a id="MultiBulkConverter:MultiBulkConverter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MultiBulkConverter$.html"><span class="name">MultiBulkConverter</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.RedisValueConverter" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisValueConverter"></a>
+      <a id="RedisValueConverter:RedisValueConverter"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisValueConverter$.html"><span class="name">RedisValueConverter</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.actors" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="actors"></a>
+      <a id="actors:actors"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="actors/package.html"><span class="name">actors</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="api"></a>
+      <a id="api:api"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="api/package.html"><span class="name">api</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.commands" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="commands"></a>
+      <a id="commands:commands"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="commands/package.html"><span class="name">commands</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="redis.protocol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="protocol"></a>
+      <a id="protocol:protocol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="protocol/package.html"><span class="name">protocol</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+    </body>
+      </html>
