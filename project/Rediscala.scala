@@ -4,14 +4,7 @@ import com.typesafe.sbt.SbtGhPages._
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
 import sbt.LocalProject
-import sbt.Tests.Group
-import sbt.Tests.Group
 import sbt.Tests.{InProcess, Group}
-import sbtunidoc.Plugin._
-import scala._
-import scala.Some
-import scala.Some
-import scala.Some
 
 object Resolvers {
   val typesafe = Seq(
@@ -44,7 +37,7 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "0.1-SNAPSHOT"
+  val v = "0.5-SNAPSHOT"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
