@@ -49,7 +49,7 @@ https://github.com/etaty/rediscala-demo
 
 ### Scaladoc
 
-[Rediscala scaladoc API](http://etaty.github.io/rediscala/0.1-SNAPSHOT/api/index.html#package)
+[Rediscala scaladoc API](http://etaty.github.io/rediscala/0.5-SNAPSHOT/api/index.html#package)
 
 ### Performance
 
