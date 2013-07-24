@@ -11,23 +11,23 @@ import scala.util.Try
 
 trait Server extends Request {
 
-  def bgrewriteaof[A]()(implicit ec: ExecutionContext): Future[Boolean] =
-    send("BGREWRITEAOF").mapTo[Status].map(_.toBoolean)
+  def bgrewriteaof[A]()(implicit ec: ExecutionContext): Future[String] =
+    send("BGREWRITEAOF").mapTo[Status].map(_.toString)
 
-  def bgsave()(implicit ec: ExecutionContext): Future[Boolean] =
-    send("BGSAVE").mapTo[Status].map(_.toBoolean)
+  def bgsave()(implicit ec: ExecutionContext): Future[String] =
+    send("BGSAVE").mapTo[Status].map(_.toString)
 
   def clientKill(ip: String, port: Int)(implicit ec: ExecutionContext): Future[Boolean] =
-    send("CLIENT KILL", Seq(ByteString(ip), ByteString(port.toString))).mapTo[Status].map(_.toBoolean)
+    send("CLIENT", Seq(ByteString("KILL"), ByteString(ip + ':' + port.toString))).mapTo[Status].map(_.toBoolean)
 
   def clientList()(implicit ec: ExecutionContext): Future[String] =
-    send("CLIENT LIST").mapTo[Bulk].map(_.toString)
+    send("CLIENT", Seq(ByteString("LIST"))).mapTo[Bulk].map(_.toString)
 
   def clientGetname()(implicit ec: ExecutionContext): Future[Option[String]] =
-    send("CLIENT GETNAME").mapTo[Bulk].map(_.toOptString)
+    send("CLIENT", Seq(ByteString("GETNAME"))).mapTo[Bulk].map(_.toOptString)
 
   def clientSetname(connectionName: String)(implicit ec: ExecutionContext): Future[Boolean] =
-    send("CLIENT SETNAME", Seq(ByteString(connectionName))).mapTo[Status].map(_.toBoolean)
+    send("CLIENT", Seq(ByteString("SETNAME"), ByteString(connectionName))).mapTo[Status].map(_.toBoolean)
 
   def configGet(parameter: String)(implicit ec: ExecutionContext): Future[Option[String]] =
     send("CONFIG GET", Seq(ByteString(parameter))).mapTo[Bulk].map(_.toOptString)
