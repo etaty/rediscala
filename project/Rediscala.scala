@@ -9,7 +9,9 @@ import sbt.Tests.{InProcess, Group}
 object Resolvers {
   val typesafe = Seq(
     "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
-    "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/")
+    "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/",
+    "scct-github-repository" at "http://mtkopone.github.com/scct/maven-repo"
+  )
   val resolversList = typesafe
 }
 
@@ -26,11 +28,15 @@ object Dependencies {
 
   val scalameter = "com.github.axel22" %% "scalameter" % "0.4-M2"
 
+  // @see https://github.com/mtkopone/scct/issues/54
+  val scct = "reaktor" %% "scct" % "0.2-SNAPSHOT"
+
   val rediscalaDependencies = Seq(
     akkaActor,
     akkaTestkit % "test",
     scalameter % "test",
-    specs2 % "test"
+    specs2 % "test",
+    scct % "test"
   )
 }
 
