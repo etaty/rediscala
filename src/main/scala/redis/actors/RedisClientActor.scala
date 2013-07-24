@@ -1,47 +1,54 @@
 package redis.actors
 
-import akka.util.ByteStringBuilder
-import redis.protocol.{RedisReply, Error}
+import akka.util.{ByteString, ByteStringBuilder}
+import redis.protocol.RedisReply
 import java.net.InetSocketAddress
 import redis.{Transaction, Operation}
 import scala.concurrent.Promise
-import java.util.concurrent.LinkedBlockingQueue
+import akka.actor.{Kill, Props}
+import scala.collection.mutable
 
 class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
-  val queuePromise = new LinkedBlockingQueue[Promise[RedisReply]]()
+
+  import context._
+
+  var repliesDecoder = initRepliesDecoder
+
+  private def initRepliesDecoder = system.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+
+  var queuePromises = mutable.Queue[Promise[RedisReply]]()
 
   def writing: Receive = {
     case Operation(request, promise) =>
+      queuePromises enqueue promise
       write(request)
-      queuePromise put (promise)
     case Transaction(commands) => {
       val buffer = new ByteStringBuilder
       commands.foreach(operation => {
         buffer.append(operation.request)
-        queuePromise put (operation.promise)
+        queuePromises enqueue operation.promise
       })
       write(buffer.result())
     }
   }
 
-  def onReceivedReply(reply: RedisReply) {
-    reply match {
-      case e: Error => queuePromise.poll().failure(ReplyErrorException(e.toString()))
-      case _ => queuePromise.poll().success(reply)
-    }
-    //queue.dequeue() ! result
+  def onDataReceived(dataByteString: ByteString) {
+    repliesDecoder ! dataByteString
+  }
+
+  def onWriteSent() {
+    repliesDecoder ! queuePromises
+    queuePromises = mutable.Queue[Promise[RedisReply]]()
   }
 
   def onConnectionClosed() {
-    scala.collection.convert.Wrappers.JIteratorWrapper(queuePromise.iterator()).foreach {
-      promise =>
-        promise.failure(NoConnectionException)
-    }
-    queuePromise.clear()
+    queuePromises.foreach(promise => {
+      promise.failure(NoConnectionException)
+    })
+    queuePromises.clear()
+    repliesDecoder ! Kill
+    repliesDecoder = initRepliesDecoder
   }
 
   def address: InetSocketAddress = addr
 }
-
-case class ReplyErrorException(message: String) extends Exception(message)
-

@@ -35,6 +35,7 @@ object RedisBench extends PerformanceTest {
   def aggregator = Aggregator.complete(Aggregator.average)
 
   def measurer: Measurer = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation with Measurer.OutlierElimination with Measurer.RelativeNoise
+  //def measurer: Measurer = new Executor.Measurer.MemoryFootprint
 
   def executor: Executor = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
 
@@ -63,6 +64,7 @@ object RedisBench extends PerformanceTest {
         case (i: Int, redisBench: RedisBenchContext) =>
           redisBench.akkaSystem = akka.actor.ActorSystem()
           redisBench.redis = RedisClient()(redisBench.akkaSystem)
+          Await.result(redisBench.redis.ping(), 2 seconds)
       } tearDown {
         case (i: Int, redisBench: RedisBenchContext) =>
           redisBench.redis.disconnect()

@@ -6,14 +6,11 @@ import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
 import akka.io.Tcp._
-import redis.protocol.{RedisProtocolReply, RedisReply}
-import scala.annotation.tailrec
 import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
-import scala.concurrent.Future
 
 trait RedisWorkerIO extends Actor {
 
@@ -28,26 +25,24 @@ trait RedisWorkerIO extends Actor {
   // todo watch tcpWorker
   var tcpWorker: ActorRef = null
 
-  var processedReplies = Future.successful(ByteString.empty)
 
   val bufferWrite: ByteStringBuilder = new ByteStringBuilder
 
   var readyToWrite = false
 
   override def preStart() {
+    if (tcpWorker != null) {
+      tcpWorker ! Close
+    }
     log.info(s"Connect to $address")
     tcp ! Connect(address)
   }
 
   override def postStop() {
     log.info("RedisWorkerIO stop")
-    if (tcpWorker != null) {
-      tcpWorker ! Close
-    }
   }
 
   def initConnectedBuffer() {
-    processedReplies = Future.successful(ByteString.empty)
     readyToWrite = true
   }
 
@@ -74,15 +69,14 @@ trait RedisWorkerIO extends Actor {
 
   def reading: Receive = {
     case WriteAck => tryWrite()
-    case Received(dataByteString) => {
-      processedReplies = processReplies(processedReplies, dataByteString)
-    }
+    case Received(dataByteString) => onDataReceived(dataByteString)
     case c: ConnectionClosed =>
       log.warning(s"ConnectionClosed $c")
       cleanState()
       scheduleReconnect()
     case c: CommandFailed =>
       log.error("CommandFailed ... " + c) // O/S buffer was full
+      // TODO send it back if it's a Write ? (fail with big tests 400 000 ping
       cleanState()
       scheduleReconnect()
   }
@@ -102,7 +96,9 @@ trait RedisWorkerIO extends Actor {
 
   def onConnectionClosed()
 
-  def onReceivedReply(reply: RedisReply)
+  def onDataReceived(dataByteString: ByteString)
+
+  def onWriteSent()
 
   def tryWrite() {
     if (bufferWrite.length == 0) {
@@ -127,25 +123,10 @@ trait RedisWorkerIO extends Actor {
   def reconnectDuration: FiniteDuration = 2 seconds
 
   private def writeWorker(byteString: ByteString) {
+    onWriteSent()
     tcpWorker ! Write(byteString, WriteAck)
   }
 
-  @tailrec
-  private def decodeReplies(bs: ByteString): ByteString = {
-    val r = RedisProtocolReply.decodeReply(bs)
-    if (r.nonEmpty) {
-      onReceivedReply(r.get._1)
-      decodeReplies(r.get._2)
-    } else {
-      bs
-    }
-  }
-
-  def processReplies(buffer: Future[ByteString], byteStringInput: ByteString) : Future[ByteString] = {
-    buffer.map(buf => {
-      decodeReplies(buf ++ byteStringInput).compact
-    })
-  }
 }
 
 

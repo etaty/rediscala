@@ -3,7 +3,8 @@ package redis
 import scala.concurrent.Await
 import akka.actor.Props
 import java.net.InetSocketAddress
-import redis.actors.{PMessage, Message, Subscriber}
+import redis.actors.Subscriber
+import redis.api.transactions._
 
 class RedisPubSubSpec extends RedisSpec {
 
