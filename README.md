@@ -3,9 +3,11 @@ rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://t
 
 A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+)
 
- * Replies are wrapped in Futures.
+ * Reactive : Redis requests/replies are wrapped in Futures.
 
- * Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
+ * Typesafe : Redis types are mapped to Scala types.
+
+ * Fast : Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
 
 ### Set up your project dependencies
 
@@ -45,7 +47,30 @@ object Main extends App {
 
 ### Examples
 
+###### Basic
 https://github.com/etaty/rediscala-demo
+
+###### Blocking commands
+
+###### Pub/Sub
+
+### Commands
+
+Supported :
+* [Keys](http://redis.io/commands#generic)
+* [Strings](http://redis.io/commands#string)
+* [Hashes](http://redis.io/commands#hash)
+* [Lists](http://redis.io/commands#list)
+* [Set](http://redis.io/commands#set)
+* [Sorted Sets](http://redis.io/commands#sorted_set)
+* [Pub/Sub](http://redis.io/commands#pubsub)
+* [Transactions](http://redis.io/commands#transactions)
+* [Connection](http://redis.io/commands#connection)
+* [Server](http://redis.io/commands#server)
+
+Soon :
+* [Scripting](http://redis.io/commands#scripting)
+
 
 ### Scaladoc
 
