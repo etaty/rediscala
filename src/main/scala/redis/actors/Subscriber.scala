@@ -52,7 +52,7 @@ abstract class Subscriber extends RedisWorkerIO with DecodeReplies {
     decodeReplies(dataByteString)
   }
 
-  def onReceivedReply(reply: RedisReply) {
+  def onDecodedReply(reply: RedisReply) {
     reply match {
       case MultiBulk(Some(list)) if list.length == 3 && list.head.toByteString.utf8String == "message" => {
         onMessage(Message(list(1).toByteString.utf8String, list(2).toByteString.utf8String))

@@ -49,36 +49,49 @@ trait RedisWorkerIO extends Actor {
   def receive = connecting orElse writing
 
   def connecting: Receive = {
-    case Connected(remoteAddr, localAddr) => {
-      sender ! Register(self)
-      tcpWorker = sender
-      initConnectedBuffer()
-      tryWrite()
-      become(connected)
-      log.info("Connected to " + remoteAddr)
-    }
+    case c: Connected => onConnected(c)
     case Reconnect => preStart()
-    case c: CommandFailed => {
-      log.error(c.toString)
-      cleanState()
-      scheduleReconnect()
-    }
+    case c: CommandFailed => onConnectingCommandFailed(c)
+  }
+
+  def onConnected(cmd: Connected) = {
+    sender ! Register(self)
+    tcpWorker = sender
+    initConnectedBuffer()
+    tryWrite()
+    become(connected)
+    log.info("Connected to " + cmd.remoteAddress)
+  }
+
+  def onConnectingCommandFailed(cmdFailed: CommandFailed) = {
+    log.error(cmdFailed.toString)
+    cleanState()
+    scheduleReconnect()
   }
 
   def connected: Receive = writing orElse reading
 
-  def reading: Receive = {
+  private def reading: Receive = {
     case WriteAck => tryWrite()
     case Received(dataByteString) => onDataReceived(dataByteString)
-    case c: ConnectionClosed =>
-      log.warning(s"ConnectionClosed $c")
-      cleanState()
-      scheduleReconnect()
-    case c: CommandFailed =>
-      log.error("CommandFailed ... " + c) // O/S buffer was full
-      // TODO send it back if it's a Write ? (fail with big tests 400 000 ping
-      cleanState()
-      scheduleReconnect()
+    case c: ConnectionClosed => onConnectionClosed(c)
+    case c: CommandFailed => onConnectedCommandFailed(c)
+
+  }
+
+  def onConnectionClosed(c: ConnectionClosed) = {
+    log.warning(s"ConnectionClosed $c")
+    cleanState()
+    scheduleReconnect()
+  }
+
+  /** O/S buffer was full
+    * Maybe to much data in the Command ?
+    */
+  def onConnectedCommandFailed(commandFailed: CommandFailed) = {
+    log.error(commandFailed.toString) // O/S buffer was full
+    // TODO send it back if it's a Write ? (fail with big tests 400 000 ping
+    tcpWorker ! commandFailed.cmd
   }
 
   def scheduleReconnect() {
@@ -112,7 +125,6 @@ trait RedisWorkerIO extends Actor {
   def write(byteString: ByteString) {
     if (readyToWrite) {
       writeWorker(byteString)
-      readyToWrite = false
     } else {
       bufferWrite.append(byteString)
     }
@@ -125,6 +137,7 @@ trait RedisWorkerIO extends Actor {
   private def writeWorker(byteString: ByteString) {
     onWriteSent()
     tcpWorker ! Write(byteString, WriteAck)
+    readyToWrite = false
   }
 
 }

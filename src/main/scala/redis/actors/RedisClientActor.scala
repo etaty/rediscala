@@ -8,7 +8,7 @@ import scala.concurrent.Promise
 import akka.actor.{Kill, Props}
 import scala.collection.mutable
 
-class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
+class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO {
 
   import context._
 
@@ -49,6 +49,4 @@ class RedisClientActor(addr: InetSocketAddress) extends RedisWorkerIO {
     repliesDecoder ! Kill
     repliesDecoder = initRepliesDecoder
   }
-
-  def address: InetSocketAddress = addr
 }

@@ -23,7 +23,7 @@ class RedisReplyDecoder() extends Actor with DecodeReplies {
     case byteStringInput: ByteString => decodeReplies(byteStringInput)
   }
 
-  def onReceivedReply(reply: RedisReply) {
+  def onDecodedReply(reply: RedisReply) {
     reply match {
       case e: Error => queuePromises.dequeue().failure(ReplyErrorException(e.toString()))
       case _ => queuePromises.dequeue().success(reply)
@@ -45,12 +45,12 @@ trait DecodeReplies {
   private def decodeRepliesRecur(bs: ByteString): ByteString = {
     val r = RedisProtocolReply.decodeReply(bs)
     if (r.nonEmpty) {
-      onReceivedReply(r.get._1)
+      onDecodedReply(r.get._1)
       decodeRepliesRecur(r.get._2)
     } else {
       bs
     }
   }
 
-  def onReceivedReply(reply: RedisReply)
+  def onDecodedReply(reply: RedisReply)
 }
