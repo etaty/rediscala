@@ -483,6 +483,60 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#onConnected" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="onConnected(cmd:akka.io.Tcp.Connected):Unit"></a>
+      <a id="onConnected(Connected):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onConnected</span><span class="params">(<span name="cmd">cmd: <span class="extype" name="akka.io.Tcp.Connected">Connected</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.actors.RedisWorkerIO#onConnectedCommandFailed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="onConnectedCommandFailed(commandFailed:akka.io.Tcp.CommandFailed):Unit"></a>
+      <a id="onConnectedCommandFailed(CommandFailed):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onConnectedCommandFailed</span><span class="params">(<span name="commandFailed">commandFailed: <span class="extype" name="akka.io.Tcp.CommandFailed">CommandFailed</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">O/S buffer was full
+Maybe to much data in the Command ?
+</p>
+    </li><li name="redis.actors.RedisWorkerIO#onConnectingCommandFailed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="onConnectingCommandFailed(cmdFailed:akka.io.Tcp.CommandFailed):Unit"></a>
+      <a id="onConnectingCommandFailed(CommandFailed):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onConnectingCommandFailed</span><span class="params">(<span name="cmdFailed">cmdFailed: <span class="extype" name="akka.io.Tcp.CommandFailed">CommandFailed</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.actors.RedisWorkerIO#onConnectionClosed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="onConnectionClosed(c:akka.io.Tcp.ConnectionClosed):Unit"></a>
+      <a id="onConnectionClosed(ConnectionClosed):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onConnectionClosed</span><span class="params">(<span name="c">c: <span class="extype" name="akka.io.Tcp.ConnectionClosed">ConnectionClosed</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
     </li><li name="akka.actor.Actor#postRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="postRestart(reason:Throwable):Unit"></a>
       <a id="postRestart(Throwable):Unit"></a>
@@ -547,19 +601,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#reading" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="reading:RedisWorkerIO.this.Receive"></a>
-      <a id="reading:Receive"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">reading</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisWorkerIO.Receive">Receive</a></span>
-      </span>
-      </h4>
-      
     </li><li name="redis.actors.RedisWorkerIO#readyToWrite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="readyToWrite:Boolean"></a>
       <a id="readyToWrite:Boolean"></a>
