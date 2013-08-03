@@ -76,7 +76,7 @@ object RediscalaBuild extends Build {
           "-doc-version", version
         )
       }
-  ) ++ site.settings ++ site.includeScaladoc(v +"/api")++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
+  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
     ScctPlugin.instrumentSettings ++
     com.github.theon.coveralls.CoverallsPlugin.coverallsSettings
 
