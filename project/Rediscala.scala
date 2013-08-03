@@ -43,7 +43,7 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "0.5-SNAPSHOT"
+  val v = "0.6-SNAPSHOT"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
@@ -72,11 +72,11 @@ object RediscalaBuild extends Build {
         val branch = if(version.trim.endsWith("SNAPSHOT")) "master" else version
         Seq[String](
           "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala",
-          "-doc-title", "Rediscala API",
+          "-doc-title", "Rediscala "+v+" API",
           "-doc-version", version
         )
       }
-  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ ghpages.settings ++
+  ) ++ site.settings ++ site.includeScaladoc(v +"/api")++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
     ScctPlugin.instrumentSettings ++
     com.github.theon.coveralls.CoverallsPlugin.coverallsSettings
 
