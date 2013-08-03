@@ -32,13 +32,13 @@ object RedisBenchProtocol extends PerformanceTest.Regression {
       }
     }*/
     ///*
-    measure method "multiBulk" in {
+    measure method "multiBulk (slow)" in {
       using(ranges) in {
         i =>
           for {
             ii <- i
           } yield {
-            RedisProtocolRequest.multiBulkSlow("INCR", argsBulk)
+            RedisProtocolRequestSlow.multiBulkSlow("INCR", argsBulk)
           }
       }
     }
@@ -65,5 +65,39 @@ object RedisBenchProtocol extends PerformanceTest.Regression {
       }
     }
     //*/
+  }
+}
+
+object RedisProtocolRequestSlow {
+
+  import RedisProtocolRequest._
+
+  /**
+   * 25% slower
+   * @param command
+   * @param args
+   * @return
+   */
+  def multiBulkSlow(command: String, args: Seq[ByteString]): ByteString = {
+    val requestBuilder = ByteString.newBuilder
+    requestBuilder.putByte('*')
+    requestBuilder.putBytes((args.size + 1).toString.getBytes(UTF8_CHARSET))
+    requestBuilder.putBytes(LS)
+
+    requestBuilder.putByte('$')
+    requestBuilder.putBytes(command.length.toString.getBytes(UTF8_CHARSET))
+    requestBuilder.putBytes(LS)
+    requestBuilder.putBytes(command.getBytes(UTF8_CHARSET))
+    requestBuilder.putBytes(LS)
+
+    args.foreach(arg => {
+      requestBuilder.putByte('$')
+      requestBuilder.putBytes(arg.length.toString.getBytes(UTF8_CHARSET))
+      requestBuilder.putBytes(LS)
+      requestBuilder ++= arg
+      requestBuilder.putBytes(LS)
+    })
+
+    requestBuilder.result()
   }
 }
