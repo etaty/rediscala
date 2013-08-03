@@ -89,6 +89,5 @@ There are still rooms for improvements
   * scriptings
   * server
   * keys : MIGRATE, MOVE, OBJECT, SORT
-* --handling of connection failure-- (actor tests)
 * Performance
   * Maybe request should be encoded in their own scala future (benchmark needed)
