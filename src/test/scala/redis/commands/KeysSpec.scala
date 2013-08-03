@@ -94,7 +94,22 @@ class KeysSpec extends RedisSpec {
     }
 
     "MOVE" in {
-      todo
+      val redisMove = RedisClient()
+      val r = for {
+        _ <- redis.set("moveKey", "value")
+        _ <- redisMove.select(1)
+        _ <- redisMove.del("moveKey")
+        move <- redis.move("moveKey", 1)
+        move2 <- redis.move("moveKey2", 1)
+        get <- redisMove.get("moveKey")
+        get2 <- redisMove.get("moveKey2")
+      } yield {
+        move must beTrue
+        move2 must beFalse
+        get mustEqual Some(ByteString("value"))
+        get2 mustEqual None
+      }
+      Await.result(r, timeOut)
     }
 
     "OBJECT" in {
