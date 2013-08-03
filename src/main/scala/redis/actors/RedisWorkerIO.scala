@@ -113,6 +113,13 @@ trait RedisWorkerIO extends Actor {
 
   def onWriteSent()
 
+  def restartConnection() = {
+    if (tcpWorker != null) {
+      tcpWorker ! Close
+    }
+    scheduleReconnect()
+  }
+
   def tryWrite() {
     if (bufferWrite.length == 0) {
       readyToWrite = true
@@ -146,5 +153,3 @@ trait RedisWorkerIO extends Actor {
 object WriteAck extends Event
 
 object Reconnect
-
-object NoConnectionException extends RuntimeException("No Connection established")

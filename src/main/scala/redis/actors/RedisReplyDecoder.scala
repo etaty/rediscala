@@ -16,6 +16,12 @@ class RedisReplyDecoder() extends Actor with DecodeReplies {
 
   val log = Logging(context.system, this)
 
+  override def postStop() {
+    queuePromises.foreach(promise => {
+      promise.failure(InvalidRedisReply)
+    })
+  }
+
   def receive = {
     case promises: mutable.Queue[Promise[RedisReply]] => {
       queuePromises ++= promises
@@ -33,6 +39,7 @@ class RedisReplyDecoder() extends Actor with DecodeReplies {
 }
 
 case class ReplyErrorException(message: String) extends Exception(message)
+object InvalidRedisReply extends RuntimeException("Could not decode the redis reply")
 
 trait DecodeReplies {
   var bufferRead: ByteString = ByteString.empty

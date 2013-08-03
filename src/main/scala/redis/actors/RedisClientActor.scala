@@ -5,8 +5,9 @@ import redis.protocol.RedisReply
 import java.net.InetSocketAddress
 import redis.{Transaction, Operation}
 import scala.concurrent.Promise
-import akka.actor.{Kill, Props}
+import akka.actor.{OneForOneStrategy, Terminated, PoisonPill, Props}
 import scala.collection.mutable
+import akka.actor.SupervisorStrategy.Stop
 
 class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO {
 
@@ -14,7 +15,7 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   var repliesDecoder = initRepliesDecoder
 
-  private def initRepliesDecoder = system.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+  def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
   var queuePromises = mutable.Queue[Promise[RedisReply]]()
 
@@ -30,6 +31,8 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
       })
       write(buffer.result())
     }
+    case Terminated(actorRef) =>
+      println(s"Terminated($actorRef)")
   }
 
   def onDataReceived(dataByteString: ByteString) {
@@ -46,7 +49,20 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
       promise.failure(NoConnectionException)
     })
     queuePromises.clear()
-    repliesDecoder ! Kill
+    repliesDecoder ! PoisonPill
     repliesDecoder = initRepliesDecoder
   }
+
+  override val supervisorStrategy =
+    OneForOneStrategy() {
+      case _: Exception => {
+        // Start a new decoder
+        repliesDecoder = initRepliesDecoder
+        restartConnection()
+        // stop the old one => clean the mailbox
+        Stop
+      }
+    }
 }
+
+object NoConnectionException extends RuntimeException("No Connection established")

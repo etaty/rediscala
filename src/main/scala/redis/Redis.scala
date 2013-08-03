@@ -23,7 +23,16 @@ trait Request {
   }
 }
 
-trait RedisCommands extends Keys with Strings with Hashes with Lists with Sets with SortedSets with PubSub with Connection with Server
+trait RedisCommands
+  extends Keys
+  with Strings
+  with Hashes
+  with Lists
+  with Sets
+  with SortedSets
+  with PubSub
+  with Connection
+  with Server
 
 /**
  *
