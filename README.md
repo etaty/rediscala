@@ -57,16 +57,18 @@ https://github.com/etaty/rediscala-demo
 ### Commands
 
 Supported :
-* [Keys](http://redis.io/commands#generic)
-* [Strings](http://redis.io/commands#string)
-* [Hashes](http://redis.io/commands#hash)
-* [Lists](http://redis.io/commands#list)
-* [Set](http://redis.io/commands#set)
-* [Sorted Sets](http://redis.io/commands#sorted_set)
-* [Pub/Sub](http://redis.io/commands#pubsub)
-* [Transactions](http://redis.io/commands#transactions)
-* [Connection](http://redis.io/commands#connection)
-* [Server](http://redis.io/commands#server)
+* [Keys](http://redis.io/commands#generic) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Keys))
+* [Strings](http://redis.io/commands#string) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Strings))
+* [Hashes](http://redis.io/commands#hash) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Hashes))
+* [Lists](http://redis.io/commands#list) 
+  * non-blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Lists))
+  * blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.BLists))
+* [Sets](http://redis.io/commands#set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Sets))
+* [Sorted Sets](http://redis.io/commands#sorted_set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.SortedSets))
+* [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.PubSub))
+* [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
+* [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
+* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server))
 
 Soon :
 * [Scripting](http://redis.io/commands#scripting)
@@ -80,8 +82,9 @@ Soon :
 
 More than 200 000 requests/second
 
-[scalemeter report](http://etaty.github.io/rediscala/report/index.html)
-[Sources](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
+* [benchmark result from scalameter](http://etaty.github.io/rediscala/report/index.html)
+* [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
+
 The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB)
 
 You can run the bench with :
