@@ -54,16 +54,18 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeReplyDecoder = TestProbe()
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref)
+        .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        .underlyingActor
 
       val promise3 = Promise[RedisReply]()
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promise3)
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      redisClientActor.receive(Operation(RedisProtocolRequest.inline("PING"), promise3))
+      redisClientActor.queuePromises.length mustEqual 1
 
       val deathWatcher = TestProbe()
       deathWatcher.watch(probeReplyDecoder.ref)
 
-      redisClientActor.underlyingActor.onConnectionClosed()
+      redisClientActor.onConnectionClosed()
       deathWatcher.expectTerminated(probeReplyDecoder.ref) must beAnInstanceOf[Terminated]
       Await.result(promise3.future, 10 seconds) must throwA(NoConnectionException)
     }
@@ -72,27 +74,29 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeReplyDecoder = TestProbe()
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActorRef = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref)
+        .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActor = redisClientActorRef.underlyingActor
 
       val promiseSent = Promise[RedisReply]()
       val promiseNotSent = Promise[RedisReply]()
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promiseSent)
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      redisClientActor.receive(Operation(RedisProtocolRequest.inline("PING"), promiseSent))
+      redisClientActor.queuePromises.length mustEqual 1
 
-      redisClientActor.underlyingActor.onWriteSent()
-      redisClientActor.underlyingActor.queuePromises must beEmpty
+      redisClientActor.onWriteSent()
+      redisClientActor.queuePromises must beEmpty
       probeReplyDecoder.expectMsgType[mutable.Queue[Promise[RedisReply]]] mustEqual mutable.Queue[Promise[RedisReply]](promiseSent)
 
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promiseNotSent)
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      redisClientActor.receive(Operation(RedisProtocolRequest.inline("PING"), promiseNotSent))
+      redisClientActor.queuePromises.length mustEqual 1
 
       val deathWatcher = TestProbe()
       deathWatcher.watch(probeReplyDecoder.ref)
-      deathWatcher.watch(redisClientActor)
+      deathWatcher.watch(redisClientActorRef)
 
       probeReplyDecoder.ref ! Kill
       deathWatcher.expectTerminated(probeReplyDecoder.ref) must beAnInstanceOf[Terminated]
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      redisClientActor.queuePromises.length mustEqual 1
     }
   }
 }
