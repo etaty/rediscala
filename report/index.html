@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Performance Report</title>
+  <link type="text/css" media="screen" rel="stylesheet" href="css/bootstrap.min.css"/>
+  <link type="text/css" media="screen" rel="stylesheet" href="css/ui.dynatree.css"/>
+  <link type="text/css" media="screen" rel="stylesheet" href="css/jquery-ui-1.10.3.custom.css"/>
+  <link type="text/css" media="screen" rel="stylesheet" href="css/bootstrap-slider.css"/>
+  <link type="text/css" media="screen" rel="stylesheet" href="css/index.css"/>
+  <script type="text/javascript" src="js/d3.v3.min.js"></script>
+  <script type="text/javascript" src="js/crossfilter.min.js"></script>
+  <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="js/jquery-compat.js"></script>
+  <script type="text/javascript" src="js/jquery-ui-1.10.3.custom.min.js"></script>
+  <script type="text/javascript" src="js/jquery.dynatree.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/chart.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/data.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/dimensions.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/filter.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/helper.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/main.js"></script>
+  <script type="text/javascript" src="js/ScalaMeter/permalink.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="tree"></div>
+  </div>
+  <div class="content">
+    <div class="content-inner">
+
+      <!-- navbar -->
+      <div class="navbar navbar-header">
+        <div class="navbar-inner">
+          <ul class="nav nav-charttype">
+            <li class="active">
+              <a onclick="ScalaMeter.chart.setType(ScalaMeter.chart.chartTypes().line);" data-toggle="tab">Line Chart</a>
+            </li>
+            <li>
+              <a onclick="ScalaMeter.chart.setType(ScalaMeter.chart.chartTypes().bar);" data-toggle="tab">Bar Chart</a>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-mini btn-showCI" data-toggle="button" onclick="ScalaMeter.chart.toggleCI();">Show Confidence Interval</button>
+          <ul class="nav pull-right">
+            <li><a href="#" class="btn-permalink"><i class="icon-globe"></i> Permalink</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- chart -->
+      <div class="chart"></div>
+
+      <div class="tooltip-x-axis"><img src="img/arrow.png"></div>
+      <div class="tooltip-x-axis-caption">x-axis</div>
+      <div class="filters"></div>
+
+      <!--
+      <h1>Raw data</h1>
+      <table class="table rawdata"></table>
+      -->
+
+      <script type="text/javascript">
+        ScalaMeter.main.init();
+      </script>
+    </div>
+  </div>
+</body>
+</html>
+      <!--
+      <div>
+        <h1>Machine information</h1>
+        <ul>
+        <li>
+          cores: 4
+          </li><li>
+          hostname: T410
+          </li><li>
+          jvm-name: Java HotSpot(TM) 64-Bit Server VM
+          </li><li>
+          jvm-vendor: Oracle Corporation
+          </li><li>
+          jvm-version: 23.7-b01
+          </li><li>
+          os-arch: amd64
+          </li><li>
+          os-name: Windows 7
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div>Started: Thu Apr 18 23:58:58 CEST 2013</div>
+        <div>Finished: Fri Apr 19 00:00:40 CEST 2013</div>
+        <div>Running time: 102 seconds</div>
+      </div>
+    </div>-->
