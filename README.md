@@ -17,7 +17,7 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/snapshots/"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "0.1-SNAPSHOT"
+  "com.etaty.rediscala" %% "rediscala" % "0.6-SNAPSHOT"
 )
 ```
 
@@ -74,15 +74,21 @@ Soon :
 
 ### Scaladoc
 
-[Rediscala scaladoc API](http://etaty.github.io/rediscala/0.5-SNAPSHOT/api/index.html#package)
+[Rediscala scaladoc API](http://etaty.github.io/rediscala/latest/api/index.html#package)
 
 ### Performance
 
-Between 200 000 and 150 000 pings/seconds with one client on a 2.6GHz Intel Core i7 (8 threads)
+More than 200 000 requests/second
 
-For comparison, redis-benchmark with one client can get 1 000 000 pings/seconds
+[scalemeter report](http://etaty.github.io/rediscala/report/index.html)
+[Sources](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
+The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB)
 
-There are still rooms for improvements
+You can run the bench with :
+1. clone the repo `git clone git@github.com:etaty/rediscala.git`
+2. run `sbt bench:test`
+3. open the test `rediscala/tmp/report/index.html`
+
 
 ###TODO
 * commands
