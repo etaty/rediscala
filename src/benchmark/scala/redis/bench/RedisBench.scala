@@ -35,6 +35,7 @@ object RedisBench extends PerformanceTest {
   def aggregator = Aggregator.complete(Aggregator.average)
 
   def measurer: Measurer = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation with Measurer.OutlierElimination with Measurer.RelativeNoise
+
   //def measurer: Measurer = new Executor.Measurer.MemoryFootprint
 
   def executor: Executor = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
@@ -54,23 +55,31 @@ object RedisBench extends PerformanceTest {
     }
   }
 
-  val sizes = exponential("size")(20000, 200000, 2)
+  val sizes = exponential("size")(20000, 400000, 2)
 
   performance of "RedisBench" in {
 
     measure method "ping" in {
 
-      using(sizes) setUp {
+      using(sizes).setUp(redisSetUp)
+        .tearDown(redisTearDown)
+        .in {
         case (i: Int, redisBench: RedisBenchContext) =>
-          redisBench.akkaSystem = akka.actor.ActorSystem()
-          redisBench.redis = RedisClient()(redisBench.akkaSystem)
-          Await.result(redisBench.redis.ping(), 2 seconds)
-      } tearDown {
-        case (i: Int, redisBench: RedisBenchContext) =>
-          redisBench.redis.disconnect()
-          redisBench.akkaSystem.shutdown()
-          redisBench.akkaSystem.awaitTermination()
-      } in {
+          val redis = redisBench.redis
+          val r = for {
+            ii <- 0 until i
+          } yield {
+            redis.ping()
+          }
+          Await.result(Future.sequence(r), 30 seconds)
+      }
+    }
+
+    measure method "incr" in {
+
+      using(sizes).setUp(redisSetUp)
+        .tearDown(redisTearDown)
+        .in {
         case (i: Int, redisBench: RedisBenchContext) =>
           val redis = redisBench.redis
           val r = for {
@@ -81,6 +90,37 @@ object RedisBench extends PerformanceTest {
           Await.result(Future.sequence(r), 30 seconds)
       }
     }
+
+    measure method "get" in {
+
+      using(sizes).setUp(redisSetUp)
+        .tearDown(redisTearDown)
+        .in {
+        case (i: Int, redisBench: RedisBenchContext) =>
+          val redis = redisBench.redis
+          val r = for {
+            ii <- 0 until i
+          } yield {
+            redis.get("i")
+          }
+          Await.result(Future.sequence(r), 30 seconds)
+      }
+    }
+  }
+
+  def redisSetUp(data: (Int, RedisBenchContext)) = data match {
+    case (i: Int, redisBench: RedisBenchContext) => {
+      redisBench.akkaSystem = akka.actor.ActorSystem()
+      redisBench.redis = RedisClient()(redisBench.akkaSystem)
+      Await.result(redisBench.redis.ping(), 2 seconds)
+    }
+  }
+
+  def redisTearDown(data: (Int, RedisBenchContext)) = data match {
+    case (i: Int, redisBench: RedisBenchContext) =>
+      redisBench.redis.disconnect()
+      redisBench.akkaSystem.shutdown()
+      redisBench.akkaSystem.awaitTermination()
   }
 }
 

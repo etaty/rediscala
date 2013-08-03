@@ -1,0 +1,309 @@
+/* frames */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar:before {
+  content: "";
+  display: block;
+  border-right: solid 5px #ddd;
+  position: absolute;
+  top: 0;
+  left: 240px;
+  height: 100%;
+}
+
+.content {
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  bottom: 0;
+  padding-left: 35px;
+  height: 100%;
+  overflow: auto;
+}
+
+.content-inner {
+  width: 900px;
+}
+
+/* nav bar */
+
+.nav a {
+  cursor: pointer;
+}
+
+.navbar-header {
+  margin-top: 10px;
+}
+
+.navbar-header .btn-mini {
+  margin-top: 9px;
+}
+
+.permalink-inner {
+  height: 20px;
+  width: 250px;
+  border: 0 none transparent;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.btn-showCI {
+  margin-left: 20px;
+}
+
+/* dynatree */
+
+.dynatree-adjtext {
+  position: relative;
+  top: -3px;
+}
+
+.dynatree-square {
+  width: 13px;
+  height: 13px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 1px 3px 0 0;
+}
+
+ul.dynatree-container {
+  border: 0;
+  margin: 10px;
+}
+
+.dynatree-title {
+  cursor: pointer;
+}
+
+/* chart */
+
+.chart {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.grid .tick {
+  stroke: lightgrey;
+  opacity: 0.7;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.legend {
+  cursor: pointer;
+}
+
+.legend-container text {
+  text-anchor: end;
+  font-size: 10px;
+}
+
+.legend-container .legend-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.line,
+.bar-ci {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.bar,
+.legend-container rect {
+  stroke: #222;
+  stroke-width: 2px;
+  stroke-opacity: 0;
+}
+
+.bar-cihi {
+  stroke: #222;
+}
+
+.bar-cilo {
+  stroke: #fff;
+  fill-opacity: 0.5;
+}
+
+.bar-ci-v {
+  stroke-dasharray: 3, 3;
+}
+
+.tooltip-inner {
+  text-align: left;
+}
+
+/* pointer to x-axis-filter */
+
+.tooltip-x-axis {
+  position: absolute;
+}
+
+.tooltip-x-axis img {
+  position: relative;
+  top: 9px;
+  left: -15px;
+}
+
+.tooltip-x-axis-caption {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* filter-containers */
+
+.filter-container {
+  position: relative;
+  margin: 5px 0 15px 0;
+  padding: 2px 10px 2px 100px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.filter-container .nav {
+  margin: 3px 0 0 0;
+}
+
+.filter-container-header {
+  cursor: move;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 70px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: whiteSmoke;
+  border: 1px solid #DDD;
+  color: #9DA0A4;
+  border-radius: 4px 0 4px 0;
+}
+
+.filter-expanded .filter-hideexpanded,
+.filter-collapsed .filter-hidecollapsed
+{
+  display: none;
+}
+
+/* filters */
+
+.filter-values{
+  margin-left: 3px;
+}
+
+.filter-value {
+  margin: 2px;
+  cursor: pointer;
+}
+
+/* date-filter */
+
+.date-slider-container {
+  display: table;
+  margin: 0 50px;
+}
+
+.date-slider-btn {
+  margin-bottom: 10px;
+}
+
+.date-slider-btn [class^="icon-"] {
+  margin: 0;
+}
+
+.date-slider-center {
+  padding: 0 20px;
+  width: 100%;
+  display: table-cell;
+}
+
+.filter-collapsed .date-slider-container {
+  display: none;
+}
+
+#date .filter-values {
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.filters .year {
+  font-weight: bold;
+  display: inline-block;
+}
+
+.caption-outer {
+  position: relative;
+  border-left: solid 1px #000;
+  text-align: center;
+  margin-top: 2px;
+  height: 15px;
+}
+
+.year:last-child > .caption-outer,
+.year:last-child .month:last-child .caption-outer {
+  border-right: solid 1px #000;
+}
+
+.caption-outer:before {
+  content: "";
+  display: block;
+  border-top: solid 1px #000;
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+}
+  
+.caption {
+  background: #fff;
+  padding: 0 2px;
+  position: relative;
+}
+
+.filters .month {
+  display: inline-block;
+  font-size: 12px;
+}
+
+.filters .day {
+  display: inline-block;
+  vertical-align: top;
+  top: 0;
+  text-align: center;
+  font-weight: normal;
+}
+
+.filter-expanded .day {
+  min-height: 100px;
+}
+
+.filters .timeofday {
+  cursor: pointer;
+  display: block;
+}
+
