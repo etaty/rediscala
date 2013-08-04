@@ -82,7 +82,7 @@ Soon :
 
 More than 200 000 requests/second
 
-* [benchmark result from scalameter](http://etaty.github.io/rediscala/report/index.html)
+* [benchmark result from scalameter](http://bit.ly/12QZsRs)
 * [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
 
 The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB)
