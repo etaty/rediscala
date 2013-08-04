@@ -4,6 +4,7 @@ import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
 import scala.util.Success
+import scala.sys.process.Process
 
 class KeysSpec extends RedisSpec {
 
@@ -90,7 +91,23 @@ class KeysSpec extends RedisSpec {
     }
 
     "MIGRATE" in {
-      todo
+      import scala.concurrent.duration._
+
+      val port = 7777
+      val redisServer = Process(s"redis-server --port $port").run()
+
+      val redisMigrate = RedisClient("localhost", port)
+      val r = for {
+        _ <- redis.set("migrateKey", "value")
+        m <- redis.migrate("localhost", port, "migrateKey", 0, 10 seconds)
+        get <- redisMigrate.get("migrateKey")
+      } yield {
+        m must beTrue
+        get mustEqual Some(ByteString("value"))
+      }
+      val rr = Await.result(r, timeOut)
+      redisServer.destroy()
+      rr
     }
 
     "MOVE" in {

@@ -30,19 +30,15 @@ trait Keys extends Request {
   def keys(pattern: String)(implicit convert: MultiBulkConverter[Seq[String]], ec: ExecutionContext): Future[Try[Seq[String]]] =
     send("KEYS", Seq(ByteString(pattern))).mapTo[MultiBulk].map(_.asTry[Seq[String]])
 
-  def migrate(host: String, port: Int, key: String, destinationDB: Int, timeout: FiniteDuration, copy: Boolean = false, replace: Boolean = false)(implicit ec: ExecutionContext): Future[Boolean] = {
-    var args = Seq[ByteString]()
-    if (replace)
-      args = ByteString("REPLACE") +: args
-    if (copy)
-      args = ByteString("COPY") +: args
-    send("MIGRATE", Seq(ByteString(host), ByteString(port.toString), ByteString(key), ByteString(destinationDB.toString), ByteString(timeout.toMillis.toString)) ++ args).mapTo[Status].map(_.toBoolean)
+  def migrate(host: String, port: Int, key: String, destinationDB: Int, timeout: FiniteDuration)(implicit ec: ExecutionContext): Future[Boolean] = {
+    val seq = Seq(ByteString(host), ByteString(port.toString), ByteString(key), ByteString(destinationDB.toString), ByteString(timeout.toMillis.toString))
+    send("MIGRATE", seq).mapTo[Status].map(_.toBoolean)
   }
 
   def move(key: String, db: Int)(implicit ec: ExecutionContext): Future[Boolean] =
     send("MOVE", Seq(ByteString(key), ByteString(db.toString))).mapTo[Integer].map(_.toBoolean)
 
-  def `object`() = ??? // TODO
+  //def `object`() = ??? // TODO
 
   def persist(key: String)(implicit ec: ExecutionContext): Future[Boolean] =
     send("PERSIST", Seq(ByteString(key))).mapTo[Integer].map(_.toBoolean)
@@ -68,7 +64,7 @@ trait Keys extends Request {
   def restore[A](key: String, ttl: Long = 0, serializedValue: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
     send("RESTORE", Seq(ByteString(key), ByteString(ttl.toString), convert.from(serializedValue))).mapTo[Status].map(_.toBoolean)
 
-  def sort = ??? // TODO
+  //def sort = ??? // TODO
 
   def ttl(key: String)(implicit ec: ExecutionContext): Future[Long] =
     send("TTL", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
