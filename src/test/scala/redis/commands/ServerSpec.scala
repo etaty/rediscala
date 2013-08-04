@@ -90,6 +90,7 @@ class ServerSpec extends RedisSpec {
 
     "SAVE" in {
       //Await.result(redis.save(), timeOut) mustEqual true
+      todo
     }
 
     "SHUTDOWN" in {

@@ -24,7 +24,7 @@ object Dependencies {
 
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-  val specs2 = "org.specs2" %% "specs2" % "1.14"
+  val specs2 = "org.specs2" %% "specs2" % "2.1.1"
 
   val scalameter = "com.github.axel22" %% "scalameter" % "0.4-M2"
 

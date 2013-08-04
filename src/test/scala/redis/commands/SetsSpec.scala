@@ -141,7 +141,7 @@ class SetsSpec extends RedisSpec {
         popNone <- redis.spop("spopKeyNonExisting")
         m <- redis.smembers("spopKey")
       } yield {
-        Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(pop.get)
+        Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(equalTo(pop.get))
         popNone mustEqual None
         m.get must containAnyOf(Seq(ByteString("three"), ByteString("two"), ByteString("one")))
       }
@@ -157,8 +157,8 @@ class SetsSpec extends RedisSpec {
         randmemberNonExisting <- redis.srandmember("srandmemberKeyNonExisting", 2)
         m <- redis.smembers("spopKey")
       } yield {
-        Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(randmember.get)
-        randmember2.get must have size (2)
+        Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(equalTo(randmember.get))
+        randmember2.get must have size 2
         randmemberNonExisting mustEqual Success(Seq())
       }
       Await.result(r, timeOut)

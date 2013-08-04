@@ -207,16 +207,18 @@ class StringsSpec extends RedisSpec {
 
     "SETBIT" in {
       val r = for {
+        _ <- redis.del("setbitKey")
         setTrue <- redis.setbit("setbitKey", 1, value = true)
         getTrue <- redis.getbit("setbitKey", 1)
         setFalse <- redis.setbit("setbitKey", 1, value = false)
         getFalse <- redis.getbit("setbitKey", 1)
       } yield {
-        setTrue mustEqual true
+        setTrue mustEqual false
         getTrue mustEqual true
-        setFalse mustEqual false
+        setFalse mustEqual true
         getFalse mustEqual false
       }
+      Await.result(r, timeOut)
     }
 
     "SETEX" in {
