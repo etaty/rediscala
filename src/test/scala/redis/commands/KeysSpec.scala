@@ -130,7 +130,39 @@ class KeysSpec extends RedisSpec {
     }
 
     "OBJECT" in {
-      todo
+      "REFCOUNT" in {
+        val r = for {
+          _ <- redis.set("objectRefcount", "objectRefcountValue")
+          ref <- redis.objectRefcount("objectRefcount")
+          refNotFound <- redis.objectRefcount("objectRefcountNotFound")
+        } yield {
+          ref must beSome(1)
+          refNotFound must beNone
+        }
+        Await.result(r, timeOut)
+      }
+      "IDLETIME" in {
+        val r = for {
+          _ <- redis.set("objectIdletime", "objectRefcountValue")
+          time <- redis.objectIdletime("objectIdletime")
+          timeNotFound <- redis.objectIdletime("objectIdletimeNotFound")
+        } yield {
+          time must beSome[Long]
+          timeNotFound must beNone
+        }
+        Await.result(r, timeOut)
+      }
+      "ENCODING" in {
+        val r = for {
+          _ <- redis.set("objectEncoding", "objectRefcountValue")
+          encoding <- redis.objectEncoding("objectEncoding")
+          encodingNotFound <- redis.objectEncoding("objectEncodingNotFound")
+        } yield {
+          encoding must beSome[String]
+          encodingNotFound must beNone
+        }
+        Await.result(r, timeOut)
+      }
     }
 
     "PERSIST" in {

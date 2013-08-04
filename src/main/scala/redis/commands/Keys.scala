@@ -38,7 +38,20 @@ trait Keys extends Request {
   def move(key: String, db: Int)(implicit ec: ExecutionContext): Future[Boolean] =
     send("MOVE", Seq(ByteString(key), ByteString(db.toString))).mapTo[Integer].map(_.toBoolean)
 
-  //def `object`() = ??? // TODO
+  def objectRefcount(key: String)(implicit ec: ExecutionContext): Future[Option[Long]] =
+    send("OBJECT", Seq(ByteString("REFCOUNT"), ByteString(key))).mapTo[RedisReply].map({
+      case i: Integer => Some(i.toLong)
+      case _ => None
+    })
+
+  def objectIdletime(key: String)(implicit ec: ExecutionContext): Future[Option[Long]] =
+    send("OBJECT", Seq(ByteString("IDLETIME"), ByteString(key))).mapTo[RedisReply].map({
+      case i: Integer => Some(i.toLong)
+      case _ => None
+    })
+
+  def objectEncoding(key: String)(implicit ec: ExecutionContext): Future[Option[String]] =
+    send("OBJECT", Seq(ByteString("ENCODING"), ByteString(key))).mapTo[Bulk].map(_.toOptString)
 
   def persist(key: String)(implicit ec: ExecutionContext): Future[Boolean] =
     send("PERSIST", Seq(ByteString(key))).mapTo[Integer].map(_.toBoolean)
