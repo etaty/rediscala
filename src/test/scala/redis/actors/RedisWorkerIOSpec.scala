@@ -32,7 +32,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       probeMock.expectMsg(OnConnectionClosed) mustEqual OnConnectionClosed
 
       // should reconnect in 2s
-      within(1 second, 3 seconds) {
+      within(1 second, 4 seconds) {
         val connectMsg = probeTcp.expectMsgType[Connect]
         connectMsg mustEqual Connect(address)
 
