@@ -52,6 +52,8 @@ https://github.com/etaty/rediscala-demo
 
 ###### Blocking commands
 
+###### Transactions
+
 ###### Pub/Sub
 
 ### Commands
