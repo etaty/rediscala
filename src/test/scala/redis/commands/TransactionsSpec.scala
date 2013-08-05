@@ -46,6 +46,20 @@ class TransactionsSpec extends RedisSpec {
         val exec = redisTransaction.exec()
         Await.result(exec, timeOut) mustEqual MultiBulk(Some(Seq(Status(ByteString("OK")), Bulk(Some(ByteString("abc"))), Bulk(None))))
       }
+      "watch" in {
+        val transaction = redis.watch("transactionWatchKey")
+        transaction.watcher.result() mustEqual Set("transactionWatchKey")
+        transaction.unwatch()
+        transaction.watcher.result() must beEmpty
+        val set = transaction.set("transactionWatch", "value")
+        transaction.exec()
+        val r = for {
+          s <- set
+        } yield {
+          s must beTrue
+        }
+        Await.result(r, timeOut)
+      }
     }
 
   }
