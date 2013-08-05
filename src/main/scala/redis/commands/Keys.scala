@@ -9,6 +9,7 @@ import redis.protocol.Status
 import redis.protocol.Bulk
 import scala.util.Try
 import scala.concurrent.duration._
+import redis.api.{Order, LimitOffsetCount}
 
 trait Keys extends Request {
 
@@ -77,7 +78,43 @@ trait Keys extends Request {
   def restore[A](key: String, ttl: Long = 0, serializedValue: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
     send("RESTORE", Seq(ByteString(key), ByteString(ttl.toString), convert.from(serializedValue))).mapTo[Status].map(_.toBoolean)
 
-  //def sort = ??? // TODO
+  private def sort(key: String,
+                   byPattern: Option[String],
+                   limit: Option[LimitOffsetCount],
+                   getPatterns: Seq[String],
+                   order: Option[Order],
+                   alpha: Boolean,
+                   store: Option[String])(implicit ec: ExecutionContext): Future[Any] = {
+    var args = store.map(dest => List(ByteString("STORE"), ByteString(dest))).getOrElse(List())
+    if (alpha) {
+      args = ByteString("ALPHA") :: args
+    }
+    args = order.map(ord => ByteString(ord.toString) :: args).getOrElse(args)
+    args = getPatterns.map(pat => List(ByteString("GET"), ByteString(pat))).toList.flatten ++ args
+    args = limit.map(_.toByteString).getOrElse(Seq()).toList ++ args
+    args = byPattern.map(ByteString("BY") :: ByteString(_) :: args).getOrElse(args)
+
+    send("SORT", ByteString(key) :: args)
+  }
+
+  def sort(key: String,
+           byPattern: Option[String] = None,
+           limit: Option[LimitOffsetCount] = None,
+           getPatterns: Seq[String] = Seq(),
+           order: Option[Order] = None,
+           alpha: Boolean = false)(implicit ec: ExecutionContext): Future[Try[Seq[ByteString]]] = {
+    sort(key, byPattern, limit, getPatterns, order, alpha, None).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
+  }
+
+  def sortStore(key: String,
+                byPattern: Option[String] = None,
+                limit: Option[LimitOffsetCount] = None,
+                getPatterns: Seq[String] = Seq(),
+                order: Option[Order] = None,
+                alpha: Boolean = false,
+                store: Option[String] = None)(implicit ec: ExecutionContext): Future[Long] = {
+    sort(key, byPattern, limit, getPatterns, order, alpha, store).mapTo[Integer].map(_.toLong)
+  }
 
   def ttl(key: String)(implicit ec: ExecutionContext): Future[Long] =
     send("TTL", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)

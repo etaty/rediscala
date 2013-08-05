@@ -1,10 +1,11 @@
 package redis.commands
 
 import redis._
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import akka.util.ByteString
 import scala.util.Success
 import scala.sys.process.Process
+import redis.api._
 
 class KeysSpec extends RedisSpec {
 
@@ -283,8 +284,46 @@ class KeysSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    // @see https://gist.github.com/jacqui/983051
     "SORT" in {
-      todo
+      val init = Future.sequence(Seq(
+        redis.hset("bonds|1", "bid_price", 96.01),
+        redis.hset("bonds|1", "ask_price", 97.53),
+        redis.hset("bonds|2", "bid_price", 95.50),
+        redis.hset("bonds|2", "ask_price", 98.25),
+        redis.del("bond_ids"),
+        redis.sadd("bond_ids", 1),
+        redis.sadd("bond_ids", 2),
+        redis.del("sortAlpha"),
+        redis.rpush("sortAlpha","abc", "xyz")
+      ))
+      val r = for {
+        _ <- init
+        sort <- redis.sort("bond_ids")
+        sortDesc <- redis.sort("bond_ids", order = Some(DESC))
+        sortAlpha <- redis.sort("sortAlpha", alpha = true)
+        sortLimit <- redis.sort("bond_ids", limit = Some(LimitOffsetCount(0, 1)))
+        b1 <- redis.sort("bond_ids", byPattern = Some("bonds|*->bid_price"))
+        b2 <- redis.sort("bond_ids", byPattern = Some("bonds|*->bid_price"), getPatterns = Seq("bonds|*->bid_price"))
+        b3 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), getPatterns= Seq("bonds|*->bid_price", "#"))
+        b4 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), Some(LimitOffsetCount(0, 1)))
+        b5 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), order = Some(DESC))
+        b6 <- redis.sort("bond_ids", Some("bonds|*->bid_price"))
+        b7 <- redis.sortStore("bond_ids", Some("bonds|*->ask_price"), store = Some("bond_ids_sorted_by_ask_price"))
+      } yield {
+        sort.get mustEqual Seq(ByteString("1"), ByteString("2"))
+        sortDesc.get mustEqual Seq(ByteString("2"), ByteString("1"))
+        sortAlpha.get mustEqual Seq(ByteString("abc"), ByteString("xyz"))
+        sortLimit.get mustEqual Seq(ByteString("1"))
+        b1.get mustEqual Seq(ByteString("2"), ByteString("1"))
+        b2.get mustEqual Seq(ByteString("95.5"), ByteString("96.01"))
+        b3.get mustEqual Seq(ByteString("95.5"), ByteString("2"), ByteString("96.01"), ByteString("1"))
+        b4.get mustEqual Seq(ByteString("2"))
+        b5.get mustEqual Seq(ByteString("1"), ByteString("2"))
+        b6.get mustEqual Seq(ByteString("2"), ByteString("1"))
+        b7 mustEqual 2
+      }
+      Await.result(r, timeOut)
     }
 
     "TTL" in {
