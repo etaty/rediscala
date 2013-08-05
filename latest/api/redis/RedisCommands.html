@@ -1183,15 +1183,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a></dd></dl></div>
     </li><li name="redis.commands.Keys#migrate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="migrate(host:String,port:String,key:String,destinationDB:String,timeOut:Long)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[String]"></a>
-      <a id="migrate(String,String,String,String,Long)(ExecutionContext):Future[String]"></a>
+      <a id="migrate(host:String,port:Int,key:String,destinationDB:Int,timeout:scala.concurrent.duration.FiniteDuration)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
+      <a id="migrate(String,Int,String,Int,FiniteDuration)(ExecutionContext):Future[Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">migrate</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="port">port: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationDB">destinationDB: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="timeOut">timeOut: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">migrate</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationDB">destinationDB: <span class="extype" name="scala.Int">Int</span></span>, <span name="timeout">timeout: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
@@ -1209,15 +1209,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a></dd></dl></div>
     </li><li name="redis.commands.Keys#move" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="move(key:String,db:String)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
-      <a id="move(String,String)(ExecutionContext):Future[Boolean]"></a>
+      <a id="move(key:String,db:Int)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
+      <a id="move(String,Int)(ExecutionContext):Future[Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">move</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="db">db: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">move</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="db">db: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
@@ -1286,16 +1286,42 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="redis.commands.Keys#object" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="object():Nothing"></a>
-      <a id="object():Nothing"></a>
+    </li><li name="redis.commands.Keys#objectEncoding" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="objectEncoding(key:String)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Option[String]]"></a>
+      <a id="objectEncoding(String)(ExecutionContext):Future[Option[String]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">object</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Nothing">Nothing</span></span>
+        <span class="name">objectEncoding</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
+    </li><li name="redis.commands.Keys#objectIdletime" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="objectIdletime(key:String)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Option[Long]]"></a>
+      <a id="objectIdletime(String)(ExecutionContext):Future[Option[Long]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">objectIdletime</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
+    </li><li name="redis.commands.Keys#objectRefcount" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="objectRefcount(key:String)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Option[Long]]"></a>
+      <a id="objectRefcount(String)(ExecutionContext):Future[Option[Long]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">objectRefcount</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
@@ -1794,15 +1820,28 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a></dd></dl></div>
     </li><li name="redis.commands.Keys#sort" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="sort:Nothing"></a>
-      <a id="sort:Nothing"></a>
+      <a id="sort(key:String,byPattern:Option[String],limit:Option[redis.api.LimitOffsetCount],getPatterns:Seq[String],order:Option[redis.api.Order],alpha:Boolean)(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[scala.util.Try[Seq[akka.util.ByteString]]]"></a>
+      <a id="sort(String,Option[String],Option[LimitOffsetCount],Seq[String],Option[Order],Boolean)(ExecutionContext):Future[Try[Seq[ByteString]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sort</span><span class="result">: <span class="extype" name="scala.Nothing">Nothing</span></span>
+        <span class="name">sort</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="byPattern">byPattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="api/LimitOffsetCount.html" class="extype" name="redis.api.LimitOffsetCount">LimitOffsetCount</a>] = <span class="symbol">None</span></span>, <span name="getPatterns">getPatterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Seq()</span></span>, <span name="order">order: <span class="extype" name="scala.Option">Option</span>[<a href="api/Order.html" class="extype" name="redis.api.Order">Order</a>] = <span class="symbol">None</span></span>, <span name="alpha">alpha: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="akka.util.ByteString">ByteString</span>]]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
+    </li><li name="redis.commands.Keys#sortStore" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sortStore(key:String,byPattern:Option[String],limit:Option[redis.api.LimitOffsetCount],getPatterns:Seq[String],order:Option[redis.api.Order],alpha:Boolean,store:Option[String])(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Long]"></a>
+      <a id="sortStore(String,Option[String],Option[LimitOffsetCount],Seq[String],Option[Order],Boolean,Option[String])(ExecutionContext):Future[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sortStore</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="byPattern">byPattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="api/LimitOffsetCount.html" class="extype" name="redis.api.LimitOffsetCount">LimitOffsetCount</a>] = <span class="symbol">None</span></span>, <span name="getPatterns">getPatterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Seq()</span></span>, <span name="order">order: <span class="extype" name="scala.Option">Option</span>[<a href="api/Order.html" class="extype" name="redis.api.Order">Order</a>] = <span class="symbol">None</span></span>, <span name="alpha">alpha: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="store">store: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
