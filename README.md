@@ -57,7 +57,7 @@ https://github.com/etaty/rediscala-demo
 * brpop
 * brpopplush
 
-** todo example**
+**todo example**
 
 ###### Transactions
 
@@ -66,13 +66,13 @@ We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/inde
 When `exec` is called, `TransactionBuilder` will build and send all the commands together to the server. 
 By doing that we can use a normal connection with pipelining, and avoiding to trap a command outside of the transaction, in the transaction...
 
-** todo example**
+**todo example**
 
 ###### Pub/Sub
 
 We use an akka actor to subscribe to redis channels or patterns
 
-** todo example**
+**todo example**
 
 ### Commands
 
