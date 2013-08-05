@@ -1,7 +1,7 @@
 rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://coveralls.io/repos/etaty/rediscala/badge.png?branch=master)](https://coveralls.io/r/etaty/rediscala?branch=master)
 =========
 
-A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+)
+A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
 
  * Reactive : Redis requests/replies are wrapped in Futures.
 
@@ -52,9 +52,27 @@ https://github.com/etaty/rediscala-demo
 
 ###### Blocking commands
 
+[RedisBlockingClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisBlockingClient) is the instance allowing access to blocking commands :
+* blpop
+* brpop
+* brpopplush
+
+** todo example**
+
 ###### Transactions
 
+The idea behind transactions in rediscala is to start a transaction outside of a redis connection.
+We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.TransactionBuilder)
+When `exec` is called, `TransactionBuilder` will build and send all the commands together to the server. 
+By doing that we can use a normal connection with pipelining, and avoiding to trap a command outside of the transaction, in the transaction...
+
+** todo example**
+
 ###### Pub/Sub
+
+We use an akka actor to subscribe to redis channels or patterns
+
+** todo example**
 
 ### Commands
 
