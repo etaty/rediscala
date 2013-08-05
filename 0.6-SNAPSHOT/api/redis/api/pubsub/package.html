@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>transactions - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.api.transactions</title>
-          <meta name="description" content="transactions - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.api.transactions" />
-          <meta name="keywords" content="transactions Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.api.transactions" />
+          <title>pubsub - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.api.pubsub</title>
+          <meta name="description" content="pubsub - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.api.pubsub" />
+          <meta name="keywords" content="pubsub Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.api.pubsub" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../index.html';
-            var hash = 'redis.api.transactions.package';
+            var hash = 'redis.api.pubsub.package';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,7 +26,7 @@
       <div id="definition">
         <img src="../../../lib/package_big.png" />
         <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
-        <h1>transactions</h1>
+        <h1>pubsub</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,7 +35,7 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <span class="name">transactions</span>
+        <span class="name">pubsub</span>
       </span>
       </h4>
       
@@ -58,7 +58,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="redis.api.transactions.Message" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="redis.api.pubsub.Message" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="MessageextendsProductwithSerializable"></a>
       <a id="Message:Message"></a>
       <h4 class="signature">
@@ -71,7 +71,7 @@
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.PMessage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.PMessage" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PMessageextendsProductwithSerializable"></a>
       <a id="PMessage:PMessage"></a>
       <h4 class="signature">
@@ -84,7 +84,7 @@
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.PSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.PSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PSUBSCRIBEextendsSubscribeMessagewithProductwithSerializable"></a>
       <a id="PSUBSCRIBE:PSUBSCRIBE"></a>
       <h4 class="signature">
@@ -93,11 +93,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="PSUBSCRIBE.html"><span class="name">PSUBSCRIBE</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.transactions.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="PSUBSCRIBE.html"><span class="name">PSUBSCRIBE</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.PUNSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.PUNSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PUNSUBSCRIBEextendsSubscribeMessagewithProductwithSerializable"></a>
       <a id="PUNSUBSCRIBE:PUNSUBSCRIBE"></a>
       <h4 class="signature">
@@ -106,11 +106,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="PUNSUBSCRIBE.html"><span class="name">PUNSUBSCRIBE</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.transactions.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="PUNSUBSCRIBE.html"><span class="name">PUNSUBSCRIBE</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.SUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.SUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="SUBSCRIBEextendsSubscribeMessagewithProductwithSerializable"></a>
       <a id="SUBSCRIBE:SUBSCRIBE"></a>
       <h4 class="signature">
@@ -119,11 +119,11 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="SUBSCRIBE.html"><span class="name">SUBSCRIBE</span></a><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.transactions.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="SUBSCRIBE.html"><span class="name">SUBSCRIBE</span></a><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.SubscribeMessage" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.SubscribeMessage" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="SubscribeMessageextendsAnyRef"></a>
       <a id="SubscribeMessage:SubscribeMessage"></a>
       <h4 class="signature">
@@ -136,7 +136,7 @@
       </span>
       </h4>
       
-    </li><li name="redis.api.transactions.UNSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.api.pubsub.UNSUBSCRIBE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="UNSUBSCRIBEextendsSubscribeMessagewithProductwithSerializable"></a>
       <a id="UNSUBSCRIBE:UNSUBSCRIBE"></a>
       <h4 class="signature">
@@ -145,7 +145,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="UNSUBSCRIBE.html"><span class="name">UNSUBSCRIBE</span></a><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.transactions.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="UNSUBSCRIBE.html"><span class="name">UNSUBSCRIBE</span></a><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Message - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.api.transactions.Message</title>
-          <meta name="description" content="Message - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.api.transactions.Message" />
-          <meta name="keywords" content="Message Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.api.transactions.Message" />
+          <title>PSUBSCRIBE - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.api.pubsub.PSUBSCRIBE</title>
+          <meta name="description" content="PSUBSCRIBE - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.api.pubsub.PSUBSCRIBE" />
+          <meta name="keywords" content="PSUBSCRIBE Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.api.pubsub.PSUBSCRIBE" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../index.html';
-            var hash = 'redis.api.transactions.Message';
+            var hash = 'redis.api.pubsub.PSUBSCRIBE';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="type">
       <div id="definition">
         <img src="../../../lib/class_big.png" />
-        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a>.<a href="package.html" class="extype" name="redis.api.transactions">transactions</a></p>
-        <h1>Message</h1>
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a>.<a href="package.html" class="extype" name="redis.api.pubsub">pubsub</a></p>
+        <h1>PSUBSCRIBE</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Message</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="data">data: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">PSUBSCRIBE</span><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result"> extends <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/api/transactions/transactions.scala" target="_blank">transactions.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/api/pubsub/pubsub.scala" target="_blank">pubsub.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.api.transactions.Message"><span>Message</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.api.pubsub.PSUBSCRIBE"><span>PSUBSCRIBE</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="redis.api.pubsub.SubscribeMessage"><span>SubscribeMessage</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,16 +79,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="redis.api.transactions.Message#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(channel:String,data:String):redis.api.transactions.Message"></a>
-      <a id="&lt;init&gt;:Message"></a>
+              <ol><li name="redis.api.pubsub.PSUBSCRIBE#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(pattern:String*):redis.api.pubsub.PSUBSCRIBE"></a>
+      <a id="&lt;init&gt;:PSUBSCRIBE"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Message</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="data">data: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">PSUBSCRIBE</span><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span>
       </span>
       </h4>
       
@@ -179,19 +179,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="redis.api.transactions.Message#channel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="channel:String"></a>
-      <a id="channel:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">channel</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -211,19 +198,19 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="redis.api.transactions.Message#data" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="data:String"></a>
-      <a id="data:String"></a>
+    </li><li name="redis.api.pubsub.PSUBSCRIBE#cmd" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="cmd:String"></a>
+      <a id="cmd:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">data</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">cmd</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.api.pubsub.PSUBSCRIBE">PSUBSCRIBE</a> → <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -321,6 +308,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="redis.api.pubsub.PSUBSCRIBE#params" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="params:Seq[String]"></a>
+      <a id="params:Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">params</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.api.pubsub.PSUBSCRIBE">PSUBSCRIBE</a> → <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a></dd></dl></div>
+    </li><li name="redis.api.pubsub.PSUBSCRIBE#pattern" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pattern:String*"></a>
+      <a id="pattern:String*"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pattern</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span>*</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -334,6 +347,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="redis.api.pubsub.SubscribeMessage#toByteString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toByteString:akka.util.ByteString"></a>
+      <a id="toByteString:ByteString"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toByteString</span><span class="result">: <span class="extype" name="akka.util.ByteString">ByteString</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -408,6 +434,8 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="redis.api.pubsub.SubscribeMessage">
+              <h3>Inherited from <a href="SubscribeMessage.html" class="extype" name="redis.api.pubsub.SubscribeMessage">SubscribeMessage</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
