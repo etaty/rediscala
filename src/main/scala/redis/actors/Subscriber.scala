@@ -2,7 +2,7 @@ package redis.actors
 
 import akka.util.ByteString
 import redis.protocol.{MultiBulk, RedisReply}
-import redis.api.transactions._
+import redis.api.pubsub._
 
 abstract class Subscriber extends RedisWorkerIO with DecodeReplies {
 

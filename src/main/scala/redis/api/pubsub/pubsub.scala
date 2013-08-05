@@ -1,4 +1,4 @@
-package redis.api.transactions
+package redis.api.pubsub
 
 import akka.util.ByteString
 import redis.protocol.RedisProtocolRequest

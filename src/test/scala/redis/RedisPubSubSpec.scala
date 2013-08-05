@@ -4,7 +4,7 @@ import scala.concurrent.Await
 import akka.actor.Props
 import java.net.InetSocketAddress
 import redis.actors.Subscriber
-import redis.api.transactions._
+import redis.api.pubsub._
 
 class RedisPubSubSpec extends RedisSpec {
 
