@@ -78,7 +78,18 @@ We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/inde
 When `exec` is called, `TransactionBuilder` will build and send all the commands together to the server. Then the futures will be completed.
 By doing that we can use a normal connection with pipelining, and avoiding to trap a command from outside, in the transaction...
 
-**todo example**
+```scala
+  val redisTransaction = redis.transaction() // new TransactionBuilder
+  redisTransaction.watch("a")
+  val set = redisTransaction.set("a", "abc")
+  val decr = redisTransaction.decr("a")
+  val get = redisTransaction.get("a")
+  redisTransaction.exec()
+```
+
+Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleTransaction.scala
+
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
 ### Pub/Sub
 
