@@ -45,14 +45,14 @@ object Main extends App {
 }
 ```
 
-### Examples
+### Basic Example
 
-###### Basic
 https://github.com/etaty/rediscala-demo
-You can fork with : `git clone git@github.com:etaty/rediscala-demo.git`
-You can run it, with `sbt run`
 
-###### Blocking commands
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
+
+
+### Blocking commands
 
 [RedisBlockingClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisBlockingClient) is the instance allowing access to blocking commands :
 * blpop
@@ -67,11 +67,11 @@ You can run it, with `sbt run`
       })
 ```
 Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala
-You can fork with : `git clone git@github.com:etaty/rediscala-demo.git`
-You can run it, with `sbt run`
+
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
 
-###### Transactions
+### Transactions
 
 The idea behind transactions in rediscala is to start a transaction outside of a redis connection.
 We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.TransactionBuilder)
@@ -80,7 +80,7 @@ By doing that we can use a normal connection with pipelining, and avoiding to tr
 
 **todo example**
 
-###### Pub/Sub
+### Pub/Sub
 
 We use an akka actor to subscribe to redis channels or patterns
 
