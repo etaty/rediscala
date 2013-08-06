@@ -73,10 +73,10 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 ### Transactions
 
-The idea behind transactions in rediscala is to start a transaction outside of a redis connection.
-We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.TransactionBuilder)
-When `exec` is called, `TransactionBuilder` will build and send all the commands together to the server. 
-By doing that we can use a normal connection with pipelining, and avoiding to trap a command outside of the transaction, in the transaction...
+The idea behind transactions in Rediscala is to start a transaction outside of a redis connection.
+We use the [TransactionBuilder](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.TransactionBuilder) to store call to redis commands (and for each command we give back a future)
+When `exec` is called, `TransactionBuilder` will build and send all the commands together to the server. Then the futures will be completed.
+By doing that we can use a normal connection with pipelining, and avoiding to trap a command from outside, in the transaction...
 
 **todo example**
 
