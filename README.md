@@ -49,6 +49,8 @@ object Main extends App {
 
 ###### Basic
 https://github.com/etaty/rediscala-demo
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git`
+You can run it, with `sbt run`
 
 ###### Blocking commands
 
@@ -57,7 +59,17 @@ https://github.com/etaty/rediscala-demo
 * brpop
 * brpopplush
 
-**todo example**
+```scala
+      redisBlocking1.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
+        result.map(_.map({
+          case (key, work) => println(s"list $key has work : ${work.utf8String}")
+        }))
+      })
+```
+Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git`
+You can run it, with `sbt run`
+
 
 ###### Transactions
 
