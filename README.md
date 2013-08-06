@@ -100,10 +100,10 @@ Supported :
 * [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.PubSub))
 * [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
 * [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
-* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server))
 
 Soon :
 * [Scripting](http://redis.io/commands#scripting)
+* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
 
 
 ### Scaladoc
@@ -130,6 +130,5 @@ You can run the bench with :
 * commands
   * scriptings
   * server
-  * keys : MIGRATE, MOVE, OBJECT, SORT
 * Performance
   * Maybe request should be encoded in their own scala future (benchmark needed)
