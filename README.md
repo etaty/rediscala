@@ -91,6 +91,8 @@ Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scal
 
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
+[TransactionsSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/commands/TransactionsSpec.scala) will reveal even more gems of the API.
+
 ### Pub/Sub
 
 We use an akka actor to subscribe to redis channels or patterns
