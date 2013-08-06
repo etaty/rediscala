@@ -66,9 +66,9 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
         }))
       })
 ```
-Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala
+Full example: [ExampleRediscalaBlocking](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala)
 
-You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
+You can fork with: `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
 
 ### Transactions
@@ -87,7 +87,7 @@ By doing that we can use a normal connection with pipelining, and avoiding to tr
   redisTransaction.exec()
 ```
 
-Example here : https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleTransaction.scala
+Full example: [ExampleTransaction](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleTransaction.scala)
 
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
