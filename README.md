@@ -125,10 +125,3 @@ You can run the bench with :
 2. run `sbt bench:test`
 3. open the bench report `rediscala/tmp/report/index.html`
 
-
-###TODO
-* commands
-  * scriptings
-  * server
-* Performance
-  * Maybe request should be encoded in their own scala future (benchmark needed)
