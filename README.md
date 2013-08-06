@@ -80,10 +80,10 @@ By doing that we can use a normal connection with pipelining, and avoiding to tr
 
 ```scala
   val redisTransaction = redis.transaction() // new TransactionBuilder
-  redisTransaction.watch("a")
-  val set = redisTransaction.set("a", "abc")
-  val decr = redisTransaction.decr("a")
-  val get = redisTransaction.get("a")
+  redisTransaction.watch("key")
+  val set = redisTransaction.set("key", "abcValue")
+  val decr = redisTransaction.decr("key")
+  val get = redisTransaction.get("key")
   redisTransaction.exec()
 ```
 
