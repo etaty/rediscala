@@ -8,7 +8,7 @@ A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-bl
  * Typesafe : Redis types are mapped to Scala types.
 
  * Fast : Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection. 
-A worker actor handles I/O operations (I/O bounds), another handles decoding of Redis replies.
+A worker actor handles I/O operations (I/O bounds), another handles decoding of Redis replies (CPU bounds).
 
 ### Set up your project dependencies
 
