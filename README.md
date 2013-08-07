@@ -60,11 +60,11 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 * brpopplush
 
 ```scala
-      redisBlocking1.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
-        result.map(_.map({
-          case (key, work) => println(s"list $key has work : ${work.utf8String}")
-        }))
-      })
+  redisBlocking1.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
+    result.map(_.map({
+      case (key, work) => println(s"list $key has work : ${work.utf8String}")
+    }))
+  })
 ```
 Full example: [ExampleRediscalaBlocking](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala)
 
@@ -97,7 +97,41 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 We use an akka actor to subscribe to redis channels or patterns
 
-**todo example**
+```scala
+object ExamplePubSub extends App {
+  implicit val akkaSystem = akka.actor.ActorSystem()
+
+  val redis = RedisClient()
+
+  akkaSystem.scheduler.schedule(2 seconds, 2 seconds)(redis.publish("time", System.currentTimeMillis()))
+  akkaSystem.scheduler.schedule(2 seconds, 5 seconds)(redis.publish("pattern.match", "pattern value"))
+  akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.shutdown())
+
+  val channels = Seq("time")
+  val patterns = Seq("pattern.*")
+  akkaSystem.actorOf(Props(classOf[SubscribeActor], channels, patterns).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+
+}
+
+class SubscribeActor(channels: Seq[String] = Nil, patterns: Seq[String] = Nil) extends RedisSubscriberActor(channels, patterns) {
+  override val address: InetSocketAddress = new InetSocketAddress("localhost", 6379)
+
+  def onMessage(message: Message) {
+    println(s" message received: $message")
+  }
+
+  def onPMessage(pmessage: PMessage) {
+    println(s"pattern message received: $pmessage")
+  }
+}
+```
+
+Full example: [ExamplePubSub](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExamplePubSub.scala)
+
+You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
+
+[TransactionsSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/actors/RedisSubscriberActor.scala) will reveal even more gems of the API.
+
 
 ### Commands
 
