@@ -52,7 +52,7 @@ https://github.com/etaty/rediscala-demo
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
 
-### Commands
+### Redis Commands
 
 Supported :
 * [Keys](http://redis.io/commands#generic) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Keys))
