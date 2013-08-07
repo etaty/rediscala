@@ -1,6 +1,6 @@
 package redis.actors
 
-import akka.actor.{ActorRef, Actor}
+import akka.actor.{ActorLogging, ActorRef, Actor}
 import akka.event.Logging
 import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
@@ -12,13 +12,11 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 
-trait RedisWorkerIO extends Actor {
+trait RedisWorkerIO extends Actor with ActorLogging{
 
   def address: InetSocketAddress
 
   import context._
-
-  val log = Logging(context.system, this)
 
   val tcp = akka.io.IO(Tcp)(context.system)
 

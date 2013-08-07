@@ -1,51 +1,107 @@
 package redis
 
 import scala.concurrent.Await
-import akka.actor.Props
-import java.net.InetSocketAddress
-import redis.actors.Subscriber
 import redis.api.pubsub._
+import redis.actors.RedisSubscriberActor
+import java.net.InetSocketAddress
+import akka.actor.{Props, ActorRef}
+import akka.testkit.{TestActorRef, TestProbe}
 
 class RedisPubSubSpec extends RedisSpec {
 
   sequential
 
   "PubSub test" should {
-    "PubSub" in {
+    "ok (client + callback)" in {
 
-      val host = "localhost"
-      val port = 6379
-      val channels = Seq("chan1", "secondChannel")
-      val patterns = Seq("chan*")
+      var redisPubSub: RedisPubSub = null
 
-      system.actorOf(Props(classOf[SubscribeActor], new InetSocketAddress(host, port), channels, patterns).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      redisPubSub = RedisPubSub(
+        channels = Seq("chan1", "secondChannel"),
+        patterns = Seq("chan*"),
+        onMessage = (m: Message) => {
+          redisPubSub.unsubscribe("chan1", "secondChannel")
+          redisPubSub.punsubscribe("chan*")
+          redisPubSub.subscribe(m.data)
+          redisPubSub.psubscribe("next*")
+        }
+      )
 
       Thread.sleep(2000)
 
-      val p = redis.publish("chan1", "message")
+      val p = redis.publish("chan1", "nextChan")
       val noListener = redis.publish("noListenerChan", "message")
       Await.result(p, timeOut) mustEqual 2
       Await.result(noListener, timeOut) mustEqual 0
-      // todo finish tests
+
+      Thread.sleep(2000)
+      val nextChan = redis.publish("nextChan", "message")
+      val p2 = redis.publish("chan1", "nextChan")
+      Await.result(p2, timeOut) mustEqual 0
+      Await.result(nextChan, timeOut) mustEqual 2
+    }
+
+    "ok (actor)" in {
+      val probeMock = TestProbe()
+      val channels = Seq("channel")
+      val patterns = Seq("pattern.*")
+
+      val subscriberActor = TestActorRef[SubscriberActor](
+        Props(classOf[SubscriberActor], channels, patterns, probeMock.ref)
+          .withDispatcher("rediscala.rediscala-client-worker-dispatcher"),
+        "SubscriberActor"
+      )
+      import scala.concurrent.duration._
+
+      system.scheduler.scheduleOnce(2 seconds)(redis.publish("channel", "value"))
+
+      probeMock.expectMsgType[Message](5 seconds) mustEqual Message("channel", "value")
+
+      redis.publish("pattern.1", "value")
+
+      probeMock.expectMsgType[PMessage] mustEqual PMessage("pattern.*", "pattern.1", "value")
+
+      subscriberActor.underlyingActor.subscribe("channel2")
+      subscriberActor.underlyingActor.unsubscribe("channel")
+
+      system.scheduler.scheduleOnce(2 seconds)({
+        redis.publish("channel", "value")
+        redis.publish("channel2", "value")
+      })
+      probeMock.expectMsgType[Message](5 seconds) mustEqual Message("channel2", "value")
+
+
+      subscriberActor.underlyingActor.psubscribe("pattern2.*")
+      subscriberActor.underlyingActor.punsubscribe("pattern.*")
+
+      system.scheduler.scheduleOnce(2 seconds)({
+        redis.publish("pattern2.match", "value")
+        redis.publish("pattern.*", "value")
+      })
+      probeMock.expectMsgType[PMessage](5 seconds) mustEqual PMessage("pattern2.*", "pattern2.match", "value")
+    }
+
+    "test resetConnection" in {
+      todo
     }
   }
 
 }
 
-class SubscribeActor(addr: InetSocketAddress, channels: Seq[String] = Nil, patterns: Seq[String] = Nil) extends Subscriber {
-  override def onMessage(message: Message) {
+class SubscriberActor(
+                       channels: Seq[String],
+                       patterns: Seq[String],
+                       probeMock: ActorRef
+                       ) extends RedisSubscriberActor(channels, patterns) {
+  override val address: InetSocketAddress = new InetSocketAddress("localhost", 6379)
 
+  override def onMessage(m: Message) = {
+    probeMock ! m
   }
 
-  override def onPMessage(pmessage: PMessage) {
-
+  def onPMessage(pm: PMessage) {
+    probeMock ! pm
   }
-
-  def address: InetSocketAddress = addr
-
-  def subscribedChannels: Seq[String] = channels
-
-  def subscribedPatterns: Seq[String] = patterns
 }
 
 
