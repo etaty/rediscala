@@ -1,7 +1,6 @@
 package redis.actors
 
 import akka.actor.{ActorLogging, ActorRef, Actor}
-import akka.event.Logging
 import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
@@ -22,7 +21,6 @@ trait RedisWorkerIO extends Actor with ActorLogging{
 
   // todo watch tcpWorker
   var tcpWorker: ActorRef = null
-
 
   val bufferWrite: ByteStringBuilder = new ByteStringBuilder
 
@@ -88,7 +86,6 @@ trait RedisWorkerIO extends Actor with ActorLogging{
     */
   def onConnectedCommandFailed(commandFailed: CommandFailed) = {
     log.error(commandFailed.toString) // O/S buffer was full
-    // TODO send it back if it's a Write ? (fail with big tests 400 000 ping
     tcpWorker ! commandFailed.cmd
   }
 
