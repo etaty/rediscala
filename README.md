@@ -81,7 +81,7 @@ Soon :
 * brpopplush
 
 ```scala
-  redisBlocking1.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
+  redisBlocking.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
     result.map(_.map({
       case (key, work) => println(s"list $key has work : ${work.utf8String}")
     }))
