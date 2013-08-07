@@ -65,7 +65,7 @@ case class TransactionBuilder(redisConnection: ActorRef) extends RedisCommands {
    * @param request
    * @return
    */
-  def send(request: ByteString): Future[Any] = {
+  override def send(request: ByteString): Future[Any] = {
     val p = Promise[RedisReply]()
     operations += ((request, p))
     p.future

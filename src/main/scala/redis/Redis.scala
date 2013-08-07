@@ -14,7 +14,11 @@ import java.util.concurrent.atomic.AtomicLong
 trait Request {
   def redisConnection: ActorRef
 
-  def send(request: ByteString): Future[Any]
+  def send(request: ByteString): Future[Any] = {
+    val promise = Promise[RedisReply]()
+    redisConnection ! Operation(request, promise)
+    promise.future
+  }
 
   def send(command: String, args: Seq[ByteString]): Future[Any] = {
     send(RedisProtocolRequest.multiBulk(command, args))
@@ -44,12 +48,6 @@ case class RedisClient(host: String = "localhost", port: Int = 6379, name: Strin
     name + '-' + Redis.tempName()
   )
 
-  def send(request: ByteString): Future[Any] = {
-    val promise = Promise[RedisReply]()
-    redisConnection ! Operation(request, promise)
-    promise.future
-  }
-
   // will disconnect from the server
   def disconnect() {
     system stop redisConnection
@@ -64,12 +62,6 @@ case class RedisBlockingClient(host: String = "localhost", port: Int = 6379, nam
       .withDispatcher("rediscala.rediscala-client-worker-dispatcher"),
     name + '-' + Redis.tempName()
   )
-
-  def send(request: ByteString): Future[Any] = {
-    val promise = Promise[RedisReply]()
-    redisConnection ! Operation(request, promise)
-    promise.future
-  }
 
   // will disconnect from the server
   def disconnect() {
