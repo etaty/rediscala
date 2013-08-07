@@ -80,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="redis.actors.RedisSubscriberActorWithCallback#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(address:java.net.InetSocketAddress,channels:Seq[String],patterns:Seq[String],_onMessage:redis.api.pubsub.Message=&gt;Unit,_onPMessage:redis.api.pubsub.PMessage=&gt;Unit):redis.actors.RedisSubscriberActorWithCallback"></a>
+      <a id="&lt;init&gt;(address:java.net.InetSocketAddress,channels:Seq[String],patterns:Seq[String],messageCallback:redis.api.pubsub.Message=&gt;Unit,pmessageCallback:redis.api.pubsub.PMessage=&gt;Unit):redis.actors.RedisSubscriberActorWithCallback"></a>
       <a id="&lt;init&gt;:RedisSubscriberActorWithCallback"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RedisSubscriberActorWithCallback</span><span class="params">(<span name="address">address: <span class="extype" name="java.net.InetSocketAddress">InetSocketAddress</span></span>, <span name="channels">channels: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="patterns">patterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="_onMessage">_onMessage: (<a href="../api/pubsub/Message.html" class="extype" name="redis.api.pubsub.Message">Message</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>, <span name="_onPMessage">_onPMessage: (<a href="../api/pubsub/PMessage.html" class="extype" name="redis.api.pubsub.PMessage">PMessage</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span>
+        <span class="name">RedisSubscriberActorWithCallback</span><span class="params">(<span name="address">address: <span class="extype" name="java.net.InetSocketAddress">InetSocketAddress</span></span>, <span name="channels">channels: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="patterns">patterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="messageCallback">messageCallback: (<a href="../api/pubsub/Message.html" class="extype" name="redis.api.pubsub.Message">Message</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>, <span name="pmessageCallback">pmessageCallback: (<a href="../api/pubsub/PMessage.html" class="extype" name="redis.api.pubsub.PMessage">PMessage</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span>
       </span>
       </h4>
       
@@ -182,34 +182,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="redis.actors.RedisSubscriberActor#_channels" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="_channels:scala.collection.mutable.MutableList[String]"></a>
-      <a id="_channels:MutableList[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">_channels</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Keep states of channels and actor in case of connection reset
-</p><div class="fullcomment"><div class="comment cmt"><p>Keep states of channels and actor in case of connection reset
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
-    </li><li name="redis.actors.RedisSubscriberActor#_patterns" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="_patterns:scala.collection.mutable.MutableList[String]"></a>
-      <a id="_patterns:MutableList[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">_patterns</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
     </li><li name="redis.actors.RedisSubscriberActorWithCallback#address" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="address:java.net.InetSocketAddress"></a>
       <a id="address:InetSocketAddress"></a>
@@ -262,6 +234,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#channelsSubscribed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="channelsSubscribed:scala.collection.mutable.MutableList[String]"></a>
+      <a id="channelsSubscribed:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">channelsSubscribed</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Keep states of channels and actor in case of connection reset
+</p><div class="fullcomment"><div class="comment cmt"><p>Keep states of channels and actor in case of connection reset
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
     </li><li name="redis.actors.RedisWorkerIO#cleanState" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cleanState():Unit"></a>
       <a id="cleanState():Unit"></a>
@@ -629,6 +616,19 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#patternsSubscribed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="patternsSubscribed:scala.collection.mutable.MutableList[String]"></a>
+      <a id="patternsSubscribed:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">patternsSubscribed</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
     </li><li name="akka.actor.Actor#postRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="postRestart(reason:Throwable):Unit"></a>
       <a id="postRestart(Throwable):Unit"></a>

@@ -227,33 +227,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="redis.actors.RedisSubscriberActor#_channels" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="_channels:scala.collection.mutable.MutableList[String]"></a>
-      <a id="_channels:MutableList[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">_channels</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Keep states of channels and actor in case of connection reset
-</p>
-    </li><li name="redis.actors.RedisSubscriberActor#_patterns" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="_patterns:scala.collection.mutable.MutableList[String]"></a>
-      <a id="_patterns:MutableList[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">_patterns</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -293,6 +266,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#channelsSubscribed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="channelsSubscribed:scala.collection.mutable.MutableList[String]"></a>
+      <a id="channelsSubscribed:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">channelsSubscribed</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Keep states of channels and actor in case of connection reset
+</p>
     </li><li name="redis.actors.RedisWorkerIO#cleanState" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cleanState():Unit"></a>
       <a id="cleanState():Unit"></a>
@@ -634,6 +621,19 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#patternsSubscribed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="patternsSubscribed:scala.collection.mutable.MutableList[String]"></a>
+      <a id="patternsSubscribed:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">patternsSubscribed</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="akka.actor.Actor#postRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="postRestart(reason:Throwable):Unit"></a>
       <a id="postRestart(Throwable):Unit"></a>
