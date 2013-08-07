@@ -10,12 +10,12 @@ class RedisSubscriberActorWithCallback(
                                         override val address: InetSocketAddress,
                                         channels: Seq[String],
                                         patterns: Seq[String],
-                                        _onMessage: Message => Unit,
-                                        _onPMessage: PMessage => Unit
+                                        messageCallback: Message => Unit,
+                                        pmessageCallback: PMessage => Unit
                                         ) extends RedisSubscriberActor(channels, patterns) {
-  def onMessage(m: Message) = _onMessage(m)
+  def onMessage(m: Message) = messageCallback(m)
 
-  def onPMessage(pm: PMessage) = _onPMessage(pm)
+  def onPMessage(pm: PMessage) = pmessageCallback(pm)
 }
 
 abstract class RedisSubscriberActor(
@@ -32,25 +32,25 @@ abstract class RedisSubscriberActor(
   /**
    * Keep states of channels and actor in case of connection reset
    */
-  val _channels = mutable.MutableList(channels: _*)
-  val _patterns = mutable.MutableList(patterns: _*)
+  val channelsSubscribed = mutable.MutableList(channels: _*)
+  val patternsSubscribed = mutable.MutableList(patterns: _*)
 
   override def preStart() {
     super.preStart()
-    write(SUBSCRIBE(_channels: _*).toByteString)
-    write(PSUBSCRIBE(_patterns: _*).toByteString)
+    write(SUBSCRIBE(channelsSubscribed: _*).toByteString)
+    write(PSUBSCRIBE(patternsSubscribed: _*).toByteString)
   }
 
   def writing: Receive = {
     case message: SubscribeMessage => {
       write(message.toByteString)
       message match {
-        case s: SUBSCRIBE => _channels ++= s.channel
-        case u: UNSUBSCRIBE => _channels.filter(c => {
+        case s: SUBSCRIBE => channelsSubscribed ++= s.channel
+        case u: UNSUBSCRIBE => channelsSubscribed.filter(c => {
           u.channel.exists(_ == c)
         })
-        case ps: PSUBSCRIBE => _patterns ++= ps.pattern
-        case pu: PUNSUBSCRIBE => _patterns.filter(c => {
+        case ps: PSUBSCRIBE => patternsSubscribed ++= ps.pattern
+        case pu: PUNSUBSCRIBE => patternsSubscribed.filter(c => {
           pu.pattern.exists(_ == c)
         })
       }
