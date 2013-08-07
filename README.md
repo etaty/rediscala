@@ -7,7 +7,8 @@ A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-bl
 
  * Typesafe : Redis types are mapped to Scala types.
 
- * Fast : Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection.
+ * Fast : Rediscala uses redis pipelining. Blocking redis commands are moved into their own connection. 
+A worker actor handles I/O operations (I/O bounds), another handles decoding of Redis replies.
 
 ### Set up your project dependencies
 
@@ -124,12 +125,15 @@ object ExamplePubSub extends App {
 
   val redis = RedisClient()
 
+  // publish after 2 seconds every 2 or 5 seconds
   akkaSystem.scheduler.schedule(2 seconds, 2 seconds)(redis.publish("time", System.currentTimeMillis()))
   akkaSystem.scheduler.schedule(2 seconds, 5 seconds)(redis.publish("pattern.match", "pattern value"))
+  // shutdown Akka in 20 seconds
   akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.shutdown())
 
   val channels = Seq("time")
   val patterns = Seq("pattern.*")
+  // create SubscribeActor instance
   akkaSystem.actorOf(Props(classOf[SubscribeActor], channels, patterns).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
 }
@@ -138,7 +142,7 @@ class SubscribeActor(channels: Seq[String] = Nil, patterns: Seq[String] = Nil) e
   override val address: InetSocketAddress = new InetSocketAddress("localhost", 6379)
 
   def onMessage(message: Message) {
-    println(s" message received: $message")
+    println(s"message received: $message")
   }
 
   def onPMessage(pmessage: PMessage) {
