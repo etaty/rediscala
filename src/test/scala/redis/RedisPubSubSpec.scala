@@ -80,10 +80,6 @@ class RedisPubSubSpec extends RedisSpec {
       })
       probeMock.expectMsgType[PMessage](5 seconds) mustEqual PMessage("pattern2.*", "pattern2.match", "value")
     }
-
-    "test resetConnection" in {
-      todo
-    }
   }
 
 }
