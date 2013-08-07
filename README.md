@@ -52,6 +52,26 @@ https://github.com/etaty/rediscala-demo
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
 
+### Commands
+
+Supported :
+* [Keys](http://redis.io/commands#generic) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Keys))
+* [Strings](http://redis.io/commands#string) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Strings))
+* [Hashes](http://redis.io/commands#hash) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Hashes))
+* [Lists](http://redis.io/commands#list) 
+  * non-blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Lists))
+  * blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.BLists))
+* [Sets](http://redis.io/commands#set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Sets))
+* [Sorted Sets](http://redis.io/commands#sorted_set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.SortedSets))
+* [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Publish))
+* [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
+* [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
+
+Soon :
+* [Scripting](http://redis.io/commands#scripting)
+* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
+
+
 ### Blocking commands
 
 [RedisBlockingClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisBlockingClient) is the instance allowing access to blocking commands :
@@ -95,7 +115,8 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 ### Pub/Sub
 
-We use an akka actor to subscribe to redis channels or patterns
+You can use a case class with callbacks [RedisPubSub](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisPubSub)
+or extend the actor [RedisSubscriberActor](http://etaty.github.io/rediscala/latest/api/index.html#redis.actors.RedisSubscriberActor) as shown in the example below
 
 ```scala
 object ExamplePubSub extends App {
@@ -130,27 +151,7 @@ Full example: [ExamplePubSub](https://github.com/etaty/rediscala-demo/blob/maste
 
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
-[TransactionsSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/actors/RedisSubscriberActor.scala) will reveal even more gems of the API.
-
-
-### Commands
-
-Supported :
-* [Keys](http://redis.io/commands#generic) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Keys))
-* [Strings](http://redis.io/commands#string) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Strings))
-* [Hashes](http://redis.io/commands#hash) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Hashes))
-* [Lists](http://redis.io/commands#list) 
-  * non-blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Lists))
-  * blocking ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.BLists))
-* [Sets](http://redis.io/commands#set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Sets))
-* [Sorted Sets](http://redis.io/commands#sorted_set) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.SortedSets))
-* [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.PubSub))
-* [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
-* [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
-
-Soon :
-* [Scripting](http://redis.io/commands#scripting)
-* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
+[RedisPubSubSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/RedisPubSubSpec.scala.scala) will reveal even more gems of the API.
 
 
 ### Scaladoc
