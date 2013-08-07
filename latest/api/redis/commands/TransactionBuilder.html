@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/commands/Transactions.scala" target="_blank">Transactions.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a>, <a href="Server.html" class="extype" name="redis.commands.Server">Server</a>, <a href="Connection.html" class="extype" name="redis.commands.Connection">Connection</a>, <a href="PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a>, <a href="SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a>, <a href="Sets.html" class="extype" name="redis.commands.Sets">Sets</a>, <a href="Lists.html" class="extype" name="redis.commands.Lists">Lists</a>, <a href="Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a>, <a href="Strings.html" class="extype" name="redis.commands.Strings">Strings</a>, <a href="Keys.html" class="extype" name="redis.commands.Keys">Keys</a>, <a href="../Request.html" class="extype" name="redis.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a>, <a href="Server.html" class="extype" name="redis.commands.Server">Server</a>, <a href="Connection.html" class="extype" name="redis.commands.Connection">Connection</a>, <a href="Publish.html" class="extype" name="redis.commands.Publish">Publish</a>, <a href="SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a>, <a href="Sets.html" class="extype" name="redis.commands.Sets">Sets</a>, <a href="Lists.html" class="extype" name="redis.commands.Lists">Lists</a>, <a href="Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a>, <a href="Strings.html" class="extype" name="redis.commands.Strings">Strings</a>, <a href="Keys.html" class="extype" name="redis.commands.Keys">Keys</a>, <a href="../Request.html" class="extype" name="redis.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.commands.TransactionBuilder"><span>TransactionBuilder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="redis.RedisCommands"><span>RedisCommands</span></li><li class="in" name="redis.commands.Server"><span>Server</span></li><li class="in" name="redis.commands.Connection"><span>Connection</span></li><li class="in" name="redis.commands.PubSub"><span>PubSub</span></li><li class="in" name="redis.commands.SortedSets"><span>SortedSets</span></li><li class="in" name="redis.commands.Sets"><span>Sets</span></li><li class="in" name="redis.commands.Lists"><span>Lists</span></li><li class="in" name="redis.commands.Hashes"><span>Hashes</span></li><li class="in" name="redis.commands.Strings"><span>Strings</span></li><li class="in" name="redis.commands.Keys"><span>Keys</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.commands.TransactionBuilder"><span>TransactionBuilder</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="redis.RedisCommands"><span>RedisCommands</span></li><li class="in" name="redis.commands.Server"><span>Server</span></li><li class="in" name="redis.commands.Connection"><span>Connection</span></li><li class="in" name="redis.commands.Publish"><span>Publish</span></li><li class="in" name="redis.commands.SortedSets"><span>SortedSets</span></li><li class="in" name="redis.commands.Sets"><span>Sets</span></li><li class="in" name="redis.commands.Lists"><span>Lists</span></li><li class="in" name="redis.commands.Hashes"><span>Hashes</span></li><li class="in" name="redis.commands.Strings"><span>Strings</span></li><li class="in" name="redis.commands.Keys"><span>Keys</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -1400,7 +1400,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
-    </li><li name="redis.commands.PubSub#publish" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="redis.commands.Publish#publish" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="publish[A](channel:String,value:A)(implicitconvert:redis.RedisValueConverter[A],implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Long]"></a>
       <a id="publish[A](String,A)(RedisValueConverter[A],ExecutionContext):Future[Long]"></a>
       <h4 class="signature">
@@ -1409,10 +1409,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.PubSub.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.PubSub.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.Publish.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.Publish.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Publish.html" class="extype" name="redis.commands.Publish">Publish</a></dd></dl></div>
     </li><li name="redis.commands.Connection#quit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="quit()(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
       <a id="quit()(ExecutionContext):Future[Boolean]"></a>
@@ -2430,8 +2430,8 @@
               <h3>Inherited from <a href="Server.html" class="extype" name="redis.commands.Server">Server</a></h3>
             </div><div class="parent" name="redis.commands.Connection">
               <h3>Inherited from <a href="Connection.html" class="extype" name="redis.commands.Connection">Connection</a></h3>
-            </div><div class="parent" name="redis.commands.PubSub">
-              <h3>Inherited from <a href="PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a></h3>
+            </div><div class="parent" name="redis.commands.Publish">
+              <h3>Inherited from <a href="Publish.html" class="extype" name="redis.commands.Publish">Publish</a></h3>
             </div><div class="parent" name="redis.commands.SortedSets">
               <h3>Inherited from <a href="SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a></h3>
             </div><div class="parent" name="redis.commands.Sets">

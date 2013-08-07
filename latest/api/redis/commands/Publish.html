@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>PubSub - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.commands.PubSub</title>
-          <meta name="description" content="PubSub - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.commands.PubSub" />
-          <meta name="keywords" content="PubSub Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.commands.PubSub" />
+          <title>Publish - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.commands.Publish</title>
+          <meta name="description" content="Publish - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.commands.Publish" />
+          <meta name="keywords" content="Publish Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.commands.Publish" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'redis.commands.PubSub';
+            var hash = 'redis.commands.Publish';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,7 +26,7 @@
       <div id="definition">
         <img src="../../lib/trait_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="redis">redis</a>.<a href="package.html" class="extype" name="redis.commands">commands</a></p>
-        <h1>PubSub</h1>
+        <h1>Publish</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,11 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">PubSub</span><span class="result"> extends <a href="../Request.html" class="extype" name="redis.Request">Request</a></span>
+        <span class="name">Publish</span><span class="result"> extends <a href="../Request.html" class="extype" name="redis.Request">Request</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/commands/PubSub.scala" target="_blank">PubSub.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/commands/Publish.scala" target="_blank">Publish.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../Request.html" class="extype" name="redis.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.commands.PubSub"><span>PubSub</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.commands.Publish"><span>Publish</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -337,7 +337,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="redis.commands.PubSub#publish" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.commands.Publish#publish" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="publish[A](channel:String,value:A)(implicitconvert:redis.RedisValueConverter[A],implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Long]"></a>
       <a id="publish[A](String,A)(RedisValueConverter[A],ExecutionContext):Future[Long]"></a>
       <h4 class="signature">
@@ -346,7 +346,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.PubSub.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.PubSub.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.Publish.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.Publish.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       

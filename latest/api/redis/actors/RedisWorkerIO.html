@@ -35,16 +35,16 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">RedisWorkerIO</span><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span></span>
+        <span class="name">RedisWorkerIO</span><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/actors/RedisWorkerIO.scala" target="_blank">RedisWorkerIO.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="RedisClientActor.html" class="extype" name="redis.actors.RedisClientActor">RedisClientActor</a>, <a href="Subscriber.html" class="extype" name="redis.actors.Subscriber">Subscriber</a></div>
+          <div class="subClasses hiddenContent"><a href="RedisClientActor.html" class="extype" name="redis.actors.RedisClientActor">RedisClientActor</a>, <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a>, <a href="RedisSubscriberActorWithCallback.html" class="extype" name="redis.actors.RedisSubscriberActorWithCallback">RedisSubscriberActorWithCallback</a></div>
         </div></div>
         
 
@@ -62,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.actors.RedisWorkerIO"><span>RedisWorkerIO</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.actors.RedisWorkerIO"><span>RedisWorkerIO</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -431,7 +431,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#log" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="akka.actor.ActorLogging#log" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="log:akka.event.LoggingAdapter"></a>
       <a id="log:LoggingAdapter"></a>
       <h4 class="signature">
@@ -443,7 +443,7 @@
         <span class="name">log</span><span class="result">: <span class="extype" name="akka.event.LoggingAdapter">LoggingAdapter</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ActorLogging</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -538,7 +538,7 @@ Maybe to much data in the Command ?
       </h4>
       
     </li><li name="akka.actor.Actor#postRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="postRestart(reason:Throwable):Unit"></a>
+      <a id="postRestart(reason:&lt;?&gt;):Unit"></a>
       <a id="postRestart(Throwable):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -570,7 +570,7 @@ Maybe to much data in the Command ?
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
     </li><li name="akka.actor.Actor#preRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="preRestart(reason:Throwable,message:Option[Any]):Unit"></a>
+      <a id="preRestart(reason:&lt;?&gt;,message:&lt;?&gt;):Unit"></a>
       <a id="preRestart(Throwable,Option[Any]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -771,7 +771,7 @@ Maybe to much data in the Command ?
       </h4>
       
     </li><li name="akka.actor.Actor#unhandled" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="unhandled(message:Any):Unit"></a>
+      <a id="unhandled(message:&lt;?&gt;):Unit"></a>
       <a id="unhandled(Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -862,7 +862,9 @@ Maybe to much data in the Command ?
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="akka.actor.Actor">
+        <div class="parent" name="akka.actor.ActorLogging">
+              <h3>Inherited from <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></h3>
+            </div><div class="parent" name="akka.actor.Actor">
               <h3>Inherited from <span class="extype" name="akka.actor.Actor">Actor</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>

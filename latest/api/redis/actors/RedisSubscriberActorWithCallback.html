@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>RedisWorkerIO - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.actors.RedisWorkerIO</title>
-          <meta name="description" content="RedisWorkerIO - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.actors.RedisWorkerIO" />
-          <meta name="keywords" content="RedisWorkerIO Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.actors.RedisWorkerIO" />
+          <title>RedisSubscriberActorWithCallback - Rediscala 0.6-SNAPSHOT API 0.6-SNAPSHOT - redis.actors.RedisSubscriberActorWithCallback</title>
+          <meta name="description" content="RedisSubscriberActorWithCallback - Rediscala 0.6 - SNAPSHOT API 0.6 - SNAPSHOT - redis.actors.RedisSubscriberActorWithCallback" />
+          <meta name="keywords" content="RedisSubscriberActorWithCallback Rediscala 0.6 SNAPSHOT API 0.6 SNAPSHOT redis.actors.RedisSubscriberActorWithCallback" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'redis.actors.RedisWorkerIO';
+            var hash = 'redis.actors.RedisSubscriberActorWithCallback';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,27 +24,24 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../lib/trait_big.png" />
+        <img src="../../lib/class_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="redis">redis</a>.<a href="package.html" class="extype" name="redis.actors">actors</a></p>
-        <h1>RedisWorkerIO</h1>
+        <h1>RedisSubscriberActorWithCallback</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">RedisWorkerIO</span><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></span>
+        <span class="name">RedisSubscriberActorWithCallback</span><span class="result"> extends <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/actors/RedisWorkerIO.scala" target="_blank">RedisWorkerIO.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/actors/RedisSubscriberActor.scala" target="_blank">RedisSubscriberActor.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-          <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="RedisClientActor.html" class="extype" name="redis.actors.RedisClientActor">RedisClientActor</a>, <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a>, <a href="RedisSubscriberActorWithCallback.html" class="extype" name="redis.actors.RedisSubscriberActorWithCallback">RedisSubscriberActorWithCallback</a></div>
+          <div class="superTypes hiddenContent"><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a>, <a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a>, <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a>, <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -62,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.actors.RedisWorkerIO"><span>RedisWorkerIO</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.actors.RedisSubscriberActorWithCallback"><span>RedisSubscriberActorWithCallback</span></li><li class="in" name="redis.actors.RedisSubscriberActor"><span>RedisSubscriberActor</span></li><li class="in" name="redis.actors.DecodeReplies"><span>DecodeReplies</span></li><li class="in" name="redis.actors.RedisWorkerIO"><span>RedisWorkerIO</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,7 +77,23 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="redis.actors.RedisSubscriberActorWithCallback#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(address:java.net.InetSocketAddress,channels:Seq[String],patterns:Seq[String],_onMessage:redis.api.pubsub.Message=&gt;Unit,_onPMessage:redis.api.pubsub.PMessage=&gt;Unit):redis.actors.RedisSubscriberActorWithCallback"></a>
+      <a id="&lt;init&gt;:RedisSubscriberActorWithCallback"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">RedisSubscriberActorWithCallback</span><span class="params">(<span name="address">address: <span class="extype" name="java.net.InetSocketAddress">InetSocketAddress</span></span>, <span name="channels">channels: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="patterns">patterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="_onMessage">_onMessage: (<a href="../api/pubsub/Message.html" class="extype" name="redis.api.pubsub.Message">Message</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>, <span name="_onPMessage">_onPMessage: (<a href="../api/pubsub/PMessage.html" class="extype" name="redis.api.pubsub.PMessage">PMessage</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
@@ -100,78 +113,10 @@
     </li></ol>
             </div>
 
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="redis.actors.RedisWorkerIO#address" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="address:java.net.InetSocketAddress"></a>
-      <a id="address:InetSocketAddress"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">address</span><span class="result">: <span class="extype" name="java.net.InetSocketAddress">InetSocketAddress</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#onConnectionClosed" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="onConnectionClosed():Unit"></a>
-      <a id="onConnectionClosed():Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">onConnectionClosed</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#onDataReceived" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="onDataReceived(dataByteString:akka.util.ByteString):Unit"></a>
-      <a id="onDataReceived(ByteString):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">onDataReceived</span><span class="params">(<span name="dataByteString">dataByteString: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#onWriteSent" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="onWriteSent():Unit"></a>
-      <a id="onWriteSent():Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">onWriteSent</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#writing" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="writing:RedisWorkerIO.this.Receive"></a>
-      <a id="writing:Receive"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writing</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisWorkerIO.Receive">Receive</a></span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -237,6 +182,47 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#_channels" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_channels:scala.collection.mutable.MutableList[String]"></a>
+      <a id="_channels:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">_channels</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Keep states of channels and actor in case of connection reset
+</p><div class="fullcomment"><div class="comment cmt"><p>Keep states of channels and actor in case of connection reset
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#_patterns" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_patterns:scala.collection.mutable.MutableList[String]"></a>
+      <a id="_patterns:MutableList[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">_patterns</span><span class="result">: <span class="extype" name="scala.collection.mutable.MutableList">MutableList</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActorWithCallback#address" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="address:java.net.InetSocketAddress"></a>
+      <a id="address:InetSocketAddress"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">address</span><span class="result">: <span class="extype" name="java.net.InetSocketAddress">InetSocketAddress</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisSubscriberActorWithCallback">RedisSubscriberActorWithCallback</a> → <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -250,7 +236,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#bufferWrite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.DecodeReplies#bufferRead" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bufferRead:akka.util.ByteString"></a>
+      <a id="bufferRead:ByteString"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bufferRead</span><span class="result">: <span class="extype" name="akka.util.ByteString">ByteString</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#bufferWrite" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bufferWrite:akka.util.ByteStringBuilder"></a>
       <a id="bufferWrite:ByteStringBuilder"></a>
       <h4 class="signature">
@@ -262,8 +261,8 @@
         <span class="name">bufferWrite</span><span class="result">: <span class="extype" name="akka.util.ByteStringBuilder">ByteStringBuilder</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#cleanState" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#cleanState" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="cleanState():Unit"></a>
       <a id="cleanState():Unit"></a>
       <h4 class="signature">
@@ -275,7 +274,7 @@
         <span class="name">cleanState</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -295,7 +294,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#connected" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#connected" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="connected:RedisWorkerIO.this.Receive"></a>
       <a id="connected:Receive"></a>
       <h4 class="signature">
@@ -304,11 +303,11 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">connected</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisWorkerIO.Receive">Receive</a></span>
+        <span class="name">connected</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisSubscriberActorWithCallback.Receive">Receive</a></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#connecting" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#connecting" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="connecting:RedisWorkerIO.this.Receive"></a>
       <a id="connecting:Receive"></a>
       <h4 class="signature">
@@ -317,10 +316,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">connecting</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisWorkerIO.Receive">Receive</a></span>
+        <span class="name">connecting</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisSubscriberActorWithCallback.Receive">Receive</a></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="akka.actor.Actor#context" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="context:akka.actor.ActorContext"></a>
       <a id="context:ActorContext"></a>
@@ -334,6 +333,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Actor</dd></dl></div>
+    </li><li name="redis.actors.DecodeReplies#decodeReplies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeReplies(dataByteString:akka.util.ByteString):Unit"></a>
+      <a id="decodeReplies(ByteString):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeReplies</span><span class="params">(<span name="dataByteString">dataByteString: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -405,7 +417,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#initConnectedBuffer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#initConnectedBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="initConnectedBuffer():Unit"></a>
       <a id="initConnectedBuffer():Unit"></a>
       <h4 class="signature">
@@ -417,7 +429,7 @@
         <span class="name">initConnectedBuffer</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -483,7 +495,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#onConnected" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#onConnected" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onConnected(cmd:akka.io.Tcp.Connected):Unit"></a>
       <a id="onConnected(Connected):Unit"></a>
       <h4 class="signature">
@@ -495,8 +507,8 @@
         <span class="name">onConnected</span><span class="params">(<span name="cmd">cmd: <span class="extype" name="akka.io.Tcp.Connected">Connected</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#onConnectedCommandFailed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#onConnectedCommandFailed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onConnectedCommandFailed(commandFailed:akka.io.Tcp.CommandFailed):Unit"></a>
       <a id="onConnectedCommandFailed(CommandFailed):Unit"></a>
       <h4 class="signature">
@@ -510,8 +522,10 @@
       </h4>
       <p class="shortcomment cmt">O/S buffer was full
 Maybe to much data in the Command ?
-</p>
-    </li><li name="redis.actors.RedisWorkerIO#onConnectingCommandFailed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+</p><div class="fullcomment"><div class="comment cmt"><p>O/S buffer was full
+Maybe to much data in the Command ?
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#onConnectingCommandFailed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onConnectingCommandFailed(cmdFailed:akka.io.Tcp.CommandFailed):Unit"></a>
       <a id="onConnectingCommandFailed(CommandFailed):Unit"></a>
       <h4 class="signature">
@@ -523,8 +537,21 @@ Maybe to much data in the Command ?
         <span class="name">onConnectingCommandFailed</span><span class="params">(<span name="cmdFailed">cmdFailed: <span class="extype" name="akka.io.Tcp.CommandFailed">CommandFailed</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#onConnectionClosed" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#onConnectionClosed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onConnectionClosed():Unit"></a>
+      <a id="onConnectionClosed():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onConnectionClosed</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#onConnectionClosed" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="onConnectionClosed(c:akka.io.Tcp.ConnectionClosed):Unit"></a>
       <a id="onConnectionClosed(ConnectionClosed):Unit"></a>
       <h4 class="signature">
@@ -536,9 +563,74 @@ Maybe to much data in the Command ?
         <span class="name">onConnectionClosed</span><span class="params">(<span name="c">c: <span class="extype" name="akka.io.Tcp.ConnectionClosed">ConnectionClosed</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#onDataReceived" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onDataReceived(dataByteString:akka.util.ByteString):Unit"></a>
+      <a id="onDataReceived(ByteString):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onDataReceived</span><span class="params">(<span name="dataByteString">dataByteString: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#onDecodedReply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onDecodedReply(reply:redis.protocol.RedisReply):Unit"></a>
+      <a id="onDecodedReply(RedisReply):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onDecodedReply</span><span class="params">(<span name="reply">reply: <a href="../protocol/RedisReply.html" class="extype" name="redis.protocol.RedisReply">RedisReply</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActorWithCallback#onMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onMessage(m:redis.api.pubsub.Message):Unit"></a>
+      <a id="onMessage(Message):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onMessage</span><span class="params">(<span name="m">m: <a href="../api/pubsub/Message.html" class="extype" name="redis.api.pubsub.Message">Message</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisSubscriberActorWithCallback">RedisSubscriberActorWithCallback</a> → <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActorWithCallback#onPMessage" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onPMessage(pm:redis.api.pubsub.PMessage):Unit"></a>
+      <a id="onPMessage(PMessage):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onPMessage</span><span class="params">(<span name="pm">pm: <a href="../api/pubsub/PMessage.html" class="extype" name="redis.api.pubsub.PMessage">PMessage</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisSubscriberActorWithCallback">RedisSubscriberActorWithCallback</a> → <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#onWriteSent" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="onWriteSent():Unit"></a>
+      <a id="onWriteSent():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">onWriteSent</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="akka.actor.Actor#postRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="postRestart(reason:&lt;?&gt;):Unit"></a>
+      <a id="postRestart(reason:Throwable):Unit"></a>
       <a id="postRestart(Throwable):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -568,9 +660,9 @@ Maybe to much data in the Command ?
         <span class="name">postStop</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
     </li><li name="akka.actor.Actor#preRestart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="preRestart(reason:&lt;?&gt;,message:&lt;?&gt;):Unit"></a>
+      <a id="preRestart(reason:Throwable,message:Option[Any]):Unit"></a>
       <a id="preRestart(Throwable,Option[Any]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -588,7 +680,7 @@ Maybe to much data in the Command ?
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#preStart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="redis.actors.RedisSubscriberActor#preStart" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="preStart():Unit"></a>
       <a id="preStart():Unit"></a>
       <h4 class="signature">
@@ -600,8 +692,34 @@ Maybe to much data in the Command ?
         <span class="name">preStart</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#readyToWrite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#psubscribe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="psubscribe(patterns:String*):Unit"></a>
+      <a id="psubscribe(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">psubscribe</span><span class="params">(<span name="patterns">patterns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#punsubscribe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="punsubscribe(patterns:String*):Unit"></a>
+      <a id="punsubscribe(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">punsubscribe</span><span class="params">(<span name="patterns">patterns: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#readyToWrite" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="readyToWrite:Boolean"></a>
       <a id="readyToWrite:Boolean"></a>
       <h4 class="signature">
@@ -613,7 +731,7 @@ Maybe to much data in the Command ?
         <span class="name">readyToWrite</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="redis.actors.RedisWorkerIO#receive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="receive:PartialFunction[Any,Unit]"></a>
       <a id="receive:PartialFunction[Any,Unit]"></a>
@@ -626,8 +744,8 @@ Maybe to much data in the Command ?
         <span class="name">receive</span><span class="result">: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scala.Any">Any</span>, <span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#reconnectDuration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> → Actor</dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#reconnectDuration" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="reconnectDuration:scala.concurrent.duration.FiniteDuration"></a>
       <a id="reconnectDuration:FiniteDuration"></a>
       <h4 class="signature">
@@ -639,8 +757,8 @@ Maybe to much data in the Command ?
         <span class="name">reconnectDuration</span><span class="result">: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#restartConnection" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#restartConnection" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="restartConnection():Unit"></a>
       <a id="restartConnection():Unit"></a>
       <h4 class="signature">
@@ -652,8 +770,8 @@ Maybe to much data in the Command ?
         <span class="name">restartConnection</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#scheduleReconnect" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#scheduleReconnect" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="scheduleReconnect():Unit"></a>
       <a id="scheduleReconnect():Unit"></a>
       <h4 class="signature">
@@ -665,7 +783,7 @@ Maybe to much data in the Command ?
         <span class="name">scheduleReconnect</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="akka.actor.Actor#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:akka.actor.ActorRef"></a>
       <a id="self:ActorRef"></a>
@@ -692,6 +810,19 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Actor</dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#subscribe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="subscribe(channels:String*):Unit"></a>
+      <a id="subscribe(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">subscribe</span><span class="params">(<span name="channels">channels: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
     </li><li name="akka.actor.Actor#supervisorStrategy" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="supervisorStrategy:akka.actor.SupervisorStrategy"></a>
       <a id="supervisorStrategy:SupervisorStrategy"></a>
@@ -718,7 +849,7 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#tcp" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#tcp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tcp:akka.actor.ActorRef"></a>
       <a id="tcp:ActorRef"></a>
       <h4 class="signature">
@@ -730,8 +861,8 @@ Maybe to much data in the Command ?
         <span class="name">tcp</span><span class="result">: <span class="extype" name="akka.actor.ActorRef">ActorRef</span></span>
       </span>
       </h4>
-      
-    </li><li name="redis.actors.RedisWorkerIO#tcpWorker" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisWorkerIO#tcpWorker" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tcpWorker:akka.actor.ActorRef"></a>
       <a id="tcpWorker:ActorRef"></a>
       <h4 class="signature">
@@ -743,7 +874,7 @@ Maybe to much data in the Command ?
         <span class="name">tcpWorker</span><span class="result">: <span class="extype" name="akka.actor.ActorRef">ActorRef</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -757,7 +888,7 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#tryWrite" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#tryWrite" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tryWrite():Unit"></a>
       <a id="tryWrite():Unit"></a>
       <h4 class="signature">
@@ -769,9 +900,9 @@ Maybe to much data in the Command ?
         <span class="name">tryWrite</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li><li name="akka.actor.Actor#unhandled" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="unhandled(message:&lt;?&gt;):Unit"></a>
+      <a id="unhandled(message:Any):Unit"></a>
       <a id="unhandled(Any):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -783,6 +914,19 @@ Maybe to much data in the Command ?
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Actor</dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#unsubscribe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unsubscribe(channels:String*):Unit"></a>
+      <a id="unsubscribe(String*):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unsubscribe</span><span class="params">(<span name="channels">channels: <span class="extype" name="scala.Predef.String">String</span>*</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -840,7 +984,7 @@ Maybe to much data in the Command ?
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="redis.actors.RedisWorkerIO#write" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="redis.actors.RedisWorkerIO#write" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="write(byteString:akka.util.ByteString):Unit"></a>
       <a id="write(ByteString):Unit"></a>
       <h4 class="signature">
@@ -852,7 +996,20 @@ Maybe to much data in the Command ?
         <span class="name">write</span><span class="params">(<span name="byteString">byteString: <span class="extype" name="akka.util.ByteString">ByteString</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
+    </li><li name="redis.actors.RedisSubscriberActor#writing" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="writing:RedisSubscriberActor.this.Receive"></a>
+      <a id="writing:Receive"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">writing</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="redis.actors.RedisSubscriberActorWithCallback.Receive">Receive</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a> → <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -862,7 +1019,13 @@ Maybe to much data in the Command ?
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="akka.actor.ActorLogging">
+        <div class="parent" name="redis.actors.RedisSubscriberActor">
+              <h3>Inherited from <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></h3>
+            </div><div class="parent" name="redis.actors.DecodeReplies">
+              <h3>Inherited from <a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></h3>
+            </div><div class="parent" name="redis.actors.RedisWorkerIO">
+              <h3>Inherited from <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a></h3>
+            </div><div class="parent" name="akka.actor.ActorLogging">
               <h3>Inherited from <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></h3>
             </div><div class="parent" name="akka.actor.Actor">
               <h3>Inherited from <span class="extype" name="akka.actor.Actor">Actor</span></h3>

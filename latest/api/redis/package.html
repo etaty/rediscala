@@ -93,7 +93,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="RedisBlockingClient.html"><span class="name">RedisBlockingClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="commands/BLists.html" class="extype" name="redis.commands.BLists">BLists</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RedisBlockingClient.html"><span class="name">RedisBlockingClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;RedisBlockingClient&quot;</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="commands/BLists.html" class="extype" name="redis.commands.BLists">BLists</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -106,12 +106,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="RedisClient.html"><span class="name">RedisClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a> with <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RedisClient.html"><span class="name">RedisClient</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;RedisClient&quot;</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a> with <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
-      <p class="comment cmt"></p>
+      
     </li><li name="redis.RedisCommands" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="RedisCommandsextendsKeyswithStringswithHasheswithListswithSetswithSortedSetswithPubSubwithConnectionwithServer"></a>
+      <a id="RedisCommandsextendsKeyswithStringswithHasheswithListswithSetswithSortedSetswithPublishwithConnectionwithServer"></a>
       <a id="RedisCommands:RedisCommands"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -119,7 +119,20 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="RedisCommands.html"><span class="name">RedisCommands</span></a><span class="result"> extends <a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a> with <a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a> with <a href="commands/Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a> with <a href="commands/Lists.html" class="extype" name="redis.commands.Lists">Lists</a> with <a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a> with <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a> with <a href="commands/PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a> with <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a> with <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a></span>
+        <a href="RedisCommands.html"><span class="name">RedisCommands</span></a><span class="result"> extends <a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a> with <a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a> with <a href="commands/Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a> with <a href="commands/Lists.html" class="extype" name="redis.commands.Lists">Lists</a> with <a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a> with <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a> with <a href="commands/Publish.html" class="extype" name="redis.commands.Publish">Publish</a> with <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a> with <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.RedisPubSub" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisPubSubextendsProductwithSerializable"></a>
+      <a id="RedisPubSub:RedisPubSub"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisPubSub.html"><span class="name">RedisPubSub</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>, <span name="channels">channels: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="patterns">patterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="onMessage">onMessage: (<a href="api/pubsub/Message.html" class="extype" name="redis.api.pubsub.Message">Message</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="defval" name="((x$1: redis.api.pubsub.Message) =&gt; ())">...</span></span>, <span name="onPMessage">onPMessage: (<a href="api/pubsub/PMessage.html" class="extype" name="redis.api.pubsub.PMessage">PMessage</a>) ⇒ <span class="extype" name="scala.Unit">Unit</span> = <span class="defval" name="((x$2: redis.api.pubsub.PMessage) =&gt; ())">...</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;RedisPubSub&quot;</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       

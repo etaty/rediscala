@@ -97,8 +97,34 @@
       </span>
       </h4>
       
+    </li><li name="redis.actors.RedisSubscriberActor" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RedisSubscriberActorextendsRedisWorkerIOwithDecodeReplies"></a>
+      <a id="RedisSubscriberActor:RedisSubscriberActor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisSubscriberActor.html"><span class="name">RedisSubscriberActor</span></a><span class="result"> extends <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> with <a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.actors.RedisSubscriberActorWithCallback" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisSubscriberActorWithCallbackextendsRedisSubscriberActor"></a>
+      <a id="RedisSubscriberActorWithCallback:RedisSubscriberActorWithCallback"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisSubscriberActorWithCallback.html"><span class="name">RedisSubscriberActorWithCallback</span></a><span class="result"> extends <a href="RedisSubscriberActor.html" class="extype" name="redis.actors.RedisSubscriberActor">RedisSubscriberActor</a></span>
+      </span>
+      </h4>
+      
     </li><li name="redis.actors.RedisWorkerIO" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="RedisWorkerIOextendsActor"></a>
+      <a id="RedisWorkerIOextendsActorwithActorLogging"></a>
       <a id="RedisWorkerIO:RedisWorkerIO"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -106,7 +132,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="RedisWorkerIO.html"><span class="name">RedisWorkerIO</span></a><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span></span>
+        <a href="RedisWorkerIO.html"><span class="name">RedisWorkerIO</span></a><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></span>
       </span>
       </h4>
       
@@ -120,19 +146,6 @@
       </span>
       <span class="symbol">
         <a href="ReplyErrorException.html"><span class="name">ReplyErrorException</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Exception">Exception</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="redis.actors.Subscriber" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="SubscriberextendsRedisWorkerIOwithDecodeReplies"></a>
-      <a id="Subscriber:Subscriber"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="Subscriber.html"><span class="name">Subscriber</span></a><span class="result"> extends <a href="RedisWorkerIO.html" class="extype" name="redis.actors.RedisWorkerIO">RedisWorkerIO</a> with <a href="DecodeReplies.html" class="extype" name="redis.actors.DecodeReplies">DecodeReplies</a></span>
       </span>
       </h4>
       

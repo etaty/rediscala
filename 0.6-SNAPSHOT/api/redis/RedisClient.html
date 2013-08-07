@@ -35,14 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">RedisClient</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a> with <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">RedisClient</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;RedisClient&quot;</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span><span class="result"> extends <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a> with <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">host</dt><dd class="cmt"></dd><dt class="param">port</dt><dd class="cmt"></dd><dt class="param">system</dt><dd class="cmt"><p>
-</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/Redis.scala" target="_blank">Redis.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/etaty/rediscala/tree/master/src/main/scala/redis/Redis.scala" target="_blank">Redis.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a>, <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a>, <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a>, <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a>, <a href="commands/PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a>, <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a>, <a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a>, <a href="commands/Lists.html" class="extype" name="redis.commands.Lists">Lists</a>, <a href="commands/Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a>, <a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a>, <a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a>, <a href="Request.html" class="extype" name="redis.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a>, <a href="RedisCommands.html" class="extype" name="redis.RedisCommands">RedisCommands</a>, <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a>, <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a>, <a href="commands/Publish.html" class="extype" name="redis.commands.Publish">Publish</a>, <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a>, <a href="commands/Sets.html" class="extype" name="redis.commands.Sets">Sets</a>, <a href="commands/Lists.html" class="extype" name="redis.commands.Lists">Lists</a>, <a href="commands/Hashes.html" class="extype" name="redis.commands.Hashes">Hashes</a>, <a href="commands/Strings.html" class="extype" name="redis.commands.Strings">Strings</a>, <a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a>, <a href="Request.html" class="extype" name="redis.Request">Request</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -60,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="redis.RedisClient"><span>RedisClient</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="redis.commands.Transactions"><span>Transactions</span></li><li class="in" name="redis.RedisCommands"><span>RedisCommands</span></li><li class="in" name="redis.commands.Server"><span>Server</span></li><li class="in" name="redis.commands.Connection"><span>Connection</span></li><li class="in" name="redis.commands.PubSub"><span>PubSub</span></li><li class="in" name="redis.commands.SortedSets"><span>SortedSets</span></li><li class="in" name="redis.commands.Sets"><span>Sets</span></li><li class="in" name="redis.commands.Lists"><span>Lists</span></li><li class="in" name="redis.commands.Hashes"><span>Hashes</span></li><li class="in" name="redis.commands.Strings"><span>Strings</span></li><li class="in" name="redis.commands.Keys"><span>Keys</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="redis.RedisClient"><span>RedisClient</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="redis.commands.Transactions"><span>Transactions</span></li><li class="in" name="redis.RedisCommands"><span>RedisCommands</span></li><li class="in" name="redis.commands.Server"><span>Server</span></li><li class="in" name="redis.commands.Connection"><span>Connection</span></li><li class="in" name="redis.commands.Publish"><span>Publish</span></li><li class="in" name="redis.commands.SortedSets"><span>SortedSets</span></li><li class="in" name="redis.commands.Sets"><span>Sets</span></li><li class="in" name="redis.commands.Lists"><span>Lists</span></li><li class="in" name="redis.commands.Hashes"><span>Hashes</span></li><li class="in" name="redis.commands.Strings"><span>Strings</span></li><li class="in" name="redis.commands.Keys"><span>Keys</span></li><li class="in" name="redis.Request"><span>Request</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -80,8 +79,8 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="redis.RedisClient#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(host:String,port:Int)(implicitsystem:akka.actor.ActorSystem):redis.RedisClient"></a>
+              <ol><li name="redis.RedisClient#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(host:String,port:Int,name:String)(implicitsystem:akka.actor.ActorSystem):redis.RedisClient"></a>
       <a id="&lt;init&gt;:RedisClient"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,11 +88,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RedisClient</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span>
+        <span class="name">RedisClient</span><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;localhost&quot;</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">6379</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;RedisClient&quot;</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="system">system: <span class="extype" name="akka.actor.ActorSystem">ActorSystem</span></span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">host</dt><dd class="cmt"></dd><dt class="param">port</dt><dd class="cmt"></dd><dt class="param">system</dt><dd class="cmt"><p>
-</p></dd></dl></div>
+      
     </li></ol>
             </div>
 
@@ -855,7 +853,7 @@
         <span class="name">host</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p>
+      
     </li><li name="redis.commands.Hashes#hset" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hset[A](key:String,field:String,value:A)(implicitconvert:redis.RedisValueConverter[A],implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
       <a id="hset[A](String,String,A)(RedisValueConverter[A],ExecutionContext):Future[Boolean]"></a>
@@ -1259,6 +1257,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Transactions.html" class="extype" name="redis.commands.Transactions">Transactions</a></dd></dl></div>
+    </li><li name="redis.RedisClient#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="name:String"></a>
+      <a id="name:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -1401,7 +1412,7 @@
         <span class="name">port</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p>
+      
     </li><li name="redis.commands.Strings#psetex" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="psetex[A](key:String,milliseconds:Long,value:A)(implicitconvert:redis.RedisValueConverter[A],implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
       <a id="psetex[A](String,Long,A)(RedisValueConverter[A],ExecutionContext):Future[Boolean]"></a>
@@ -1428,7 +1439,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Keys.html" class="extype" name="redis.commands.Keys">Keys</a></dd></dl></div>
-    </li><li name="redis.commands.PubSub#publish" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="redis.commands.Publish#publish" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="publish[A](channel:String,value:A)(implicitconvert:redis.RedisValueConverter[A],implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Long]"></a>
       <a id="publish[A](String,A)(RedisValueConverter[A],ExecutionContext):Future[Long]"></a>
       <h4 class="signature">
@@ -1437,10 +1448,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.PubSub.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.PubSub.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
+        <span class="name">publish</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="channel">channel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="redis.commands.Publish.publish.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.commands.Publish.publish.A">A</span>]</span>, <span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result">: <span class="extype" name="scala.concurrent.Future">Future</span>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="commands/Publish.html" class="extype" name="redis.commands.Publish">Publish</a></dd></dl></div>
     </li><li name="redis.commands.Connection#quit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="quit()(implicitec:scala.concurrent.ExecutionContext):scala.concurrent.Future[Boolean]"></a>
       <a id="quit()(ExecutionContext):Future[Boolean]"></a>
@@ -2446,8 +2457,8 @@
               <h3>Inherited from <a href="commands/Server.html" class="extype" name="redis.commands.Server">Server</a></h3>
             </div><div class="parent" name="redis.commands.Connection">
               <h3>Inherited from <a href="commands/Connection.html" class="extype" name="redis.commands.Connection">Connection</a></h3>
-            </div><div class="parent" name="redis.commands.PubSub">
-              <h3>Inherited from <a href="commands/PubSub.html" class="extype" name="redis.commands.PubSub">PubSub</a></h3>
+            </div><div class="parent" name="redis.commands.Publish">
+              <h3>Inherited from <a href="commands/Publish.html" class="extype" name="redis.commands.Publish">Publish</a></h3>
             </div><div class="parent" name="redis.commands.SortedSets">
               <h3>Inherited from <a href="commands/SortedSets.html" class="extype" name="redis.commands.SortedSets">SortedSets</a></h3>
             </div><div class="parent" name="redis.commands.Sets">
