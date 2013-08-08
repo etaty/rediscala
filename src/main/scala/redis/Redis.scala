@@ -14,17 +14,17 @@ import java.util.concurrent.atomic.AtomicLong
 trait Request {
   def redisConnection: ActorRef
 
-  def send(request: ByteString): Future[Any] = {
+  def send(request: ByteString): Future[RedisReply] = {
     val promise = Promise[RedisReply]()
     redisConnection ! Operation(request, promise)
     promise.future
   }
 
-  def send(command: String, args: Seq[ByteString]): Future[Any] = {
+  def send(command: String, args: Seq[ByteString]): Future[RedisReply] = {
     send(RedisProtocolRequest.multiBulk(command, args))
   }
 
-  def send(command: String): Future[Any] = {
+  def send(command: String): Future[RedisReply] = {
     send(RedisProtocolRequest.inline(command))
   }
 }
