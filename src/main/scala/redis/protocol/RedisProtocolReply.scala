@@ -13,13 +13,17 @@ sealed trait RedisReply {
 }
 
 case class Status(status: ByteString) extends RedisReply {
-  def toBoolean: Boolean = status.utf8String == "OK"
+  def toBoolean: Boolean = status == Status.okByteString
 
   override def toString = status.utf8String
 
   def toByteString: ByteString = status
 
   def asOptByteString: Option[ByteString] = Some(status)
+}
+
+object Status {
+  val okByteString = ByteString("OK")
 }
 
 case class Error(error: ByteString) extends RedisReply {
@@ -33,15 +37,19 @@ case class Error(error: ByteString) extends RedisReply {
 case class Integer(i: ByteString) extends RedisReply {
   def toLong: Long = java.lang.Long.parseLong(i.utf8String)
 
-  def toInt: Int = java.lang.Integer.parseInt(i.utf8String)
+  def toInt: Int = ParseNumber.parseInt(i)
 
-  def toBoolean = toInt == 1
+  def toBoolean = i == Integer.trueByteString
 
   override def toString = i.utf8String
 
   def toByteString: ByteString = i
 
   def asOptByteString: Option[ByteString] = Some(i)
+}
+
+object Integer {
+  val trueByteString = ByteString("1")
 }
 
 case class Bulk(response: Option[ByteString]) extends RedisReply {
