@@ -94,21 +94,18 @@ class KeysSpec extends RedisSpec {
     "MIGRATE" in {
       import scala.concurrent.duration._
 
-      val port = 7777
-      val redisServer = Process(s"redis-server --port $port").run()
-
-      val redisMigrate = RedisClient("localhost", port)
-      val r = for {
-        _ <- redis.set("migrateKey", "value")
-        m <- redis.migrate("localhost", port, "migrateKey", 0, 10 seconds)
-        get <- redisMigrate.get("migrateKey")
-      } yield {
-        m must beTrue
-        get mustEqual Some(ByteString("value"))
-      }
-      val rr = Await.result(r, timeOut)
-      redisServer.destroy()
-      rr
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val r = for {
+          _ <- redis.set("migrateKey", "value")
+          m <- redis.migrate("localhost", port, "migrateKey", 0, 10 seconds)
+          get <- redisMigrate.get("migrateKey")
+        } yield {
+          m must beTrue
+          get mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
     }
 
     "MOVE" in {
@@ -295,7 +292,7 @@ class KeysSpec extends RedisSpec {
         redis.sadd("bond_ids", 1),
         redis.sadd("bond_ids", 2),
         redis.del("sortAlpha"),
-        redis.rpush("sortAlpha","abc", "xyz")
+        redis.rpush("sortAlpha", "abc", "xyz")
       ))
       val r = for {
         _ <- init
@@ -305,7 +302,7 @@ class KeysSpec extends RedisSpec {
         sortLimit <- redis.sort("bond_ids", limit = Some(LimitOffsetCount(0, 1)))
         b1 <- redis.sort("bond_ids", byPattern = Some("bonds|*->bid_price"))
         b2 <- redis.sort("bond_ids", byPattern = Some("bonds|*->bid_price"), getPatterns = Seq("bonds|*->bid_price"))
-        b3 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), getPatterns= Seq("bonds|*->bid_price", "#"))
+        b3 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), getPatterns = Seq("bonds|*->bid_price", "#"))
         b4 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), Some(LimitOffsetCount(0, 1)))
         b5 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), order = Some(DESC))
         b6 <- redis.sort("bond_ids", Some("bonds|*->bid_price"))

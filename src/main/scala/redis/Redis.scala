@@ -37,6 +37,7 @@ trait RedisCommands
   with Sets
   with SortedSets
   with Publish
+  with Scripting
   with Connection
   with Server
 

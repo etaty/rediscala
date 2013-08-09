@@ -126,4 +126,10 @@ object MultiBulkConverter {
     }).getOrElse(None))
   }
 
+  implicit object SeqBooleanMultiBulkConverter extends MultiBulkConverter[Seq[Boolean]] {
+    def to(reply: MultiBulk): Try[Seq[Boolean]] = Try(reply.responses.map(r => {
+      r.map(_.toString == "1")
+    }).get)
+  }
+
 }
