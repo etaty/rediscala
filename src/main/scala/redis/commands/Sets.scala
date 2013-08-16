@@ -1,56 +1,56 @@
 package redis.commands
 
 import redis.{RedisValueConverter, MultiBulkConverter, Request}
-import akka.util.{ByteString, Timeout}
-import scala.concurrent.{Future, ExecutionContext}
+import akka.util.ByteString
+import scala.concurrent.Future
 import redis.protocol.{MultiBulk, Bulk, Integer}
 import scala.util.Try
 
 trait Sets extends Request {
 
-  def sadd[A](key: String, members: A*)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Long] =
+  def sadd[A](key: String, members: A*)(implicit convert: RedisValueConverter[A]): Future[Long] =
     send("SADD", ByteString(key) +: members.map(v => convert.from(v))).mapTo[Integer].map(_.toLong)
 
-  def scard(key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def scard(key: String): Future[Long] =
     send("SCARD", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
-  def sdiff(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
+  def sdiff(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("SDIFF", ByteString(key) +: keys.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def sdiffstore(destination: String, key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Long] =
+  def sdiffstore(destination: String, key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Long] =
     send("SDIFFSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
-  def sinter(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
+  def sinter(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("SINTER", ByteString(key) +: keys.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def sinterstore(destination: String, key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Long] =
+  def sinterstore(destination: String, key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Long] =
     send("SINTERSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
-  def sismember[A](key: String, member: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def sismember[A](key: String, member: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("SISMEMBER", Seq(ByteString(key), convert.from(member))).mapTo[Integer].map(_.toBoolean)
 
-  def smembers(key: String)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
+  def smembers(key: String)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("SMEMBERS", Seq(ByteString(key))).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def smove[A](source: String, destination: String, member: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def smove[A](source: String, destination: String, member: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("SMOVE", Seq(ByteString(source), ByteString(destination), convert.from(member))).mapTo[Integer].map(_.toBoolean)
 
-  def spop[A](key: String)(implicit ec: ExecutionContext): Future[Option[ByteString]] =
+  def spop[A](key: String): Future[Option[ByteString]] =
     send("SPOP", Seq(ByteString(key))).mapTo[Bulk].map(_.response)
 
-  def srandmember[A](key: String)(implicit ec: ExecutionContext): Future[Option[ByteString]] =
+  def srandmember[A](key: String): Future[Option[ByteString]] =
     send("SRANDMEMBER", Seq(ByteString(key))).mapTo[Bulk].map(_.response)
 
-  def srandmember[A](key: String, count: Long)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
+  def srandmember[A](key: String, count: Long)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("SRANDMEMBER", Seq(ByteString(key), ByteString(count.toString))).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def srem[A](key: String, members: A*)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Long] =
+  def srem[A](key: String, members: A*)(implicit convert: RedisValueConverter[A]): Future[Long] =
     send("SREM", ByteString(key) +: members.map(v => convert.from(v))).mapTo[Integer].map(_.toLong)
 
-  def sunion(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]], ec: ExecutionContext): Future[Try[Seq[ByteString]]] =
+  def sunion(key: String, keys: String*)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("SUNION", ByteString(key) +: keys.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
 
-  def sunionstore(destination: String, key: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
+  def sunionstore(destination: String, key: String, keys: String*): Future[Long] =
     send("SUNIONSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
 }

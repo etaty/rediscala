@@ -17,7 +17,7 @@ trait Transactions extends Request {
   def multi(): TransactionBuilder = transaction()
 
   def multi(operations: (TransactionBuilder) => Unit): TransactionBuilder = {
-    val builder = TransactionBuilder(redisConnection)
+    val builder = transaction()
     operations(builder)
     builder
   }
@@ -25,14 +25,15 @@ trait Transactions extends Request {
   def transaction(): TransactionBuilder = TransactionBuilder(redisConnection)
 
   def watch(watchKeys: String*): TransactionBuilder = {
-    val builder = TransactionBuilder(redisConnection)
+    val builder = transaction()
     builder.watch(watchKeys: _*)
     builder
   }
 
 }
 
-case class TransactionBuilder(redisConnection: ActorRef) extends RedisCommands {
+case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) extends RedisCommands {
+
   val operations = Queue.newBuilder[(ByteString, Promise[RedisReply])]
   val watcher = Set.newBuilder[String]
 
@@ -53,7 +54,7 @@ case class TransactionBuilder(redisConnection: ActorRef) extends RedisCommands {
   }
 
   // todo maybe return a Future for the general state of the transaction ? (Success or Failure)
-  def exec()(implicit ec: ExecutionContext): Future[MultiBulk] = {
+  def exec(): Future[MultiBulk] = {
     val t = Transaction(watcher.result(), operations.result(), redisConnection)
     val p = Promise[MultiBulk]()
     t.process(p)
@@ -72,11 +73,11 @@ case class TransactionBuilder(redisConnection: ActorRef) extends RedisCommands {
   }
 }
 
-case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Promise[RedisReply])], redisConnection: ActorRef) {
+case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Promise[RedisReply])], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
   val MULTI = RedisProtocolRequest.inline("MULTI")
   val EXEC = RedisProtocolRequest.inline("EXEC")
 
-  def process(promise: Promise[MultiBulk])(implicit ec: ExecutionContext) {
+  def process(promise: Promise[MultiBulk]) {
     val multiOp = Operation(MULTI, ignoredPromise())
     val execOp = Operation(EXEC, execPromise(promise))
 
@@ -93,7 +94,7 @@ case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Prom
 
   def ignoredPromise() = Promise[RedisReply]()
 
-  def execPromise(promise: Promise[MultiBulk])(implicit ec: ExecutionContext): Promise[RedisReply] = {
+  def execPromise(promise: Promise[MultiBulk]): Promise[RedisReply] = {
     val p = Promise[RedisReply]()
     p.future.onComplete(reply => {
       reply match {

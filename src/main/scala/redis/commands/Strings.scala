@@ -1,8 +1,8 @@
 package redis.commands
 
-import akka.util.{ByteString, Timeout}
+import akka.util.ByteString
 import redis._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import redis.protocol._
 import redis.protocol.MultiBulk
 import redis.protocol.Integer
@@ -11,75 +11,75 @@ import redis.protocol.Bulk
 
 trait Strings extends Request {
 
-  def append[A](key: String, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Long] =
+  def append[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Long] =
     send("APPEND", Seq(ByteString(key), convert.from(value))).mapTo[Integer].map(_.toLong)
 
-  def bitcount(key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def bitcount(key: String): Future[Long] =
     send("BITCOUNT", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
-  def bitcount(key: String, start: Long, end: Long)(implicit ec: ExecutionContext): Future[Long] =
+  def bitcount(key: String, start: Long, end: Long): Future[Long] =
     send("BITCOUNT", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString))).mapTo[Integer].map(_.toLong)
 
-  def bitopAND(destkey: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
+  def bitopAND(destkey: String, keys: String*): Future[Long] =
     bitop("AND", destkey, keys: _*)
 
-  def bitopOR(destkey: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
+  def bitopOR(destkey: String, keys: String*): Future[Long] =
     bitop("OR", destkey, keys: _*)
 
-  def bitopXOR(destkey: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
+  def bitopXOR(destkey: String, keys: String*): Future[Long] =
     bitop("XOR", destkey, keys: _*)
 
-  def bitopNOT(destkey: String, key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def bitopNOT(destkey: String, key: String): Future[Long] =
     bitop("NOT", destkey, key)
 
-  def bitop(operation: String, destkey: String, keys: String*)(implicit ec: ExecutionContext): Future[Long] =
+  def bitop(operation: String, destkey: String, keys: String*): Future[Long] =
     send("BITOP", Seq(ByteString(operation), ByteString(destkey)) ++ keys.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
 
-  def decr(key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def decr(key: String): Future[Long] =
     send("DECR", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
-  def decrby(key: String, decrement: Long)(implicit ec: ExecutionContext): Future[Long] =
+  def decrby(key: String, decrement: Long): Future[Long] =
     send("DECRBY", Seq(ByteString(key), ByteString(decrement.toString))).mapTo[Integer].map(_.toLong)
 
-  def get(key: String)(implicit ec: ExecutionContext): Future[Option[ByteString]] =
+  def get(key: String): Future[Option[ByteString]] =
     send("GET", Seq(ByteString(key))).mapTo[Bulk].map(_.response)
 
-  def getbit(key: String, offset: Long)(implicit ec: ExecutionContext): Future[Boolean] =
+  def getbit(key: String, offset: Long): Future[Boolean] =
     send("GETBIT", Seq(ByteString(key), ByteString(offset.toString))).mapTo[Integer].map(_.toBoolean)
 
-  def getrange(key: String, start: Long, end: Long)(implicit ec: ExecutionContext): Future[Option[ByteString]] =
+  def getrange(key: String, start: Long, end: Long): Future[Option[ByteString]] =
     send("GETRANGE", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString))).mapTo[Bulk].map(_.response)
 
-  def getset[A](key: String, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Option[ByteString]] =
+  def getset[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Option[ByteString]] =
     send("GETSET", Seq(ByteString(key), ByteString(value.toString))).mapTo[Bulk].map(_.response)
 
-  def incr(key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def incr(key: String): Future[Long] =
     send("INCR", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
-  def incrby(key: String, increment: Long)(implicit ec: ExecutionContext): Future[Long] =
+  def incrby(key: String, increment: Long): Future[Long] =
     send("INCRBY", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Integer].map(_.toLong)
 
-  def incrbyfloat(key: String, increment: Double)(implicit ec: ExecutionContext): Future[Option[Double]] =
+  def incrbyfloat(key: String, increment: Double): Future[Option[Double]] =
     send("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString))).mapTo[Bulk].map(_.response.map(v => java.lang.Double.valueOf(v.utf8String)))
 
-  def mget(keys: String*)(implicit ec: ExecutionContext): Future[MultiBulk] =
+  def mget(keys: String*): Future[MultiBulk] =
     send("MGET", keys.map(ByteString.apply)).mapTo[MultiBulk]
 
-  def mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("MSET", keysValues.foldLeft(Seq[ByteString]())({
       case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
     })).mapTo[Status].map(_.toBoolean)
 
-  def msetnx[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def msetnx[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("MSETNX", keysValues.foldLeft(Seq[ByteString]())({
       case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
     })).mapTo[Integer].map(_.toBoolean)
 
-  def psetex[A](key: String, milliseconds: Long, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def psetex[A](key: String, milliseconds: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("PSETEX", Seq(ByteString(key), ByteString(milliseconds.toString), convert.from(value))).mapTo[Status].map(_.toBoolean)
 
   def set[A](key: String, value: A, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None, NX: Boolean = false, XX: Boolean = false)
-            (implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] = {
+            (implicit convert: RedisValueConverter[A]): Future[Boolean] = {
     val seq = if (NX) Seq(ByteString("NX")) else if (XX) Seq(ByteString("XX")) else Seq.empty[ByteString]
     val options: Seq[ByteString] = exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
       .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
@@ -91,19 +91,19 @@ trait Strings extends Request {
     })
   }
 
-  def setbit(key: String, offset: Long, value: Boolean)(implicit ec: ExecutionContext): Future[Boolean] =
+  def setbit(key: String, offset: Long, value: Boolean): Future[Boolean] =
     send("SETBIT", Seq(ByteString(key), ByteString(offset.toString), ByteString(if (value) "1" else "0"))).mapTo[Integer].map(_.toBoolean)
 
-  def setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("SETEX", Seq(ByteString(key), ByteString(seconds.toString), convert.from(value))).mapTo[Status].map(_.toBoolean)
 
-  def setnx[A](key: String, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Boolean] =
+  def setnx[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
     send("SETNX", Seq(ByteString(key), convert.from(value))).mapTo[Integer].map(_.toBoolean)
 
-  def setrange[A](key: String, offset: Long, value: A)(implicit convert: RedisValueConverter[A], ec: ExecutionContext): Future[Long] =
+  def setrange[A](key: String, offset: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Long] =
     send("SETRANGE", Seq(ByteString(key), ByteString(offset.toString), convert.from(value))).mapTo[Integer].map(_.toLong)
 
-  def strlen(key: String)(implicit ec: ExecutionContext): Future[Long] =
+  def strlen(key: String): Future[Long] =
     send("STRLEN", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
 
 }

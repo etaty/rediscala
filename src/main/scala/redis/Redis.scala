@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicLong
 
 
 trait Request {
+  implicit val executionContext: ExecutionContext
+
   def redisConnection: ActorRef
 
   def send(request: ByteString): Future[RedisReply] = {
@@ -43,6 +45,8 @@ trait RedisCommands
 
 case class RedisClient(host: String = "localhost", port: Int = 6379, name: String = "RedisClient")(implicit system: ActorSystem) extends RedisCommands with Transactions {
 
+  implicit val executionContext = system.dispatcher
+
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisClientActor], new InetSocketAddress(host, port))
       .withDispatcher("rediscala.rediscala-client-worker-dispatcher"),
@@ -57,6 +61,8 @@ case class RedisClient(host: String = "localhost", port: Int = 6379, name: Strin
 }
 
 case class RedisBlockingClient(host: String = "localhost", port: Int = 6379, name: String = "RedisBlockingClient")(implicit system: ActorSystem) extends BLists {
+
+  implicit val executionContext = system.dispatcher
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisClientActor], new InetSocketAddress(host, port))
