@@ -61,7 +61,7 @@ object RedisBench extends PerformanceTest {
 
     measure method "ping" in {
 
-      using(sizes).setUp(redisSetUp)
+      using(sizes).setUp(redisSetUp())
         .tearDown(redisTearDown)
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
@@ -74,10 +74,10 @@ object RedisBench extends PerformanceTest {
           Await.result(Future.sequence(r), 30 seconds)
       }
     }
+/*
+    measure method "set" in {
 
-    measure method "incr" in {
-
-      using(sizes).setUp(redisSetUp)
+      using(sizes).setUp(redisSetUp())
         .tearDown(redisTearDown)
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
@@ -85,7 +85,7 @@ object RedisBench extends PerformanceTest {
           val r = for {
             ii <- 0 until i
           } yield {
-            redis.incr("i")
+            redis.set("a", ii)
           }
           Await.result(Future.sequence(r), 30 seconds)
       }
@@ -93,7 +93,7 @@ object RedisBench extends PerformanceTest {
 
     measure method "get" in {
 
-      using(sizes).setUp(redisSetUp)
+      using(sizes).setUp(redisSetUp(_.set("a", "abc")))
         .tearDown(redisTearDown)
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
@@ -106,9 +106,10 @@ object RedisBench extends PerformanceTest {
           Await.result(Future.sequence(r), 30 seconds)
       }
     }
+  */
   }
 
-  def redisSetUp(data: (Int, RedisBenchContext)) = data match {
+  def redisSetUp(init: RedisClient => Unit = _ => {})(data: (Int, RedisBenchContext)) = data match {
     case (i: Int, redisBench: RedisBenchContext) => {
       redisBench.akkaSystem = akka.actor.ActorSystem()
       redisBench.redis = RedisClient()(redisBench.akkaSystem)
