@@ -7,7 +7,6 @@ import org.scalameter.api._
 import akka.actor.ActorSystem
 import scala.collection.Iterator
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalameter._
 import org.scalameter.api.Executor
 import org.scalameter.api.Aggregator
@@ -66,6 +65,8 @@ object RedisBench extends PerformanceTest {
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
           val redis = redisBench.redis
+          implicit val ec = redis.executionContext
+
           val r = for {
             ii <- 0 until i
           } yield {
@@ -74,7 +75,7 @@ object RedisBench extends PerformanceTest {
           Await.result(Future.sequence(r), 30 seconds)
       }
     }
-/*
+
     measure method "set" in {
 
       using(sizes).setUp(redisSetUp())
@@ -82,6 +83,8 @@ object RedisBench extends PerformanceTest {
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
           val redis = redisBench.redis
+          implicit val ec = redis.executionContext
+
           val r = for {
             ii <- 0 until i
           } yield {
@@ -98,6 +101,8 @@ object RedisBench extends PerformanceTest {
         .in {
         case (i: Int, redisBench: RedisBenchContext) =>
           val redis = redisBench.redis
+          implicit val ec = redis.executionContext
+
           val r = for {
             ii <- 0 until i
           } yield {
@@ -106,7 +111,7 @@ object RedisBench extends PerformanceTest {
           Await.result(Future.sequence(r), 30 seconds)
       }
     }
-  */
+
   }
 
   def redisSetUp(init: RedisClient => Unit = _ => {})(data: (Int, RedisBenchContext)) = data match {
