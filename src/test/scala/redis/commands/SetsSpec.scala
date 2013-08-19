@@ -17,7 +17,7 @@ class SetsSpec extends RedisSpec {
       } yield {
         s1 mustEqual 2
         s2 mustEqual 0
-        m.get must haveTheSameElementsAs(Seq(ByteString("Hello"), ByteString("World")))
+        m must haveTheSameElementsAs(Seq(ByteString("Hello"), ByteString("World")))
       }
       Await.result(r, timeOut)
     }
@@ -43,7 +43,7 @@ class SetsSpec extends RedisSpec {
         _ <- redis.sadd("sdiffKey2", "c", "d", "e")
         diff <- redis.sdiff("sdiffKey1", "sdiffKey2")
       } yield {
-        diff.get must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b")))
+        diff must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b")))
       }
       Await.result(r, timeOut)
     }
@@ -58,7 +58,7 @@ class SetsSpec extends RedisSpec {
         m <- redis.smembers("sdiffstoreKeyDest")
       } yield {
         diff mustEqual 2
-        m.get must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b")))
+        m must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b")))
       }
       Await.result(r, timeOut)
     }
@@ -71,7 +71,7 @@ class SetsSpec extends RedisSpec {
         _ <- redis.sadd("sinterKey2", "c", "d", "e")
         inter <- redis.sinter("sinterKey1", "sinterKey2")
       } yield {
-        inter.get must haveTheSameElementsAs(Seq(ByteString("c")))
+        inter must haveTheSameElementsAs(Seq(ByteString("c")))
       }
       Await.result(r, timeOut)
     }
@@ -87,7 +87,7 @@ class SetsSpec extends RedisSpec {
         m <- redis.smembers("sinterstoreKeyDest")
       } yield {
         inter mustEqual 1
-        m.get must haveTheSameElementsAs(Seq(ByteString("c")))
+        m must haveTheSameElementsAs(Seq(ByteString("c")))
       }
       Await.result(r, timeOut)
     }
@@ -111,7 +111,7 @@ class SetsSpec extends RedisSpec {
         _ <- redis.sadd("smembersKey", "Hello", "World")
         m <- redis.smembers("smembersKey")
       } yield {
-        m.get must haveTheSameElementsAs(Seq(ByteString("Hello"), ByteString("World")))
+        m must haveTheSameElementsAs(Seq(ByteString("Hello"), ByteString("World")))
       }
       Await.result(r, timeOut)
     }
@@ -128,7 +128,7 @@ class SetsSpec extends RedisSpec {
       } yield {
         isMoved mustEqual true
         isNotMoved mustEqual false
-        m.get must haveTheSameElementsAs(Seq(ByteString("three"), ByteString("two")))
+        m must haveTheSameElementsAs(Seq(ByteString("three"), ByteString("two")))
       }
       Await.result(r, timeOut)
     }
@@ -142,8 +142,8 @@ class SetsSpec extends RedisSpec {
         m <- redis.smembers("spopKey")
       } yield {
         Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(equalTo(pop.get))
-        popNone mustEqual None
-        m.get must containAnyOf(Seq(ByteString("three"), ByteString("two"), ByteString("one")))
+        popNone must beNone
+        m must containAnyOf(Seq(ByteString("three"), ByteString("two"), ByteString("one")))
       }
       Await.result(r, timeOut)
     }
@@ -158,8 +158,8 @@ class SetsSpec extends RedisSpec {
         m <- redis.smembers("spopKey")
       } yield {
         Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(equalTo(randmember.get))
-        randmember2.get must have size 2
-        randmemberNonExisting mustEqual Success(Seq())
+        randmember2 must have size 2
+        randmemberNonExisting must beEmpty
       }
       Await.result(r, timeOut)
     }
@@ -174,7 +174,7 @@ class SetsSpec extends RedisSpec {
       } yield {
         rem mustEqual 2
         remNothing mustEqual 0
-        m.get must haveTheSameElementsAs(Seq(ByteString("three"), ByteString("two")))
+        m must haveTheSameElementsAs(Seq(ByteString("three"), ByteString("two")))
       }
       Await.result(r, timeOut)
     }
@@ -187,7 +187,7 @@ class SetsSpec extends RedisSpec {
         _ <- redis.sadd("sunionKey2", "c", "d", "e")
         union <- redis.sunion("sunionKey1", "sunionKey2")
       } yield {
-        union.get must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b"), ByteString("c"), ByteString("d"), ByteString("e")))
+        union must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b"), ByteString("c"), ByteString("d"), ByteString("e")))
       }
       Await.result(r, timeOut)
     }
@@ -203,7 +203,7 @@ class SetsSpec extends RedisSpec {
         m <- redis.smembers("sunionstoreKeyDest")
       } yield {
         union mustEqual 5
-        m.get must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b"), ByteString("c"), ByteString("d"), ByteString("e")))
+        m must haveTheSameElementsAs(Seq(ByteString("a"), ByteString("b"), ByteString("c"), ByteString("d"), ByteString("e")))
       }
       Await.result(r, timeOut)
     }

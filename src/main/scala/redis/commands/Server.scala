@@ -10,7 +10,7 @@ import redis.protocol.Bulk
 import scala.util.Try
 
 trait Server extends Request {
-
+/*
   def bgrewriteaof[A](): Future[String] =
     send("BGREWRITEAOF").mapTo[Status].map(_.toString)
 
@@ -85,7 +85,7 @@ trait Server extends Request {
 
   def time()(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
     send("TIME").mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
-
+*/
 }
 
 sealed trait ShutdownModifier

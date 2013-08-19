@@ -1,16 +1,16 @@
 package redis.commands
 
 import redis._
-import akka.util.ByteString
 import scala.concurrent.{Promise, Future, ExecutionContext}
 import akka.actor._
 import scala.collection.immutable.Queue
 import redis.actors.ReplyErrorException
 import redis.protocol._
-import redis.Operation
 import redis.protocol.MultiBulk
 import scala.Some
 import scala.util.{Failure, Success}
+import redis.api.transactions.{Watch, Exec, Multi}
+import akka.util.ByteString
 
 trait Transactions extends Request {
 
@@ -34,7 +34,7 @@ trait Transactions extends Request {
 
 case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) extends RedisCommands {
 
-  val operations = Queue.newBuilder[(ByteString, Promise[RedisReply])]
+  val operations = Queue.newBuilder[Operation[_]]
   val watcher = Set.newBuilder[String]
 
   def unwatch() {
@@ -47,7 +47,7 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
 
   def discard() {
     operations.result().map(operation => {
-      operation._2.failure(TransactionDiscardedException)
+      operation.completeFailed(TransactionDiscardedException)
     })
     operations.clear()
     unwatch()
@@ -61,41 +61,44 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
     p.future
   }
 
-  /**
-   *
-   * @param request
-   * @return
-   */
-  override def send(request: ByteString): Future[RedisReply] = {
-    val p = Promise[RedisReply]()
-    operations += ((request, p))
-    p.future
+
+  override def send[T](redisCommand: RedisCommand[_, T]) = {
+    val promise = Promise[T]()
+    operations += Operation(redisCommand, promise)
+    promise.future
   }
 }
 
-case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Promise[RedisReply])], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
-  val MULTI = RedisProtocolRequest.inline("MULTI")
-  val EXEC = RedisProtocolRequest.inline("EXEC")
+case class Transaction(watcher: Set[String], operations: Queue[Operation[_]], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
 
   def process(promise: Promise[MultiBulk]) {
-    val multiOp = Operation(MULTI, ignoredPromise())
-    val execOp = Operation(EXEC, execPromise(promise))
+    val multiOp = Operation(Multi, Promise[Boolean]())
+    val execOp = Operation(Exec, execPromise(promise))
 
-    val commands = Seq.newBuilder[Operation]
+    val commands = Seq.newBuilder[Operation[_]]
 
     val watchOp = watchOperation(watcher)
     watchOp.map(commands.+=(_))
     commands += multiOp
-    commands ++= operations.map(op => Operation(op._1, ignoredPromise()))
+    commands ++= operations.map(op => operationToQueuedOperation(op))
     commands += execOp
 
     redisConnection ! redis.Transaction(commands.result())
   }
 
-  def ignoredPromise() = Promise[RedisReply]()
+  def operationToQueuedOperation(op: Operation[_]) = {
+    val cmd = new RedisCommandStatus[String] {
+      val encodedRequest: ByteString = op.redisCommand.encodedRequest
 
-  def execPromise(promise: Promise[MultiBulk]): Promise[RedisReply] = {
-    val p = Promise[RedisReply]()
+      def decodeReply(r: Status): String = r.toString
+    }
+    Operation(cmd, Promise[String]())
+  }
+
+  def ignoredPromise() = Promise[Any]()
+
+  def execPromise(promise: Promise[MultiBulk]): Promise[MultiBulk] = {
+    val p = Promise[MultiBulk]()
     p.future.onComplete(reply => {
       reply match {
         case Success(m: MultiBulk) => {
@@ -104,11 +107,11 @@ case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Prom
         }
         case Success(r) => {
           promise.failure(TransactionExecException(r))
-          operations.foreach(_._2.failure(TransactionExecException(r)))
+          operations.foreach(_.completeFailed(TransactionExecException(r)))
         }
         case Failure(f) => {
           promise.failure(f)
-          operations.foreach(_._2.failure(f))
+          operations.foreach(_.completeFailed(f))
         }
       }
     })
@@ -120,21 +123,20 @@ case class Transaction(watcher: Set[String], operations: Queue[(ByteString, Prom
       (replies, operations).zipped.map({
         case (reply, operation) => {
           reply match {
-            case e: Error => operation._2.failure(ReplyErrorException(e.toString()))
-            case _ => operation._2.trySuccess(reply)
+            case e: Error => operation.completeFailed(ReplyErrorException(e.toString()))
+            case _ => operation.tryCompleteSuccess(reply)
           }
         }
       })
     }).getOrElse({
-      operations.foreach(_._2.failure(TransactionWatchException()))
+      operations.foreach(_.completeFailed(TransactionWatchException()))
     })
   }
 
 
-  def watchOperation(watcher: Set[String]): Option[Operation] = {
-    if (watcher.nonEmpty) {
-      val request = RedisProtocolRequest.multiBulk("WATCH", watcher.map(ByteString.apply).toSeq)
-      Some(Operation(request, Promise[RedisReply]()))
+  def watchOperation(keys: Set[String]): Option[Operation[Boolean]] = {
+    if (keys.nonEmpty) {
+      Some(Operation(Watch(keys), Promise[Boolean]()))
     } else {
       None
     }

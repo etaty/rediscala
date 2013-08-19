@@ -1,38 +1,35 @@
 package redis.actors
 
 import akka.util.{ByteString, ByteStringBuilder}
-import redis.protocol.RedisReply
 import java.net.InetSocketAddress
-import redis.{Transaction, Operation}
-import scala.concurrent.Promise
+import redis.{Operation, Transaction}
 import akka.actor.{OneForOneStrategy, Terminated, PoisonPill, Props}
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
 
 class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO {
 
-  import context._
 
   var repliesDecoder = initRepliesDecoder
 
   def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
-  var queuePromises = mutable.Queue[Promise[RedisReply]]()
+  var queuePromises = mutable.Queue[Operation[_]]()
 
   def writing: Receive = {
-    case Operation(request, promise) =>
-      queuePromises enqueue promise
-      write(request)
+    case op : Operation[_] =>
+      queuePromises enqueue op
+      write(op.redisCommand.encodedRequest)
     case Transaction(commands) => {
       val buffer = new ByteStringBuilder
       commands.foreach(operation => {
-        buffer.append(operation.request)
-        queuePromises enqueue operation.promise
+        buffer.append(operation.redisCommand.encodedRequest)
+        queuePromises enqueue operation
       })
       write(buffer.result())
     }
     case Terminated(actorRef) =>
-      println(s"Terminated($actorRef)")
+      log.warning(s"Terminated($actorRef)")
   }
 
   def onDataReceived(dataByteString: ByteString) {
@@ -41,12 +38,12 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   def onWriteSent() {
     repliesDecoder ! queuePromises
-    queuePromises = mutable.Queue[Promise[RedisReply]]()
+    queuePromises = mutable.Queue[Operation[_]]()
   }
 
   def onConnectionClosed() {
-    queuePromises.foreach(promise => {
-      promise.failure(NoConnectionException)
+    queuePromises.foreach(op => {
+      op.completeFailed(NoConnectionException)
     })
     queuePromises.clear()
     repliesDecoder ! PoisonPill
@@ -65,4 +62,4 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
     }
 }
 
-object NoConnectionException extends RuntimeException("No Connection established")
+case object NoConnectionException extends RuntimeException("No Connection established")

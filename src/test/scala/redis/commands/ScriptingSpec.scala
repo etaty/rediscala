@@ -1,11 +1,11 @@
 package redis.commands
 
 import redis._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Await
 import akka.util.ByteString
 import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException
-import redis.api.script.RedisScript
+import redis.api.scripting.RedisScript
 
 class ScriptingSpec extends RedisSpec {
 
@@ -65,7 +65,7 @@ class ScriptingSpec extends RedisSpec {
       val scriptsLoaded = redis.scriptLoad(redisScriptFound.script).flatMap(_ =>
         redis.scriptExists(redisScriptFound.sha1, redisScriptNotFound.sha1)
       )
-      Await.result(scriptsLoaded, timeOut).get mustEqual Seq(true, false)
+      Await.result(scriptsLoaded, timeOut) mustEqual Seq(true, false)
 
     }
 

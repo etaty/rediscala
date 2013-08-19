@@ -20,7 +20,6 @@ class KeysSpec extends RedisSpec {
       }
       Await.result(r, timeOut)
     }
-
     "DUMP" in {
       val r = for {
         s <- redis.set("dumpKey", "value")
@@ -84,9 +83,9 @@ class KeysSpec extends RedisSpec {
         k2 <- redis.keys("keysKey?")
         k3 <- redis.keys("keysKeyNomatch")
       } yield {
-        k.get must haveTheSameElementsAs(Seq("keysKey2", "keysKey"))
-        k2 mustEqual Success(Seq("keysKey2"))
-        k3 mustEqual Success(Seq())
+        k must haveTheSameElementsAs(Seq("keysKey2", "keysKey"))
+        k2 must haveTheSameElementsAs(Seq("keysKey2"))
+        k3 must beEmpty
       }
       Await.result(r, timeOut)
     }
@@ -306,18 +305,18 @@ class KeysSpec extends RedisSpec {
         b4 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), Some(LimitOffsetCount(0, 1)))
         b5 <- redis.sort("bond_ids", Some("bonds|*->bid_price"), order = Some(DESC))
         b6 <- redis.sort("bond_ids", Some("bonds|*->bid_price"))
-        b7 <- redis.sortStore("bond_ids", Some("bonds|*->ask_price"), store = Some("bond_ids_sorted_by_ask_price"))
+        b7 <- redis.sortStore("bond_ids", Some("bonds|*->ask_price"), store = "bond_ids_sorted_by_ask_price")
       } yield {
-        sort.get mustEqual Seq(ByteString("1"), ByteString("2"))
-        sortDesc.get mustEqual Seq(ByteString("2"), ByteString("1"))
-        sortAlpha.get mustEqual Seq(ByteString("abc"), ByteString("xyz"))
-        sortLimit.get mustEqual Seq(ByteString("1"))
-        b1.get mustEqual Seq(ByteString("2"), ByteString("1"))
-        b2.get mustEqual Seq(ByteString("95.5"), ByteString("96.01"))
-        b3.get mustEqual Seq(ByteString("95.5"), ByteString("2"), ByteString("96.01"), ByteString("1"))
-        b4.get mustEqual Seq(ByteString("2"))
-        b5.get mustEqual Seq(ByteString("1"), ByteString("2"))
-        b6.get mustEqual Seq(ByteString("2"), ByteString("1"))
+        sort mustEqual Seq(ByteString("1"), ByteString("2"))
+        sortDesc mustEqual Seq(ByteString("2"), ByteString("1"))
+        sortAlpha mustEqual Seq(ByteString("abc"), ByteString("xyz"))
+        sortLimit mustEqual Seq(ByteString("1"))
+        b1 mustEqual Seq(ByteString("2"), ByteString("1"))
+        b2 mustEqual Seq(ByteString("95.5"), ByteString("96.01"))
+        b3 mustEqual Seq(ByteString("95.5"), ByteString("2"), ByteString("96.01"), ByteString("1"))
+        b4 mustEqual Seq(ByteString("2"))
+        b5 mustEqual Seq(ByteString("1"), ByteString("2"))
+        b6 mustEqual Seq(ByteString("2"), ByteString("1"))
         b7 mustEqual 2
       }
       Await.result(r, timeOut)

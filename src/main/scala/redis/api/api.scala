@@ -24,3 +24,21 @@ case object DESC extends Order
 case class LimitOffsetCount(offset: Long, count: Long) {
   def toByteString: Seq[ByteString] = Seq(ByteString("LIMIT"), ByteString(offset.toString), ByteString(count.toString))
 }
+
+
+sealed trait BitOperator
+
+case object AND extends BitOperator
+
+case object OR extends BitOperator
+
+case object XOR extends BitOperator
+
+case object NOT extends BitOperator
+
+
+sealed trait ListPivot
+
+case object AFTER extends ListPivot
+
+case object BEFORE extends ListPivot

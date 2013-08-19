@@ -2,6 +2,7 @@ package redis
 
 import scala.concurrent.Await
 import akka.util.ByteString
+import redis.api.strings.Get
 
 class RedisTest extends RedisSpec {
 

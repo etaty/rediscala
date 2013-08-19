@@ -34,9 +34,9 @@ class ListsSpec extends RedisSpec {
         list4 <- redis.lrange("linsertKey", 0, -1)
       } yield {
         length mustEqual 3
-        list mustEqual Success(Seq(ByteString("Hello"), ByteString("There"), ByteString("World")))
+        list mustEqual Seq(ByteString("Hello"), ByteString("There"), ByteString("World"))
         length4 mustEqual 4
-        list4 mustEqual Success(Seq(ByteString("Hello"), ByteString("There"), ByteString("World"), ByteString("!!!")))
+        list4 mustEqual Seq(ByteString("Hello"), ByteString("There"), ByteString("World"), ByteString("!!!"))
       }
       Await.result(r, timeOut)
     }
@@ -69,7 +69,7 @@ class ListsSpec extends RedisSpec {
         _ <- redis.lpush("lpushKey", "World", "Hello")
         list <- redis.lrange("lpushKey", 0, -1)
       } yield {
-        list mustEqual Success(Seq(ByteString("Hello"), ByteString("World")))
+        list mustEqual Seq(ByteString("Hello"), ByteString("World"))
       }
       Await.result(r, timeOut)
     }
@@ -87,8 +87,8 @@ class ListsSpec extends RedisSpec {
         i mustEqual 1
         ii mustEqual 2
         zero mustEqual 0
-        list mustEqual Success(Seq(ByteString("hello"), ByteString("world")))
-        listOther mustEqual Success(Seq())
+        list mustEqual Seq(ByteString("hello"), ByteString("world"))
+        listOther must beEmpty
       }
       Await.result(r, timeOut)
     }
@@ -102,10 +102,10 @@ class ListsSpec extends RedisSpec {
         list3 <- redis.lrange("lrangeKey", 5, 10)
         nonExisting <- redis.lrange("lrangeKeyNonexisting", 5, 10)
       } yield {
-        list mustEqual Success(Seq(ByteString("one")))
-        list2 mustEqual Success(Seq(ByteString("one"), ByteString("two"), ByteString("three")))
-        list3 mustEqual Success(Seq())
-        nonExisting mustEqual Success(Seq())
+        list mustEqual Seq(ByteString("one"))
+        list2 mustEqual Seq(ByteString("one"), ByteString("two"), ByteString("three"))
+        list3 must beEmpty
+        nonExisting must beEmpty
       }
       Await.result(r, timeOut)
     }
@@ -118,7 +118,7 @@ class ListsSpec extends RedisSpec {
         list2 <- redis.lrange("lremKey", 0, -1)
       } yield {
         lrem mustEqual 2
-        list2 mustEqual Success(Seq(ByteString("hello"), ByteString("foo")))
+        list2 mustEqual Seq(ByteString("hello"), ByteString("foo"))
       }
       Await.result(r, timeOut)
     }
@@ -133,7 +133,7 @@ class ListsSpec extends RedisSpec {
       } yield {
         lset1 mustEqual true
         lset2 mustEqual true
-        list mustEqual Success(Seq(ByteString("four"), ByteString("five"), ByteString("three")))
+        list mustEqual Seq(ByteString("four"), ByteString("five"), ByteString("three"))
       }
       Await.result(r, timeOut)
     }
@@ -146,7 +146,7 @@ class ListsSpec extends RedisSpec {
         list <- redis.lrange("ltrimKey", 0, -1)
       } yield {
         ltrim mustEqual true
-        list mustEqual Success(Seq(ByteString("two"), ByteString("three")))
+        list mustEqual Seq(ByteString("two"), ByteString("three"))
       }
       Await.result(r, timeOut)
     }
@@ -159,7 +159,7 @@ class ListsSpec extends RedisSpec {
         list <- redis.lrange("rpopKey", 0, -1)
       } yield {
         rpop mustEqual Some(ByteString("three"))
-        list mustEqual Success(Seq(ByteString("one"), ByteString("two")))
+        list mustEqual Seq(ByteString("one"), ByteString("two"))
       }
       Await.result(r, timeOut)
     }
@@ -174,8 +174,8 @@ class ListsSpec extends RedisSpec {
         listOther <- redis.lrange("rpoplpushKeyOther", 0, -1)
       } yield {
         rpoplpush mustEqual Some(ByteString("three"))
-        list mustEqual Success(Seq(ByteString("one"), ByteString("two")))
-        listOther mustEqual Success(Seq(ByteString("three")))
+        list mustEqual Seq(ByteString("one"), ByteString("two"))
+        listOther mustEqual Seq(ByteString("three"))
       }
       Await.result(r, timeOut)
     }
@@ -189,7 +189,7 @@ class ListsSpec extends RedisSpec {
       } yield {
         i mustEqual 1
         ii mustEqual 2
-        list mustEqual Success(Seq(ByteString("hello"), ByteString("world")))
+        list mustEqual Seq(ByteString("hello"), ByteString("world"))
       }
       Await.result(r, timeOut)
     }
@@ -207,8 +207,8 @@ class ListsSpec extends RedisSpec {
         i mustEqual 1
         ii mustEqual 2
         zero mustEqual 0
-        list mustEqual Success(Seq(ByteString("hello"), ByteString("world")))
-        listOther mustEqual Success(Seq())
+        list mustEqual Seq(ByteString("hello"), ByteString("world"))
+        listOther must beEmpty
       }
       Await.result(r, timeOut)
     }

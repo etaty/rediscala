@@ -60,76 +60,52 @@ trait MultiBulkConverter[A] {
 
 object MultiBulkConverter {
 
-  implicit object SeqStringMultiBulkConverter extends MultiBulkConverter[Seq[String]] {
-    def to(reply: MultiBulk): Try[Seq[String]] = Try(reply.responses.map(r => {
+  def toSeqString(reply: MultiBulk): Seq[String] = {
+    reply.responses.map(r => {
       r.map(_.toString)
-    }).get)
+    }).get
   }
 
-  implicit object SeqByteStringMultiBulkConverter extends MultiBulkConverter[Seq[ByteString]] {
-    def to(reply: MultiBulk): Try[Seq[ByteString]] = Try(reply.responses.map(r => {
+  def toSeqByteString(reply: MultiBulk): Seq[ByteString] = {
+    reply.responses.map(r => {
       r.map(_.toByteString)
-    }).get)
+    }).get
   }
 
-  implicit object SeqOptionByteStringMultiBulkConverter extends MultiBulkConverter[Seq[Option[ByteString]]] {
-    def to(reply: MultiBulk): Try[Seq[Option[ByteString]]] = Try(reply.responses.map(r => {
+  def toSeqOptionByteString(reply: MultiBulk): Seq[Option[ByteString]] = {
+    reply.responses.map(r => {
       r.map(_.asOptByteString)
-    }).get)
+    }).get
   }
 
-  implicit object MapStringByteStringMultiBulkConverter extends MultiBulkConverter[Map[String, ByteString]] {
-    def to(reply: MultiBulk): Try[Map[String, ByteString]] = Try(reply.responses.map(r => {
-      val seq = r.map(_.toByteString)
-      seqToMap(seq)
-    }).get)
-
-    def seqToMap(s: Seq[ByteString]): Map[String, ByteString] = {
-      require(s.length % 2 == 0, "odd number of elements")
-      @tailrec
-      def recur(s: Seq[ByteString], acc: Map[String, ByteString]): Map[String, ByteString] = {
-        if (s.isEmpty) {
-          acc
-        } else {
-          recur(s.tail.tail, acc + (s.head.utf8String -> s.tail.head))
-        }
+  def toSeqTuple2ByteStringDouble(reply: MultiBulk): Seq[(ByteString, Double)] = {
+    @tailrec
+    def recur(s: Seq[ByteString], builder: mutable.Builder[(ByteString, Double), Seq[(ByteString, Double)]]): Unit = {
+      if (s.nonEmpty) {
+        val double = java.lang.Double.parseDouble(s.tail.head.utf8String)
+        builder += ((s.head, double))
+        recur(s.tail.tail, builder)
       }
-      recur(s, Map.empty[String, ByteString])
     }
-  }
 
-  implicit object SeqByteStringDoubleMultiBulkConverter extends MultiBulkConverter[Seq[(ByteString, Double)]] {
-    def to(reply: MultiBulk): Try[Seq[(ByteString, Double)]] = Try(reply.responses.map(r => {
+    reply.responses.map(r => {
       val seq = r.map(_.toByteString)
-      seqToSeqTuple2(seq)
-    }).get)
-
-    def seqToSeqTuple2(s: Seq[ByteString]): Seq[(ByteString, Double)] = {
-      require(s.length % 2 == 0, "odd number of elements")
-      val queue = mutable.Queue[(ByteString, Double)]()
-      @tailrec
-      def recur(s: Seq[ByteString]) {
-        if (s.nonEmpty) {
-          val score = java.lang.Double.valueOf(s.tail.head.utf8String)
-          queue.enqueue((s.head, score))
-          recur(s.tail.tail)
-        }
-      }
-      recur(s)
-      queue.toSeq
-    }
+      val builder = Seq.newBuilder[(ByteString, Double)]
+      recur(seq, builder)
+      builder.result()
+    }).get
   }
 
-  implicit object OptionTupleStringByteStringMultiBulkConverter extends MultiBulkConverter[Option[(String, ByteString)]] {
-    def to(reply: MultiBulk): Try[Option[(String, ByteString)]] = Try(reply.responses.map(r => {
+  def toOptionStringByteString(reply: MultiBulk): Option[(String, ByteString)] = {
+    reply.responses.map(r => {
       Some(r.head.toString, r.tail.head.toByteString)
-    }).getOrElse(None))
+    }).getOrElse(None)
   }
 
-  implicit object SeqBooleanMultiBulkConverter extends MultiBulkConverter[Seq[Boolean]] {
-    def to(reply: MultiBulk): Try[Seq[Boolean]] = Try(reply.responses.map(r => {
+  def toSeqBoolean(reply: MultiBulk): Seq[Boolean] = {
+    reply.responses.map(r => {
       r.map(_.toString == "1")
-    }).get)
+    }).get
   }
 
 }

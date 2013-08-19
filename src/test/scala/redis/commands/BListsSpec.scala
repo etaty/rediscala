@@ -3,7 +3,6 @@ package redis.commands
 import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
-import scala.util.Success
 import scala.concurrent.duration._
 
 class BListsSpec extends RedisSpec {
@@ -17,7 +16,7 @@ class BListsSpec extends RedisSpec {
           p <- redis.rpush("blpop1", "a", "b", "c")
           b <- redisB.blpop(Seq("blpop1", "blpop2"))
         } yield {
-          b mustEqual Success(Some("blpop1", ByteString("a")))
+          b mustEqual Some("blpop1", ByteString("a"))
         }
         val rr = Await.result(r, timeOut)
         redisB.disconnect()
@@ -33,7 +32,7 @@ class BListsSpec extends RedisSpec {
             redis.rpush("blpopBlock", "a", "b", "c")
             blpop
           })
-          val rr = Await.result(r, timeOut) mustEqual Success(Some("blpopBlock", ByteString("a")))
+          val rr = Await.result(r, timeOut) mustEqual Some("blpopBlock", ByteString("a"))
           redisB.disconnect()
           rr
         }
@@ -45,7 +44,7 @@ class BListsSpec extends RedisSpec {
           val r = redis.del("blpopBlockTimeout").flatMap(_ => {
             redisB.brpop(Seq("blpopBlockTimeout"), 1.seconds)
           })
-          val rr = Await.result(r, timeOut) mustEqual Success(None)
+          val rr = Await.result(r, timeOut) must beNone
           redisB.disconnect()
           rr
         }
@@ -61,7 +60,7 @@ class BListsSpec extends RedisSpec {
           b <- redisB.brpop(Seq("brpop1", "brpop2"))
         } yield {
           redisB.disconnect()
-          b mustEqual Success(Some("brpop1", ByteString("c")))
+          b mustEqual Some("brpop1", ByteString("c"))
         }
         Await.result(r, timeOut)
       }
@@ -75,7 +74,7 @@ class BListsSpec extends RedisSpec {
             redis.rpush("brpopBlock", "a", "b", "c")
             brpop
           })
-          val rr = Await.result(r, timeOut) mustEqual Success(Some("brpopBlock", ByteString("c")))
+          val rr = Await.result(r, timeOut) mustEqual Some("brpopBlock", ByteString("c"))
           redisB.disconnect()
           rr
         }
@@ -87,7 +86,7 @@ class BListsSpec extends RedisSpec {
           val r = redis.del("brpopBlockTimeout").flatMap(_ => {
             redisB.brpop(Seq("brpopBlockTimeout"), 1.seconds)
           })
-          val rr = Await.result(r, timeOut) mustEqual Success(None)
+          val rr = Await.result(r, timeOut) must beNone
           redisB.disconnect()
           rr
         }
@@ -130,7 +129,7 @@ class BListsSpec extends RedisSpec {
           val r = redis.del("brpopplushBlockTimeout").flatMap(_ => {
             redisB.brpopplush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
           })
-          val rr = Await.result(r, timeOut) mustEqual None
+          val rr = Await.result(r, timeOut) must beNone
           redisB.disconnect()
           rr
         }

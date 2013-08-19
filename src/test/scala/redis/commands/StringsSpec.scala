@@ -141,9 +141,9 @@ class StringsSpec extends RedisSpec {
       val r = for {
         _ <- s1
         _ <- s2
+        mget <- redis.mget("mgetKey", "mgetKey2", "mgetKeyNonexisting")
       } yield {
-        val r = redis.mget("mgetKey", "mgetKey2", "mgetKeyNonexisting")
-        Await.result(r, timeOut) mustEqual MultiBulk(Some(Seq(Bulk(Some(ByteString("Hello"))), Bulk(Some(ByteString("World"))), Bulk(None))))
+        mget mustEqual Seq(Some(ByteString("Hello")), Some(ByteString("World")), None)
       }
       Await.result(r, timeOut)
     }

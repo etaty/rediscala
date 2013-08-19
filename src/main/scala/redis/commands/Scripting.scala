@@ -1,14 +1,10 @@
 package redis.commands
 
-import akka.util.ByteString
 import redis._
 import scala.concurrent.Future
 import redis.protocol._
-import redis.protocol.Status
-import redis.protocol.Bulk
-import redis.api.script.RedisScript
+import redis.api.scripting._
 import redis.actors.ReplyErrorException
-import scala.util.Try
 
 trait Scripting extends Request {
   /**
@@ -21,27 +17,27 @@ trait Scripting extends Request {
   }
 
   def eval(script: String, keys: Seq[String] = Seq(), args: Seq[String] = Seq()): Future[RedisReply] = {
-    send("EVAL", (ByteString(script) +: ByteString(keys.length.toString) +: keys.map(ByteString(_))) ++ args.map(ByteString(_)))
+    send(Eval(script, keys, args))
   }
 
   def evalsha(sha1: String, keys: Seq[String] = Seq(), args: Seq[String] = Seq()): Future[RedisReply] = {
-    send("EVALSHA", (ByteString(sha1) +: ByteString(keys.length.toString) +: keys.map(ByteString(_))) ++ args.map(ByteString(_)))
+    send(Evalsha(sha1, keys, args))
   }
 
   def scriptFlush(): Future[Boolean] = {
-    send("SCRIPT", Seq(ByteString("FLUSH"))).mapTo[Status].map(_.toBoolean)
+    send(ScriptFlush)
   }
 
   def scriptKill(): Future[Boolean] = {
-    send("SCRIPT", Seq(ByteString("KILL"))).mapTo[Status].map(_.toBoolean)
+    send(ScriptKill)
   }
 
   def scriptLoad(script: String): Future[String] = {
-    send("SCRIPT", Seq(ByteString("LOAD"), ByteString(script))).mapTo[Bulk].map(_.toString)
+    send(ScriptLoad(script))
   }
 
-  def scriptExists(sha1: String*)(implicit convert: MultiBulkConverter[Seq[Boolean]]): Future[Try[Seq[Boolean]]] = {
-    send("SCRIPT", ByteString("EXISTS") +: sha1.map(ByteString(_))).mapTo[MultiBulk].map(_.asTry[Seq[Boolean]])
+  def scriptExists(sha1: String*): Future[Seq[Boolean]] = {
+    send(ScriptExists(sha1))
   }
 }
 

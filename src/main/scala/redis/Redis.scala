@@ -1,33 +1,23 @@
 package redis
 
 import akka.actor._
-import akka.util.{Helpers, ByteString}
+import akka.util.Helpers
 import redis.commands._
 import scala.concurrent._
-import redis.protocol._
 import java.net.InetSocketAddress
 import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
-
 
 trait Request {
   implicit val executionContext: ExecutionContext
 
   def redisConnection: ActorRef
 
-  def send(request: ByteString): Future[RedisReply] = {
-    val promise = Promise[RedisReply]()
-    redisConnection ! Operation(request, promise)
+  def send[T](redisCommand: RedisCommand[_, T]): Future[T] = {
+    val promise = Promise[T]()
+    redisConnection ! Operation(redisCommand, promise)
     promise.future
-  }
-
-  def send(command: String, args: Seq[ByteString]): Future[RedisReply] = {
-    send(RedisProtocolRequest.multiBulk(command, args))
-  }
-
-  def send(command: String): Future[RedisReply] = {
-    send(RedisProtocolRequest.inline(command))
   }
 }
 
@@ -43,7 +33,8 @@ trait RedisCommands
   with Connection
   with Server
 
-case class RedisClient(host: String = "localhost", port: Int = 6379, name: String = "RedisClient")(implicit system: ActorSystem) extends RedisCommands with Transactions {
+case class RedisClient(host: String = "localhost", port: Int = 6379, name: String = "RedisClient")(implicit system: ActorSystem)
+  extends RedisCommands with Transactions {
 
   implicit val executionContext = system.dispatcher
 
@@ -60,7 +51,8 @@ case class RedisClient(host: String = "localhost", port: Int = 6379, name: Strin
 
 }
 
-case class RedisBlockingClient(host: String = "localhost", port: Int = 6379, name: String = "RedisBlockingClient")(implicit system: ActorSystem) extends BLists {
+case class RedisBlockingClient(host: String = "localhost", port: Int = 6379, name: String = "RedisBlockingClient")(implicit system: ActorSystem)
+  extends BLists {
 
   implicit val executionContext = system.dispatcher
 
@@ -76,10 +68,6 @@ case class RedisBlockingClient(host: String = "localhost", port: Int = 6379, nam
   }
 
 }
-
-case class Operation(request: ByteString, promise: Promise[RedisReply])
-
-case class Transaction(commands: Seq[Operation])
 
 case class RedisPubSub(
                         host: String = "localhost",

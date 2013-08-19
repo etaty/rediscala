@@ -98,6 +98,33 @@ object RedisProtocolReply {
     }
   }
 
+  val decodeReplyPF: PartialFunction[ByteString, Option[(RedisReply, ByteString)]] = {
+    case bs if bs.head == INTEGER => decodeInteger(bs.tail)
+    case bs if bs.head == STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
+    case bs if bs.head == BULK => decodeBulk(bs.tail)
+    case bs if bs.head == MULTIBULK => decodeMultiBulk(bs.tail)
+  }
+
+  val decodeReplyStatus: PartialFunction[ByteString, Option[(Status, ByteString)]] = {
+    case bs if bs.head == STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
+  }
+
+  val decodeReplyInteger: PartialFunction[ByteString, Option[(Integer, ByteString)]] = {
+    case bs if bs.head == INTEGER => decodeInteger(bs.tail)
+  }
+
+  val decodeReplyBulk: PartialFunction[ByteString, Option[(Bulk, ByteString)]] = {
+    case bs if bs.head == BULK => decodeBulk(bs.tail)
+  }
+
+  val decodeReplyMultiBulk: PartialFunction[ByteString, Option[(MultiBulk, ByteString)]] = {
+    case bs if bs.head == MULTIBULK => decodeMultiBulk(bs.tail)
+  }
+
+  val decodeReplyError: PartialFunction[ByteString, Option[(Error, ByteString)]] = {
+    case bs if bs.head == ERROR => decodeString(bs.tail).map(r => (Error(r._1), r._2))
+  }
+
   def decodeInteger(bs: ByteString): Option[(Integer, ByteString)] = {
     decodeString(bs).map(r => {
       val i = Integer(r._1)

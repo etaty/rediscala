@@ -1,52 +1,49 @@
 package redis.commands
 
-import redis.{RedisValueConverter, MultiBulkConverter, Request}
+import redis.{RedisValueConverter, Request}
 import akka.util.ByteString
 import scala.concurrent.Future
-import redis.protocol.{Status, MultiBulk, Bulk, Integer}
-import scala.util.Try
+import redis.api.hashes._
 
 trait Hashes extends Request {
 
   def hdel(key: String, fields: String*): Future[Long] =
-    send("HDEL", ByteString(key) +: fields.map(ByteString.apply)).mapTo[Integer].map(_.toLong)
+    send(Hdel(key, fields))
 
   def hexists(key: String, field: String): Future[Boolean] =
-    send("HEXISTS", Seq(ByteString(key), ByteString(field))).mapTo[Integer].map(_.toBoolean)
+    send(Hexists(key, field))
 
   def hget(key: String, field: String): Future[Option[ByteString]] =
-    send("HGET", Seq(ByteString(key), ByteString(field))).mapTo[Bulk].map(_.response)
+    send(Hget(key, field))
 
-  def hgetall(key: String)(implicit convert: MultiBulkConverter[Map[String, ByteString]]): Future[Try[Map[String, ByteString]]] =
-    send("HGETALL", Seq(ByteString(key))).mapTo[MultiBulk].map(_.asTry[Map[String, ByteString]])
+  def hgetall(key: String): Future[Map[String, ByteString]] =
+    send(Hgetall(key))
 
   def hincrby(key: String, fields: String, increment: Long): Future[Long] =
-    send("HINCRBY", Seq(ByteString(key), ByteString(fields), ByteString(increment.toString))).mapTo[Integer].map(_.toLong)
+    send(Hincrby(key, fields, increment))
 
   def hincrbyfloat(key: String, fields: String, increment: Double): Future[Double] =
-    send("HINCRBYFLOAT", Seq(ByteString(key), ByteString(fields), ByteString(increment.toString))).mapTo[Bulk].map(_.response.map(v => java.lang.Double.valueOf(v.utf8String)).get)
+    send(Hincrbyfloat(key, fields, increment))
 
-  def hkeys(key: String)(implicit convert: MultiBulkConverter[Seq[String]]): Future[Try[Seq[String]]] =
-    send("HKEYS", Seq(ByteString(key))).mapTo[MultiBulk].map(_.asTry[Seq[String]])
+  def hkeys(key: String): Future[Seq[String]] =
+    send(Hkeys(key))
 
-  def hlen(key: String)(implicit convert: MultiBulkConverter[Seq[String]]): Future[Long] =
-    send("HLEN", Seq(ByteString(key))).mapTo[Integer].map(_.toLong)
+  def hlen(key: String): Future[Long] =
+    send(Hlen(key))
 
-  def hmget(key: String, fields: String*)(implicit convert: MultiBulkConverter[Seq[Option[ByteString]]]): Future[Try[Seq[Option[ByteString]]]] =
-    send("HMGET", ByteString(key) +: fields.map(ByteString.apply)).mapTo[MultiBulk].map(_.asTry[Seq[Option[ByteString]]])
+  def hmget(key: String, fields: String*): Future[Seq[Option[ByteString]]] =
+    send(Hmget(key, fields))
 
   def hmset[A](key: String, keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
-    send("HMSET", ByteString(key) +: keysValues.foldLeft(Seq.empty[ByteString])({
-      case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
-    })).mapTo[Status].map(_.toBoolean)
+    send(Hmset(key, keysValues))
 
   def hset[A](key: String, field: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
-    send("HSET", Seq(ByteString(key), ByteString(field), convert.from(value))).mapTo[Integer].map(_.toBoolean)
+    send(Hset(key, field, value))
 
   def hsetnx[A](key: String, field: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
-    send("HSETNX", Seq(ByteString(key), ByteString(field), convert.from(value))).mapTo[Integer].map(_.toBoolean)
+    send(Hsetnx(key, field, value))
 
-  def hvals[A](key: String)(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
-    send("HVALS", Seq(ByteString(key))).mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
+  def hvals(key: String): Future[Seq[ByteString]] =
+    send(Hvals(key))
 
 }

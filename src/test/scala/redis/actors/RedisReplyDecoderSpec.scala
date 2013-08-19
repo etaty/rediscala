@@ -12,6 +12,7 @@ import redis.{Operation, protocol}
 import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
 import redis.Operation
+import redis.api.connection.Ping
 
 class RedisReplyDecoderSpec
   extends TestKit(ActorSystem("testsystem", ConfigFactory.parseString( """akka.loggers = ["akka.testkit.TestEventListener"]""")))
@@ -24,9 +25,10 @@ class RedisReplyDecoderSpec
   "RedisReplyDecoder" should {
 
     "ok" in {
-      val promise = Promise[RedisReply]()
-      val q = mutable.Queue[Promise[RedisReply]]()
-      q.enqueue(promise)
+      val promise = Promise[String]
+      val operation = Operation(Ping, promise)
+      val q = mutable.Queue[Operation[_]]()
+      q.enqueue(operation)
 
       val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
@@ -36,21 +38,23 @@ class RedisReplyDecoderSpec
       redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 1
 
       redisReplyDecoder ! ByteString("+PONG\r\n")
-      Await.result(promise.future, 10 seconds) mustEqual protocol.Status(ByteString("PONG"))
+      Await.result(promise.future, 10 seconds) mustEqual "PONG"
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
 
-      val promise2 = Promise[RedisReply]()
-      val promise3 = Promise[RedisReply]()
-      val q2 = mutable.Queue[Promise[RedisReply]]()
-      q2.enqueue(promise2)
-      q2.enqueue(promise3)
+      val promise2 = Promise[String]()
+      val promise3 = Promise[String]()
+      val op2 = Operation(Ping, promise2)
+      val op3 = Operation(Ping, promise3)
+      val q2 = mutable.Queue[Operation[_]]()
+      q2.enqueue(op2)
+      q2.enqueue(op3)
 
       redisReplyDecoder ! q2
       redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 2
 
       redisReplyDecoder ! ByteString("+PONG\r\n+PONG\r\n")
-      Await.result(promise2.future, 10 seconds) mustEqual protocol.Status(ByteString("PONG"))
-      Await.result(promise3.future, 10 seconds) mustEqual protocol.Status(ByteString("PONG"))
+      Await.result(promise2.future, 10 seconds) mustEqual "PONG"
+      Await.result(promise3.future, 10 seconds) mustEqual "PONG"
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
     }
 
@@ -58,26 +62,26 @@ class RedisReplyDecoderSpec
       val probeMock = TestProbe()
 
       val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
-      val promise = Promise[RedisReply]()
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promise)
+      val promise = Promise[String]()
+      redisClientActor ! Operation(Ping, promise)
       redisClientActor.underlyingActor.queuePromises.length mustEqual 1
       redisClientActor.underlyingActor.onWriteSent()
       redisClientActor.underlyingActor.queuePromises must beEmpty
 
-      EventFilter[Exception](occurrences = 1, message = "Redis Protocol error: Got 110 as initial reply byte").intercept({
+      EventFilter[Exception](occurrences = 1, start = "Redis Protocol error: Got 110 as initial reply byte").intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("not valid redis reply"))
       })
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
       Await.result(promise.future, 10 seconds) must throwA(InvalidRedisReply)
 
 
-      val promise2 = Promise[RedisReply]()
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promise2)
+      val promise2 = Promise[String]()
+      redisClientActor ! Operation(Ping, promise2)
       redisClientActor.underlyingActor.queuePromises.length mustEqual 1
       redisClientActor.underlyingActor.onWriteSent()
       redisClientActor.underlyingActor.queuePromises must beEmpty
 
-      EventFilter[Exception](occurrences = 1, message = "Redis Protocol error: Got 110 as initial reply byte").intercept({
+      EventFilter[Exception](occurrences = 1, start = "Redis Protocol error: Got 110 as initial reply byte").intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("not valid redis reply"))
       })
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
@@ -88,19 +92,19 @@ class RedisReplyDecoderSpec
       val probeMock = TestProbe()
 
       val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
-      val promise = Promise[RedisReply]()
-      redisClientActor ! Operation(RedisProtocolRequest.inline("PING"), promise)
+      val promise = Promise[String]()
+      redisClientActor ! Operation(Ping, promise)
 
       redisClientActor.underlyingActor.queuePromises.length mustEqual 1
 
-      EventFilter[Exception](occurrences = 1, message = "queue empty").intercept({
+      EventFilter[NoSuchElementException](occurrences = 1).intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("+PONG\r\n"))
       })
       redisClientActor.underlyingActor.queuePromises.length mustEqual 1
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
 
-      EventFilter[Exception](occurrences = 1, message = "queue empty").intercept({
+      EventFilter[NoSuchElementException](occurrences = 1).intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("+PONG\r\n"))
       })
       redisClientActor.underlyingActor.queuePromises.length mustEqual 1

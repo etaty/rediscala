@@ -3,7 +3,6 @@ package redis.commands
 import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
-import scala.util.Success
 
 class HashesSpec extends RedisSpec {
 
@@ -48,8 +47,8 @@ class HashesSpec extends RedisSpec {
         get <- redis.hgetall("hgetallKey")
         get2 <- redis.hgetall("hgetallKeyNotExisting")
       } yield {
-        get mustEqual Success(Map("field" -> ByteString("value")))
-        get2 mustEqual Success(Map.empty)
+        get mustEqual Map("field" -> ByteString("value"))
+        get2 mustEqual Map.empty
       }
       Await.result(r, timeOut)
     }
@@ -83,7 +82,7 @@ class HashesSpec extends RedisSpec {
         _ <- redis.hset("hkeysKey", "field", "value")
         keys <- redis.hkeys("hkeysKey")
       } yield {
-        keys mustEqual Success(Seq("field"))
+        keys mustEqual Seq("field")
       }
       Await.result(r, timeOut)
     }
@@ -103,7 +102,7 @@ class HashesSpec extends RedisSpec {
         _ <- redis.hset("hmgetKey", "field", "value")
         hmget <- redis.hmget("hmgetKey", "field", "nofield")
       } yield {
-        hmget mustEqual Success(Seq(Some(ByteString("value")), None))
+        hmget mustEqual Seq(Some(ByteString("value")), None)
       }
       Await.result(r, timeOut)
     }
@@ -155,8 +154,8 @@ class HashesSpec extends RedisSpec {
         _ <- redis.hset("hvalsKey", "field", "value")
         some <- redis.hvals("hvalsKey")
       } yield {
-        empty mustEqual Success(Seq())
-        some mustEqual Success(Seq(ByteString("value")))
+        empty must beEmpty
+        some mustEqual Seq(ByteString("value"))
       }
       Await.result(r, timeOut)
     }
