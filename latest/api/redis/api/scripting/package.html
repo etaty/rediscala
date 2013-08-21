@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>scripting - Rediscala 1.1 API 1.1 - redis.api.scripting</title>
+          <meta name="description" content="scripting - Rediscala 1.1 API 1.1 - redis.api.scripting" />
+          <meta name="keywords" content="scripting Rediscala 1.1 API 1.1 redis.api.scripting" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'redis.api.scripting.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
+        <h1>scripting</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scripting</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.api.scripting.Eval" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EvalextendsRedisCommandRedisReplyRedisReplywithProductwithSerializable"></a>
+      <a id="Eval:Eval"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Eval.html"><span class="name">Eval</span></a><span class="params">(<span name="script">script: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="args">args: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyRedisReply.html" class="extype" name="redis.RedisCommandRedisReplyRedisReply">RedisCommandRedisReplyRedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.scripting.Evalsha" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EvalshaextendsRedisCommandRedisReplyRedisReplywithProductwithSerializable"></a>
+      <a id="Evalsha:Evalsha"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Evalsha.html"><span class="name">Evalsha</span></a><span class="params">(<span name="sha1">sha1: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>, <span name="args">args: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="defval" name="collection.this.Seq.apply[Nothing]()">...</span></span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyRedisReply.html" class="extype" name="redis.RedisCommandRedisReplyRedisReply">RedisCommandRedisReplyRedisReply</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.scripting.RedisScript" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedisScriptextendsProductwithSerializable"></a>
+      <a id="RedisScript:RedisScript"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RedisScript.html"><span class="name">RedisScript</span></a><span class="params">(<span name="script">script: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.scripting.ScriptExists" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScriptExistsextendsRedisCommandMultiBulk[Seq[Boolean]]withProductwithSerializable"></a>
+      <a id="ScriptExists:ScriptExists"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ScriptExists.html"><span class="name">ScriptExists</span></a><span class="params">(<span name="sha1">sha1: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulk.html" class="extype" name="redis.RedisCommandMultiBulk">RedisCommandMultiBulk</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Boolean">Boolean</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.scripting.ScriptLoad" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScriptLoadextendsRedisCommandBulk[String]withProductwithSerializable"></a>
+      <a id="ScriptLoad:ScriptLoad"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ScriptLoad.html"><span class="name">ScriptLoad</span></a><span class="params">(<span name="script">script: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandBulk.html" class="extype" name="redis.RedisCommandBulk">RedisCommandBulk</a>[<span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="redis.api.scripting.ScriptFlush" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScriptFlush"></a>
+      <a id="ScriptFlush:ScriptFlush"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ScriptFlush$.html"><span class="name">ScriptFlush</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.scripting.ScriptKill" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ScriptKill"></a>
+      <a id="ScriptKill:ScriptKill"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ScriptKill$.html"><span class="name">ScriptKill</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>

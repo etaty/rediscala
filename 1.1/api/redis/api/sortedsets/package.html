@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>sortedsets - Rediscala 1.1 API 1.1 - redis.api.sortedsets</title>
+          <meta name="description" content="sortedsets - Rediscala 1.1 API 1.1 - redis.api.sortedsets" />
+          <meta name="keywords" content="sortedsets Rediscala 1.1 API 1.1 redis.api.sortedsets" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'redis.api.sortedsets.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
+        <h1>sortedsets</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sortedsets</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.api.sortedsets.Zadd" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zadd[A]extendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zadd[A]:Zadd[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zadd.html"><span class="name">Zadd</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="scoreMembers">scoreMembers: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Double">Double</span>, <span class="extype" name="redis.api.sortedsets.Zadd.A">A</span>)]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zadd.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zcard" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZcardextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zcard:Zcard"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zcard.html"><span class="name">Zcard</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zcount" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZcountextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zcount:Zcount"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zcount.html"><span class="name">Zcount</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a> = <span class="defval" name="redis.api.Limit.apply(scala.Double.NegativeInfinity, redis.api.Limit.apply$default$2)">...</span></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a> = <span class="defval" name="redis.api.Limit.apply(scala.Double.PositiveInfinity, redis.api.Limit.apply$default$2)">...</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zincrby" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zincrby[A]extendsRedisCommandBulkDoublewithProductwithSerializable"></a>
+      <a id="Zincrby[A]:Zincrby[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zincrby.html"><span class="name">Zincrby</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="increment">increment: <span class="extype" name="scala.Double">Double</span></span>, <span name="member">member: <span class="extype" name="redis.api.sortedsets.Zincrby.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zincrby.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandBulkDouble.html" class="extype" name="redis.RedisCommandBulkDouble">RedisCommandBulkDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zinterstore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZinterstoreextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zinterstore:Zinterstore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zinterstore.html"><span class="name">Zinterstore</span></a><span class="params">(<span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="aggregate">aggregate: <a href="../Aggregate.html" class="extype" name="redis.api.Aggregate">Aggregate</a> = <span class="symbol">redis.api.SUM</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZinterstoreWeighted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZinterstoreWeightedextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="ZinterstoreWeighted:ZinterstoreWeighted"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZinterstoreWeighted.html"><span class="name">ZinterstoreWeighted</span></a><span class="params">(<span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>, <span name="aggregate">aggregate: <a href="../Aggregate.html" class="extype" name="redis.api.Aggregate">Aggregate</a> = <span class="symbol">redis.api.SUM</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrangeextendsRedisCommandMultiBulkSeqByteStringwithProductwithSerializable"></a>
+      <a id="Zrange:Zrange"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrange.html"><span class="name">Zrange</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteString.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteString">RedisCommandMultiBulkSeqByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZrangeWithscores" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrangeWithscoresextendsRedisCommandMultiBulkSeqByteStringDoublewithProductwithSerializable"></a>
+      <a id="ZrangeWithscores:ZrangeWithscores"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZrangeWithscores.html"><span class="name">ZrangeWithscores</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteStringDouble.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteStringDouble">RedisCommandMultiBulkSeqByteStringDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrangebyscore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrangebyscoreextendsRedisCommandMultiBulkSeqByteStringwithProductwithSerializable"></a>
+      <a id="Zrangebyscore:Zrangebyscore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrangebyscore.html"><span class="name">Zrangebyscore</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteString.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteString">RedisCommandMultiBulkSeqByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZrangebyscoreWithscores" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrangebyscoreWithscoresextendsRedisCommandMultiBulkSeqByteStringDoublewithProductwithSerializable"></a>
+      <a id="ZrangebyscoreWithscores:ZrangebyscoreWithscores"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZrangebyscoreWithscores.html"><span class="name">ZrangebyscoreWithscores</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteStringDouble.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteStringDouble">RedisCommandMultiBulkSeqByteStringDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrank" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zrank[A]extendsRedisCommandRedisReplyOptionLongwithProductwithSerializable"></a>
+      <a id="Zrank[A]:Zrank[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrank.html"><span class="name">Zrank</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="member">member: <span class="extype" name="redis.api.sortedsets.Zrank.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zrank.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyOptionLong.html" class="extype" name="redis.RedisCommandRedisReplyOptionLong">RedisCommandRedisReplyOptionLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrem" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zrem[A]extendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zrem[A]:Zrem[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrem.html"><span class="name">Zrem</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="members">members: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="redis.api.sortedsets.Zrem.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zrem.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zremrangebyrank" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZremrangebyrankextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zremrangebyrank:Zremrangebyrank"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zremrangebyrank.html"><span class="name">Zremrangebyrank</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zremrangebyscore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZremrangebyscoreextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zremrangebyscore:Zremrangebyscore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zremrangebyscore.html"><span class="name">Zremrangebyscore</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrevrange" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrevrangeextendsRedisCommandMultiBulkSeqByteStringwithProductwithSerializable"></a>
+      <a id="Zrevrange:Zrevrange"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrevrange.html"><span class="name">Zrevrange</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteString.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteString">RedisCommandMultiBulkSeqByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZrevrangeWithscores" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrevrangeWithscoresextendsRedisCommandMultiBulkSeqByteStringDoublewithProductwithSerializable"></a>
+      <a id="ZrevrangeWithscores:ZrevrangeWithscores"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZrevrangeWithscores.html"><span class="name">ZrevrangeWithscores</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="start">start: <span class="extype" name="scala.Long">Long</span></span>, <span name="stop">stop: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteStringDouble.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteStringDouble">RedisCommandMultiBulkSeqByteStringDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrevrangebyscore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrevrangebyscoreextendsRedisCommandMultiBulkSeqByteStringwithProductwithSerializable"></a>
+      <a id="Zrevrangebyscore:Zrevrangebyscore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrevrangebyscore.html"><span class="name">Zrevrangebyscore</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteString.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteString">RedisCommandMultiBulkSeqByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZrevrangebyscoreWithscores" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZrevrangebyscoreWithscoresextendsRedisCommandMultiBulkSeqByteStringDoublewithProductwithSerializable"></a>
+      <a id="ZrevrangebyscoreWithscores:ZrevrangebyscoreWithscores"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZrevrangebyscoreWithscores.html"><span class="name">ZrevrangebyscoreWithscores</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="min">min: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="max">max: <a href="../Limit.html" class="extype" name="redis.api.Limit">Limit</a></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Long">Long</span>, <span class="extype" name="scala.Long">Long</span>)] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteStringDouble.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteStringDouble">RedisCommandMultiBulkSeqByteStringDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zrevrank" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zrevrank[A]extendsRedisCommandRedisReplyOptionLongwithProductwithSerializable"></a>
+      <a id="Zrevrank[A]:Zrevrank[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zrevrank.html"><span class="name">Zrevrank</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="member">member: <span class="extype" name="redis.api.sortedsets.Zrevrank.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zrevrank.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyOptionLong.html" class="extype" name="redis.RedisCommandRedisReplyOptionLong">RedisCommandRedisReplyOptionLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zscore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Zscore[A]extendsRedisCommandBulkOptionDoublewithProductwithSerializable"></a>
+      <a id="Zscore[A]:Zscore[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zscore.html"><span class="name">Zscore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="member">member: <span class="extype" name="redis.api.sortedsets.Zscore.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.sortedsets.Zscore.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandBulkOptionDouble.html" class="extype" name="redis.RedisCommandBulkOptionDouble">RedisCommandBulkOptionDouble</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.Zunionstore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZunionstoreextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Zunionstore:Zunionstore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Zunionstore.html"><span class="name">Zunionstore</span></a><span class="params">(<span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="aggregate">aggregate: <a href="../Aggregate.html" class="extype" name="redis.api.Aggregate">Aggregate</a> = <span class="symbol">redis.api.SUM</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.sortedsets.ZunionstoreWeighted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ZunionstoreWeightedextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="ZunionstoreWeighted:ZunionstoreWeighted"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ZunionstoreWeighted.html"><span class="name">ZunionstoreWeighted</span></a><span class="params">(<span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>, <span name="aggregate">aggregate: <a href="../Aggregate.html" class="extype" name="redis.api.Aggregate">Aggregate</a> = <span class="symbol">redis.api.SUM</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>

@@ -1,0 +1,394 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>keys - Rediscala 1.1 API 1.1 - redis.api.keys</title>
+          <meta name="description" content="keys - Rediscala 1.1 API 1.1 - redis.api.keys" />
+          <meta name="keywords" content="keys Rediscala 1.1 API 1.1 redis.api.keys" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'redis.api.keys.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
+        <h1>keys</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">keys</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.api.keys.Del" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DelextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Del:Del"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Del.html"><span class="name">Del</span></a><span class="params">(<span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Dump" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DumpextendsRedisCommandBulkOptionByteStringwithProductwithSerializable"></a>
+      <a id="Dump:Dump"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Dump.html"><span class="name">Dump</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandBulkOptionByteString.html" class="extype" name="redis.RedisCommandBulkOptionByteString">RedisCommandBulkOptionByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Exists" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExistsextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Exists:Exists"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Exists.html"><span class="name">Exists</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Expire" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExpireextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Expire:Expire"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Expire.html"><span class="name">Expire</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="seconds">seconds: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Expireat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExpireatextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Expireat:Expireat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Expireat.html"><span class="name">Expireat</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="seconds">seconds: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Keys" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="KeysextendsRedisCommandMultiBulk[Seq[String]]withProductwithSerializable"></a>
+      <a id="Keys:Keys"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Keys.html"><span class="name">Keys</span></a><span class="params">(<span name="pattern">pattern: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulk.html" class="extype" name="redis.RedisCommandMultiBulk">RedisCommandMultiBulk</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Migrate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MigrateextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="Migrate:Migrate"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Migrate.html"><span class="name">Migrate</span></a><span class="params">(<span name="host">host: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="port">port: <span class="extype" name="scala.Int">Int</span></span>, <span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationDB">destinationDB: <span class="extype" name="scala.Int">Int</span></span>, <span name="timeout">timeout: <span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Move" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MoveextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Move:Move"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Move.html"><span class="name">Move</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="db">db: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.ObjectEncoding" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ObjectEncodingextendsRedisCommandBulk[Option[String]]withProductwithSerializable"></a>
+      <a id="ObjectEncoding:ObjectEncoding"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ObjectEncoding.html"><span class="name">ObjectEncoding</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandBulk.html" class="extype" name="redis.RedisCommandBulk">RedisCommandBulk</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.ObjectIdletime" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ObjectIdletimeextendsRedisCommandRedisReplyOptionLongwithProductwithSerializable"></a>
+      <a id="ObjectIdletime:ObjectIdletime"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ObjectIdletime.html"><span class="name">ObjectIdletime</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyOptionLong.html" class="extype" name="redis.RedisCommandRedisReplyOptionLong">RedisCommandRedisReplyOptionLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.ObjectRefcount" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ObjectRefcountextendsRedisCommandRedisReplyOptionLongwithProductwithSerializable"></a>
+      <a id="ObjectRefcount:ObjectRefcount"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ObjectRefcount.html"><span class="name">ObjectRefcount</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReplyOptionLong.html" class="extype" name="redis.RedisCommandRedisReplyOptionLong">RedisCommandRedisReplyOptionLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Persist" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PersistextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Persist:Persist"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Persist.html"><span class="name">Persist</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Pexpire" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PexpireextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Pexpire:Pexpire"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Pexpire.html"><span class="name">Pexpire</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="milliseconds">milliseconds: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Pexpireat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PexpireatextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Pexpireat:Pexpireat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Pexpireat.html"><span class="name">Pexpireat</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="millisecondsTimestamp">millisecondsTimestamp: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Pttl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PttlextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Pttl:Pttl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Pttl.html"><span class="name">Pttl</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Rename" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RenameextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="Rename:Rename"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Rename.html"><span class="name">Rename</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="newkey">newkey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Renamex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RenamexextendsRedisCommandIntegerBooleanwithProductwithSerializable"></a>
+      <a id="Renamex:Renamex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Renamex.html"><span class="name">Renamex</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="newkey">newkey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerBoolean.html" class="extype" name="redis.RedisCommandIntegerBoolean">RedisCommandIntegerBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Restore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Restore[A]extendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="Restore[A]:Restore[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Restore.html"><span class="name">Restore</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ttl">ttl: <span class="extype" name="scala.Long">Long</span> = <span class="symbol">0</span></span>, <span name="serializedValue">serializedValue: <span class="extype" name="redis.api.keys.Restore.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="convert">convert: <a href="../../RedisValueConverter.html" class="extype" name="redis.RedisValueConverter">RedisValueConverter</a>[<span class="extype" name="redis.api.keys.Restore.A">A</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Sort" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SortextendsRedisCommandMultiBulkSeqByteStringwithProductwithSerializable"></a>
+      <a id="Sort:Sort"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Sort.html"><span class="name">Sort</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="byPattern">byPattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="../LimitOffsetCount.html" class="extype" name="redis.api.LimitOffsetCount">LimitOffsetCount</a>]</span>, <span name="getPatterns">getPatterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="order">order: <span class="extype" name="scala.Option">Option</span>[<a href="../Order.html" class="extype" name="redis.api.Order">Order</a>]</span>, <span name="alpha">alpha: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulkSeqByteString.html" class="extype" name="redis.RedisCommandMultiBulkSeqByteString">RedisCommandMultiBulkSeqByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.SortStore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SortStoreextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="SortStore:SortStore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SortStore.html"><span class="name">SortStore</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="byPattern">byPattern: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="../LimitOffsetCount.html" class="extype" name="redis.api.LimitOffsetCount">LimitOffsetCount</a>]</span>, <span name="getPatterns">getPatterns: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="order">order: <span class="extype" name="scala.Option">Option</span>[<a href="../Order.html" class="extype" name="redis.api.Order">Order</a>]</span>, <span name="alpha">alpha: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="store">store: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Ttl" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TtlextendsRedisCommandIntegerLongwithProductwithSerializable"></a>
+      <a id="Ttl:Ttl"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Ttl.html"><span class="name">Ttl</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="redis.api.keys.Type" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TypeextendsRedisCommandStatus[String]withProductwithSerializable"></a>
+      <a id="Type:Type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Type.html"><span class="name">Type</span></a><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatus.html" class="extype" name="redis.RedisCommandStatus">RedisCommandStatus</a>[<span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="redis.api.keys.Randomkey" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Randomkey"></a>
+      <a id="Randomkey:Randomkey"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Randomkey$.html"><span class="name">Randomkey</span></a><span class="result"> extends <a href="../../RedisCommandBulkOptionByteString.html" class="extype" name="redis.RedisCommandBulkOptionByteString">RedisCommandBulkOptionByteString</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../lib/template.js"></script>
+    </body>
+      </html>
