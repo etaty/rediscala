@@ -14,10 +14,10 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
-  var queuePromises = mutable.Queue[Operation[_]]()
+  var queuePromises = mutable.Queue[Operation[_,_]]()
 
   def writing: Receive = {
-    case op : Operation[_] =>
+    case op : Operation[_,_] =>
       queuePromises enqueue op
       write(op.redisCommand.encodedRequest)
     case Transaction(commands) => {
@@ -38,7 +38,7 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   def onWriteSent() {
     repliesDecoder ! queuePromises
-    queuePromises = mutable.Queue[Operation[_]]()
+    queuePromises = mutable.Queue[Operation[_,_]]()
   }
 
   def onConnectionClosed() {

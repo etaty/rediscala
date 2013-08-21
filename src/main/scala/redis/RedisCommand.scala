@@ -6,16 +6,15 @@ import scala.Long
 import redis.protocol.MultiBulk
 import scala.Some
 import redis.protocol.Bulk
-import scala.concurrent.Promise
 
-trait RedisCommand[RedisReplyT, T] {
+trait RedisCommand[RedisReplyT <: RedisReply, T] {
   val encodedRequest: ByteString
 
   def decodeReply(r: RedisReplyT): T
 
-  def decodeRedisReply(r: RedisReply) = decodeReply(r.asInstanceOf[RedisReplyT])
+  //def decodeRedisReply(r: RedisReply) = decodeReply(r.asInstanceOf[RedisReplyT])
 
-  val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReply, ByteString)]]
+  val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReplyT, ByteString)]]
 
   def mapTo(pf: PartialFunction[ByteString, Option[(RedisReply, ByteString)]],
             f: RedisReply => T):

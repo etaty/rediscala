@@ -6,9 +6,7 @@ import org.specs2.mutable.{Tags, SpecificationLike}
 import org.specs2.time.NoTimeConversions
 import akka.util.ByteString
 import scala.concurrent.{Await, Promise}
-import redis.protocol.{RedisProtocolRequest, RedisReply}
 import scala.collection.mutable
-import redis.{Operation, protocol}
 import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
 import redis.Operation
@@ -25,9 +23,9 @@ class RedisReplyDecoderSpec
   "RedisReplyDecoder" should {
 
     "ok" in {
-      val promise = Promise[String]
+      val promise = Promise[String]()
       val operation = Operation(Ping, promise)
-      val q = mutable.Queue[Operation[_]]()
+      val q = mutable.Queue[Operation[_,_]]()
       q.enqueue(operation)
 
       val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
@@ -45,7 +43,7 @@ class RedisReplyDecoderSpec
       val promise3 = Promise[String]()
       val op2 = Operation(Ping, promise2)
       val op3 = Operation(Ping, promise3)
-      val q2 = mutable.Queue[Operation[_]]()
+      val q2 = mutable.Queue[Operation[_,_]]()
       q2.enqueue(op2)
       q2.enqueue(op3)
 

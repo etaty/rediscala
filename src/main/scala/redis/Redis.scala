@@ -8,13 +8,14 @@ import java.net.InetSocketAddress
 import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
+import redis.protocol.RedisReply
 
 trait Request {
   implicit val executionContext: ExecutionContext
 
   def redisConnection: ActorRef
 
-  def send[T](redisCommand: RedisCommand[_, T]): Future[T] = {
+  def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
     val promise = Promise[T]()
     redisConnection ! Operation(redisCommand, promise)
     promise.future
