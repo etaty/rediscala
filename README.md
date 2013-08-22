@@ -186,7 +186,7 @@ Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/ma
 
 More than 200 000 requests/second
 
-* [benchmark result from scalameter](http://bit.ly/12QZsRs)
+* [benchmark result from scalameter](http://bit.ly/rediscalabench-1-1)
 * [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
 
 The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB) running the sun/oracle jvm 1.6
