@@ -18,7 +18,7 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/releases/"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.0"
+  "com.etaty.rediscala" %% "rediscala" % "1.1"
 )
 ```
 
@@ -82,9 +82,9 @@ Soon :
 
 ```scala
   redisBlocking.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
-    result.map(_.map({
+    result.map({
       case (key, work) => println(s"list $key has work : ${work.utf8String}")
-    }))
+    })
   })
 ```
 Full example: [ExampleRediscalaBlocking](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala)
@@ -157,10 +157,18 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 [RedisPubSubSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/RedisPubSubSpec.scala.scala) will reveal even more gems of the API.
 
+### Scripting
+
+
+
+Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleScripting.scala)
+
 
 ### Scaladoc
 
-[Rediscala scaladoc API](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.0)](http://etaty.github.io/rediscala/1.0/api/index.html#package)
 
 ### Performance
 
