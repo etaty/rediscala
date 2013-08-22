@@ -159,7 +159,19 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 ### Scripting
 
+`RedisScript` is a helper, you can put your LUA script inside and it will compute the hash. 
+You can use it with `evalshaOrEval` which run your script even if it wasn't already loaded.
 
+```scala
+  val redis = RedisClient()
+
+  val redisScript = RedisScript("return 'rediscala'")
+
+  val r = redis.evalshaOrEval(redisScript).map({
+    case b: Bulk => println(b.toString())
+  })
+  Await.result(r, 5 seconds)
+```
 
 Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleScripting.scala)
 
@@ -177,7 +189,7 @@ More than 200 000 requests/second
 * [benchmark result from scalameter](http://bit.ly/12QZsRs)
 * [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
 
-The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB)
+The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB) running the sun/oracle jvm 1.6
 
 You can run the bench with :
 
