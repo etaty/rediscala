@@ -184,7 +184,7 @@ Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/ma
 
 ### Performance
 
-More than 200 000 requests/second
+More than 250 000 requests/second
 
 * [benchmark result from scalameter](http://bit.ly/rediscalabench-1-1)
 * [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
