@@ -96,6 +96,30 @@ object MultiBulkConverter {
     }).get
   }
 
+  def toSeqMapString(reply: MultiBulk): Seq[Map[String, String]] = {
+    @tailrec
+    def recur(s: Seq[RedisReply], builder: mutable.Builder[(String, String), Seq[(String, String)]]): Unit = {
+      if (s.nonEmpty) {
+        builder += ((s.head.toString, s.tail.head.toString))
+        recur(s.tail.tail, builder)
+      }
+    }
+
+    reply.responses.map { s =>
+          s.map ({
+            case m: MultiBulk => {
+              m.responses.map { r =>
+                val builder = Seq.newBuilder[(String, String)]
+                recur(r, builder)
+                builder.result()
+              }.get
+
+            }
+            case _ => Seq()
+          }).map(Map(_: _*))
+      }.get
+  }
+
   def toOptionStringByteString(reply: MultiBulk): Option[(String, ByteString)] = {
     reply.responses.map(r => {
       Some(r.head.toString, r.tail.head.toByteString)

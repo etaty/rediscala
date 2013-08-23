@@ -19,7 +19,11 @@ abstract class RedisSpec extends TestKit(ActorSystem()) with SpecificationLike w
 
   implicit val timeout = Timeout(10 seconds)
   val timeOut = 10 seconds
+  val longTimeOut = 100 seconds
   val redis = RedisClient()
+  val sentinel = SentinelClient()
+  val masterName = "mymaster"
+  val smRedis = SentinelMonitoredRedisClient(master = masterName)
 
   override def map(fs: => Fragments) = fs ^ Step(system.shutdown())
 
