@@ -12,7 +12,7 @@ class RedisReplyDecoder() extends Actor {
 
   import context._
 
-  val queuePromises = mutable.Queue[Operation[_]]()
+  val queuePromises = mutable.Queue[Operation[_,_]]()
 
   val log = Logging(context.system, this)
 
@@ -23,7 +23,7 @@ class RedisReplyDecoder() extends Actor {
   }
 
   def receive = {
-    case promises: mutable.Queue[Operation[_]] => {
+    case promises: mutable.Queue[Operation[_,_]] => {
       queuePromises ++= promises
     }
     case byteStringInput: ByteString => decodeReplies(byteStringInput)
@@ -32,7 +32,7 @@ class RedisReplyDecoder() extends Actor {
   def onDecodedReply(reply: RedisReply) {
     reply match {
       case e: Error => queuePromises.dequeue().completeFailed(ReplyErrorException(e.toString()))
-      case _ => queuePromises.dequeue().completeSuccess(reply)
+      case _ => //queuePromises.dequeue().completeSuccess(reply)
     }
   }
 
@@ -46,7 +46,7 @@ class RedisReplyDecoder() extends Actor {
   private def decodeRepliesRecur(bs: ByteString): ByteString = {
     val op = queuePromises.front
 
-    val result : Option[(RedisReply, ByteString)] = decodeRedisReply(op, bs)
+    val result : Option[(Any, ByteString)] = decodeRedisReply(op, bs)
 
     if(result.nonEmpty) {
       val tail = result.get._2
@@ -59,12 +59,10 @@ class RedisReplyDecoder() extends Actor {
     }
   }
 
-  def decodeRedisReply(operation: Operation[_], bs: ByteString): Option[(RedisReply, ByteString)] = {
+  def decodeRedisReply(operation: Operation[_,_], bs: ByteString): Option[(Any, ByteString)] = {
     if (operation.redisCommand.decodeRedisReply.isDefinedAt(bs)) {
-      val r = operation.redisCommand.decodeRedisReply.apply(bs)
+      val r = operation.decodeRedisReplyThenComplete(bs)
       if (r.nonEmpty) {
-        val redisReply = r.get._1
-        operation.completeSuccess(redisReply)
         queuePromises.dequeue()
       }
       r

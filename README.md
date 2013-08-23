@@ -18,7 +18,7 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/releases/"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.0"
+  "com.etaty.rediscala" %% "rediscala" % "1.1"
 )
 ```
 
@@ -67,9 +67,9 @@ Supported :
 * [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Publish))
 * [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
 * [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
+* [Scripting](http://redis.io/commands#scripting) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Scripting)) (work in progress)
 
 Soon :
-* [Scripting](http://redis.io/commands#scripting)
 * [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
 
 
@@ -82,9 +82,9 @@ Soon :
 
 ```scala
   redisBlocking.blpop(Seq("workList", "otherKeyWithWork"), 5 seconds).map(result => {
-    result.map(_.map({
+    result.map({
       case (key, work) => println(s"list $key has work : ${work.utf8String}")
-    }))
+    })
   })
 ```
 Full example: [ExampleRediscalaBlocking](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleRediscalaBlocking.scala)
@@ -157,19 +157,39 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 [RedisPubSubSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/RedisPubSubSpec.scala.scala) will reveal even more gems of the API.
 
+### Scripting
+
+`RedisScript` is a helper, you can put your LUA script inside and it will compute the hash. 
+You can use it with `evalshaOrEval` which run your script even if it wasn't already loaded.
+
+```scala
+  val redis = RedisClient()
+
+  val redisScript = RedisScript("return 'rediscala'")
+
+  val r = redis.evalshaOrEval(redisScript).map({
+    case b: Bulk => println(b.toString())
+  })
+  Await.result(r, 5 seconds)
+```
+
+Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleScripting.scala)
+
 
 ### Scaladoc
 
-[Rediscala scaladoc API](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.0)](http://etaty.github.io/rediscala/1.0/api/index.html#package)
 
 ### Performance
 
-More than 200 000 requests/second
+More than 250 000 requests/second
 
-* [benchmark result from scalameter](http://bit.ly/12QZsRs)
+* [benchmark result from scalameter](http://bit.ly/rediscalabench-1-1)
 * [sources directory](https://github.com/etaty/rediscala/tree/master/src/benchmark/scala/redis/bench)
 
-The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB)
+The hardware used is a macbook retina (Intel Core i7, 2.6 GHz, 4 cores, 8 threads, 8GB) running the sun/oracle jvm 1.6
 
 You can run the bench with :
 

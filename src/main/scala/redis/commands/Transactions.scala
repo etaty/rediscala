@@ -34,7 +34,7 @@ trait Transactions extends Request {
 
 case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) extends RedisCommands {
 
-  val operations = Queue.newBuilder[Operation[_]]
+  val operations = Queue.newBuilder[Operation[_, _]]
   val watcher = Set.newBuilder[String]
 
   def unwatch() {
@@ -62,20 +62,20 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
   }
 
 
-  override def send[T](redisCommand: RedisCommand[_, T]) = {
+  override def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
     val promise = Promise[T]()
     operations += Operation(redisCommand, promise)
     promise.future
   }
 }
 
-case class Transaction(watcher: Set[String], operations: Queue[Operation[_]], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
+case class Transaction(watcher: Set[String], operations: Queue[Operation[_, _]], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
 
   def process(promise: Promise[MultiBulk]) {
     val multiOp = Operation(Multi, Promise[Boolean]())
     val execOp = Operation(Exec, execPromise(promise))
 
-    val commands = Seq.newBuilder[Operation[_]]
+    val commands = Seq.newBuilder[Operation[_, _]]
 
     val watchOp = watchOperation(watcher)
     watchOp.map(commands.+=(_))
@@ -86,7 +86,7 @@ case class Transaction(watcher: Set[String], operations: Queue[Operation[_]], re
     redisConnection ! redis.Transaction(commands.result())
   }
 
-  def operationToQueuedOperation(op: Operation[_]) = {
+  def operationToQueuedOperation(op: Operation[_, _]) = {
     val cmd = new RedisCommandStatus[String] {
       val encodedRequest: ByteString = op.redisCommand.encodedRequest
 
@@ -120,12 +120,10 @@ case class Transaction(watcher: Set[String], operations: Queue[Operation[_]], re
 
   def dispatchExecReply(multiBulk: MultiBulk) = {
     multiBulk.responses.map(replies => {
-      (replies, operations).zipped.map({
-        case (reply, operation) => {
-          reply match {
-            case e: Error => operation.completeFailed(ReplyErrorException(e.toString()))
-            case _ => operation.tryCompleteSuccess(reply)
-          }
+      (replies, operations).zipped.map((reply, operation) => {
+        reply match {
+          case e: Error => operation.completeFailed(ReplyErrorException(e.toString()))
+          case _ => operation.tryCompleteSuccess(reply)
         }
       })
     }).getOrElse({
@@ -134,7 +132,7 @@ case class Transaction(watcher: Set[String], operations: Queue[Operation[_]], re
   }
 
 
-  def watchOperation(keys: Set[String]): Option[Operation[Boolean]] = {
+  def watchOperation(keys: Set[String]): Option[Operation[_, Boolean]] = {
     if (keys.nonEmpty) {
       Some(Operation(Watch(keys), Promise[Boolean]()))
     } else {

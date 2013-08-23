@@ -7,7 +7,6 @@ import org.specs2.time.NoTimeConversions
 import java.net.InetSocketAddress
 import akka.util.ByteString
 import scala.concurrent.{Await, Promise}
-import redis.protocol.{RedisProtocolRequest, RedisReply}
 import scala.collection.mutable
 import redis.Operation
 import redis.api.connection.Ping
@@ -36,7 +35,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
       //onWriteSent
       redisClientActor.underlyingActor.onWriteSent()
-      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_]]] mustEqual mutable.Queue[Operation[_]](op1, op2)
+      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_,_]]] mustEqual mutable.Queue[Operation[_,_]](op1, op2)
       redisClientActor.underlyingActor.queuePromises must beEmpty
 
       //onDataReceived
@@ -89,7 +88,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
       redisClientActor.onWriteSent()
       redisClientActor.queuePromises must beEmpty
-      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_]]] mustEqual mutable.Queue[Operation[_]](operation)
+      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_,_]]] mustEqual mutable.Queue[Operation[_,_]](operation)
 
       redisClientActor.receive(Operation(Ping, promiseNotSent))
       redisClientActor.queuePromises.length mustEqual 1
