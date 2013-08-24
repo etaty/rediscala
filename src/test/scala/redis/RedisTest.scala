@@ -9,7 +9,7 @@ class RedisTest extends RedisSpec {
 
   "basic test" should {
     "ping" in {
-      Await.result(redis.ping, timeOut) mustEqual "PONG"
+        Await.result(redis.ping, timeOut) mustEqual "PONG"
     }
     "set" in {
       Await.result(redis.set("key", "value"), timeOut) mustEqual true
@@ -24,6 +24,7 @@ class RedisTest extends RedisSpec {
       Await.result(redis.get("key"), timeOut) mustEqual None
     }
   }
+
 
   "sentinel monitored test" should {
     "ping" in {
@@ -52,7 +53,7 @@ class RedisTest extends RedisSpec {
     "masters" in {
       val r = Await.result(sentinel.masters, timeOut)
       r(0)("name") mustEqual masterName
-      r(0)("flags") mustEqual "master"
+      r(0)("flags").startsWith("master") mustEqual true
     }
     "no such master" in {
       Await.result(sentinel.getMasterAddr("no-such-master"), timeOut) match {
@@ -76,7 +77,7 @@ class RedisTest extends RedisSpec {
     }
     "slaves" in {
       val r = Await.result(sentinel.slaves(masterName), timeOut)
-      r(0)("flags") mustNotEqual "master"
+      r(0)("flags").startsWith("slave") mustEqual true
     }
     "reset bogus master" in {
       !Await.result(sentinel.resetMaster("no-such-master"), timeOut)

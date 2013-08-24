@@ -167,19 +167,21 @@ case class SentinelMonitoredRedisClient(
 
   implicit val executionContext = system.dispatcher
 
-  private val onMasterChange = (ip: String, port: Int) => {
-    val oldrc = rc
-    rc = new RedisClient(ip, port, "SMRedisClient")
-    oldrc.disconnect()
-  }
+  private val onMasterChange =
+          (ip: String, port: Int) => {
+            val oldrc = rc
+            rc = new RedisClient(ip, port, "SMRedisClient")
+            oldrc.disconnect()
+          }
+
   private val sc = new SentinelClient(sentinelHost, sentinelPort, onMasterChange, "SMSentinelClient")
 
   private var rc: RedisClient = {
     val f = sc.getMasterAddr(master) map {
-              case Some((ip: String, port: Int)) => new RedisClient(ip, port, "SMRedisClient")
-              case _ => throw new Exception(s"No such master '$master'")
-            }
-    Await.result(f, 10 seconds)
+      case Some((ip: String, port: Int)) => new RedisClient(ip, port, "SMRedisClient")
+      case _ => throw new Exception(s"No such master '$master'")
+    }
+    Await.result(f, 15 seconds)
   }
 
   def redisClient() = rc

@@ -93,11 +93,11 @@ class KeysSpec extends RedisSpec {
     "MIGRATE" in {
       import scala.concurrent.duration._
 
-      withRedisServer(port => {
-        val redisMigrate = RedisClient("localhost", port)
+      withRedisCluster((masterPort, slavePort, sentinelPort) => {
+        val redisMigrate = RedisClient("localhost", masterPort)
         val r = for {
           _ <- redis.set("migrateKey", "value")
-          m <- redis.migrate("localhost", port, "migrateKey", 0, 10 seconds)
+          m <- redis.migrate("localhost", masterPort, "migrateKey", 0, 10 seconds)
           get <- redisMigrate.get("migrateKey")
         } yield {
           m must beTrue
