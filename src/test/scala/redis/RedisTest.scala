@@ -28,23 +28,23 @@ class RedisTest extends RedisSpec {
 
   "sentinel monitored test" should {
     "ping" in {
-      Await.result(smRedis.redisClient.ping, timeOut) mustEqual "PONG"
+      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
     }
     "auto failover" in {
       val port = smRedis.redisClient.port
-      Await.result(smRedis.redisClient.ping, timeOut) mustEqual "PONG"
+      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
 
       Await.result(sentinel.failover(masterName), timeOut) mustEqual true
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
 
-      Await.result(smRedis.redisClient.ping, timeOut) mustEqual "PONG"
+      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
       smRedis.redisClient.port mustNotEqual port
 
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
       Await.result(sentinel.failover(masterName), timeOut) mustEqual true
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
 
-      Await.result(smRedis.redisClient.ping, timeOut) mustEqual "PONG"
+      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
       smRedis.redisClient.port mustEqual  port
     }
   }

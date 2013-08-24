@@ -162,7 +162,8 @@ case class SentinelClient(host: String = "localhost",
 case class SentinelMonitoredRedisClient(
                            sentinelHost: String = "localhost",
                            sentinelPort: Int = 26379,
-                           master: String)(implicit system: ActorSystem) {
+                           master: String)
+                          (implicit system: ActorSystem) extends RedisCommands with Transactions {
   import scala.concurrent.duration._
 
   implicit val executionContext = system.dispatcher
@@ -185,6 +186,8 @@ case class SentinelMonitoredRedisClient(
   }
 
   def redisClient() = rc
+
+  def redisConnection() = redisClient().redisConnection
 
 }
 
