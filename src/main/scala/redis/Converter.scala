@@ -109,3 +109,20 @@ object MultiBulkConverter {
   }
 
 }
+
+trait ByteStringDeserializer[T] {
+  def deserialize(bs: ByteString): T
+}
+
+
+object ByteStringDeserializer {
+
+  implicit object ByteString extends ByteStringDeserializer[ByteString] {
+    def deserialize(bs: ByteString): ByteString = bs
+  }
+
+  implicit object String extends ByteStringDeserializer[String] {
+    def deserialize(bs: ByteString): String = bs.utf8String
+  }
+
+}

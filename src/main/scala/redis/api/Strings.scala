@@ -2,8 +2,9 @@ package redis.api.strings
 
 import redis._
 import akka.util.ByteString
-import redis.protocol.{RedisReply, MultiBulk, Status, RedisProtocolRequest}
+import redis.protocol._
 import redis.api.BitOperator
+import redis.protocol.MultiBulk
 
 case class Append[A](key: String, value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerLong {
   val encodedRequest: ByteString = encode("APPEND", Seq(ByteString(key), convert.from(value)))
@@ -29,8 +30,10 @@ case class Decrby(key: String, decrement: Long) extends RedisCommandIntegerLong 
   val encodedRequest: ByteString = encode("DECRBY", Seq(ByteString(key), ByteString(decrement.toString)))
 }
 
-case class Get(key: String) extends RedisCommandBulkOptionByteString {
+case class Get[T](key: String)(implicit bsDeserializer: ByteStringDeserializer[T]) extends RedisCommandBulk[Option[T]] {
   val encodedRequest: ByteString = RedisProtocolRequest.multiBulk("GET", Seq(ByteString(key)))
+
+  def decodeReply(bulk: Bulk): Option[T] = bulk.response.map(bsDeserializer.deserialize)
 }
 
 case class Getbit(key: String, offset: Long) extends RedisCommandIntegerBoolean {

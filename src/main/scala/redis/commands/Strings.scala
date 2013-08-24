@@ -38,8 +38,11 @@ trait Strings extends Request {
   def decrby(key: String, decrement: Long): Future[Long] =
     send(Decrby(key, decrement))
 
-  def get(key: String): Future[Option[ByteString]] =
+  def getT[T: ByteStringDeserializer](key: String): Future[Option[T]] =
     send(Get(key))
+
+  def get(key: String): Future[Option[ByteString]] =
+    send(Get[ByteString](key))
 
   def getbit(key: String, offset: Long): Future[Boolean] =
     send(Getbit(key, offset))

@@ -76,11 +76,16 @@ class StringsSpec extends RedisSpec {
 
     "GET" in {
       val r = redis.get("getKeyNonexisting")
-      val r2 = redis.set("getKey", "Hello").flatMap(_ => {
-        redis.get("getKey")
-      })
+      val rr = for {
+        _ <- redis.set("getKey", "Hello")
+        getBS <- redis.get("getKey")
+        getString <- redis.getT[String]("getKey")
+      } yield {
+        getBS mustEqual Some(ByteString("Hello"))
+        getString mustEqual Some("Hello")
+      }
       Await.result(r, timeOut) mustEqual None
-      Await.result(r2, timeOut) mustEqual Some(ByteString("Hello"))
+      Await.result(rr, timeOut)
     }
 
     "GETBIT" in {
