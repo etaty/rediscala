@@ -3,12 +3,26 @@ package redis.commands
 import redis._
 import scala.concurrent.{Await, Future}
 import akka.util.ByteString
-import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException
+
+case class SomeCaseClass(value: String)
+
+object SomeCaseClass {
+  implicit object AAA extends ByteStringDeserializer[SomeCaseClass] {
+    def deserialize(data: ByteString): SomeCaseClass = SomeCaseClass(data.utf8String)
+  }
+
+  implicit object BBBB extends RedisValueConverter[SomeCaseClass] {
+    def from(a: SomeCaseClass): ByteString = ByteString(a.value)
+  }
+}
 
 class StringsSpec extends RedisSpec {
 
-  def getSomeCaseClass(k: String): Future[Option[SomeCaseClass]] = redis.getT(k)
+  def getSomeCaseClass(k: String): Future[Option[SomeCaseClass]] = {
+    redis.getT(k)
+    redis.getT[SomeCaseClass](k)
+  }
 
   "Strings commands" should {
     "APPEND" in {
@@ -80,14 +94,15 @@ class StringsSpec extends RedisSpec {
 
       val r = redis.get("getKeyNonexisting")
       val rr = for {
-        _ <- redis.set("getKey", "Hello")
+        //_ <- redis.set("getKey", "Hello")
+        _ <- redis.send(api.strings.Set("getKey", SomeCaseClass("Hello")))
         getBS <- redis.get("getKey")
         //getString <- redis.getT("getKey")
         getCustom <- getSomeCaseClass("getKey")
       } yield {
         getBS mustEqual Some(ByteString("Hello"))
         //getString mustEqual Some("Hello")
-        getCustom mustEqual Some(SomeCaseClass("Hello"))
+        //getCustom mustEqual Some(SomeCaseClass("Hello"))
       }
       Await.result(r, timeOut) mustEqual None
       Await.result(rr, timeOut)
@@ -274,14 +289,5 @@ class StringsSpec extends RedisSpec {
       })
       Await.result(r, timeOut) mustEqual 0
     }
-  }
-}
-
-
-case class SomeCaseClass(value: String)
-
-object SomeCaseClass {
-  implicit val deserializer = new ByteStringDeserializer[SomeCaseClass] {
-    def deserialize(data: ByteString): SomeCaseClass = SomeCaseClass(data.utf8String)
   }
 }

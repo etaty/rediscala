@@ -10,7 +10,9 @@ trait RedisValueConverter[A] {
   def from(a: A): ByteString
 }
 
-object RedisValueConverter {
+object RedisValueConverter extends RedisValueConverterLow
+
+trait RedisValueConverterLow {
 
   implicit object StringConverter extends RedisValueConverter[String] {
     def from(s: String): ByteString = ByteString(s)
@@ -122,9 +124,9 @@ trait LowPriorityDefaultByteStringDeserializerImplicits {
   implicit object ByteString extends ByteStringDeserializer[ByteString] {
     def deserialize(bs: ByteString): ByteString = bs
   }
-/*
+
   implicit object String extends ByteStringDeserializer[String] {
     def deserialize(bs: ByteString): String = bs.utf8String
   }
-*/
+
 }
