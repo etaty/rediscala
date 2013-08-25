@@ -8,6 +8,8 @@ import redis.actors.ReplyErrorException
 
 class StringsSpec extends RedisSpec {
 
+  def getSomeCaseClass(k: String): Future[Option[SomeCaseClass]] = redis.getT(k)
+
   "Strings commands" should {
     "APPEND" in {
       val r = redis.set("appendKey", "Hello").flatMap(_ => {
@@ -75,14 +77,17 @@ class StringsSpec extends RedisSpec {
     }
 
     "GET" in {
+
       val r = redis.get("getKeyNonexisting")
       val rr = for {
         _ <- redis.set("getKey", "Hello")
         getBS <- redis.get("getKey")
-        getString <- redis.getT[String]("getKey")
+        //getString <- redis.getT("getKey")
+        getCustom <- getSomeCaseClass("getKey")
       } yield {
         getBS mustEqual Some(ByteString("Hello"))
-        getString mustEqual Some("Hello")
+        //getString mustEqual Some("Hello")
+        getCustom mustEqual Some(SomeCaseClass("Hello"))
       }
       Await.result(r, timeOut) mustEqual None
       Await.result(rr, timeOut)
@@ -269,5 +274,14 @@ class StringsSpec extends RedisSpec {
       })
       Await.result(r, timeOut) mustEqual 0
     }
+  }
+}
+
+
+case class SomeCaseClass(value: String)
+
+object SomeCaseClass {
+  implicit val deserializer = new ByteStringDeserializer[SomeCaseClass] {
+    def deserialize(data: ByteString): SomeCaseClass = SomeCaseClass(data.utf8String)
   }
 }
