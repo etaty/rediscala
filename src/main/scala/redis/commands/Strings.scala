@@ -8,87 +8,90 @@ import redis.api._
 
 trait Strings extends Request {
 
-  def append[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Long] =
+  def append[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V): Future[Long] =
     send(Append(key, value))
 
-  def bitcount(key: String): Future[Long] =
+  def bitcount[K: ByteStringSerializer](key: K): Future[Long] =
     send(Bitcount(key))
 
-  def bitcount(key: String, start: Long, end: Long): Future[Long] =
+  def bitcount[K: ByteStringSerializer](key: K, start: Long, end: Long): Future[Long] =
     send(BitcountRange(key, start, end))
 
-  def bitopAND(destkey: String, keys: String*): Future[Long] =
+  def bitopAND[K: ByteStringSerializer, KK: ByteStringSerializer](destkey: K, keys: KK*): Future[Long] =
     bitop(AND, destkey, keys: _*)
 
-  def bitopOR(destkey: String, keys: String*): Future[Long] =
+  def bitopOR[K: ByteStringSerializer, KK: ByteStringSerializer](destkey: K, keys: KK*): Future[Long] =
     bitop(OR, destkey, keys: _*)
 
-  def bitopXOR(destkey: String, keys: String*): Future[Long] =
+  def bitopXOR[K: ByteStringSerializer, KK: ByteStringSerializer](destkey: K, keys: KK*): Future[Long] =
     bitop(XOR, destkey, keys: _*)
 
-  def bitopNOT(destkey: String, key: String): Future[Long] =
+  def bitopNOT[K: ByteStringSerializer, KK: ByteStringSerializer](destkey: K, key: KK): Future[Long] =
     bitop(NOT, destkey, key)
 
-  def bitop(operation: BitOperator, destkey: String, keys: String*): Future[Long] =
+  def bitop[K: ByteStringSerializer, KK: ByteStringSerializer](operation: BitOperator, destkey: K, keys: KK*): Future[Long] =
     send(Bitop(operation, destkey, keys))
 
-  def decr(key: String): Future[Long] =
+  def decr[K: ByteStringSerializer](key: K): Future[Long] =
     send(Decr(key))
 
-  def decrby(key: String, decrement: Long): Future[Long] =
+  def decrby[K: ByteStringSerializer](key: K, decrement: Long): Future[Long] =
     send(Decrby(key, decrement))
 
-  def get(key: String): Future[Option[ByteString]] =
+  def get[K: ByteStringSerializer](key: K): Future[Option[ByteString]] =
     send(Get(key))
 
-  def getbit(key: String, offset: Long): Future[Boolean] =
+  def getbit[K: ByteStringSerializer](key: K, offset: Long): Future[Boolean] =
     send(Getbit(key, offset))
 
-  def getrange(key: String, start: Long, end: Long): Future[Option[ByteString]] =
+  def getrange[K: ByteStringSerializer](key: K, start: Long, end: Long): Future[Option[ByteString]] =
     send(Getrange(key, start, end))
 
-  def getset[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Option[ByteString]] =
+  def getset[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V): Future[Option[ByteString]] =
     send(Getset(key, value))
 
-  def incr(key: String): Future[Long] =
+  def incr[K: ByteStringSerializer](key: K): Future[Long] =
     send(Incr(key))
 
-  def incrby(key: String, increment: Long): Future[Long] =
+  def incrby[K: ByteStringSerializer](key: K, increment: Long): Future[Long] =
     send(Incrby(key, increment))
 
-  def incrbyfloat(key: String, increment: Double): Future[Option[Double]] =
+  def incrbyfloat[K: ByteStringSerializer](key: K, increment: Double): Future[Option[Double]] =
     send(Incrbyfloat(key, increment))
 
-  def mget(keys: String*): Future[Seq[Option[ByteString]]] =
+  def mget[K: ByteStringSerializer](keys: K*): Future[Seq[Option[ByteString]]] =
     send(Mget(keys))
 
-  def mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def mset[K: ByteStringSerializer, V: ByteStringSerializer](keysValues: Map[K, V]): Future[Boolean] =
     send(Mset(keysValues))
 
-  def msetnx[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def msetnx[K: ByteStringSerializer, V: ByteStringSerializer](keysValues: Map[K, V]): Future[Boolean] =
     send(Msetnx(keysValues))
 
-  def psetex[A](key: String, milliseconds: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def psetex[K: ByteStringSerializer, V: ByteStringSerializer](key: K, milliseconds: Long, value: V): Future[Boolean] =
     send(Psetex(key, milliseconds, value))
 
-  def set[A](key: String, value: A, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None, NX: Boolean = false, XX: Boolean = false)
-            (implicit convert: RedisValueConverter[A]): Future[Boolean] = {
+  def set[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V,
+                                                           exSeconds: Option[Long] = None,
+                                                           pxMilliseconds: Option[Long] = None,
+                                                           NX: Boolean = false,
+                                                           XX: Boolean = false): Future[Boolean] = {
     send(Set(key, value, exSeconds, pxMilliseconds, NX, XX))
   }
 
-  def setbit(key: String, offset: Long, value: Boolean): Future[Boolean] =
+  def setbit[K: ByteStringSerializer](key: K, offset: Long, value: Boolean): Future[Boolean] =
     send(Setbit(key, offset, value))
 
-  def setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def setex[K: ByteStringSerializer, V: ByteStringSerializer](key: K, seconds: Long, value: V): Future[Boolean] =
     send(Setex(key, seconds, value))
 
-  def setnx[A](key: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def setnx[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V): Future[Boolean] =
     send(Setnx(key, value))
 
-  def setrange[A](key: String, offset: Long, value: A)(implicit convert: RedisValueConverter[A]): Future[Long] =
+  def setrange[K: ByteStringSerializer, V: ByteStringSerializer](key: K, offset: Long, value: V): Future[Long] =
     send(Setrange(key, offset, value))
 
-  def strlen(key: String): Future[Long] =
+  def strlen[K: ByteStringSerializer](key: K): Future[Long] =
     send(Strlen(key))
 
 }

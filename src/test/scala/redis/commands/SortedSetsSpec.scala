@@ -72,7 +72,7 @@ class SortedSetsSpec extends RedisSpec {
         z1 <- redis.zadd("zinterstoreKey1", 1.0 -> "one", (2, "two"))
         z2 <- redis.zadd("zinterstoreKey2", 1.0 -> "one", (2, "two"), (3, "three"))
         zinterstore <- redis.zinterstore("zinterstoreKeyOut", "zinterstoreKey1", Seq("zinterstoreKey2"))
-        zinterstoreWeighted <- redis.zinterstoreWeighted("zinterstoreKeyOutWeighted", Seq(("zinterstoreKey1", 2), ("zinterstoreKey2", 3)))
+        zinterstoreWeighted <- redis.zinterstoreWeighted("zinterstoreKeyOutWeighted", Map("zinterstoreKey1" -> 2, "zinterstoreKey2" -> 3))
         zr <- redis.zrangeWithscores("zinterstoreKeyOut", 0, -1)
         zrWeighted <- redis.zrangeWithscores("zinterstoreKeyOutWeighted", 0, -1)
       } yield {
@@ -254,7 +254,7 @@ class SortedSetsSpec extends RedisSpec {
         z2 <- redis.zadd("zunionstoreKey2", 1.0 -> "one", (2, "two"), (3, "three"))
         zunionstore <- redis.zunionstore("zunionstoreKeyOut", "zunionstoreKey1", Seq("zunionstoreKey2"))
         zr <- redis.zrangeWithscores("zunionstoreKeyOut", 0, -1)
-        zunionstoreWeighted <- redis.zunionstoreWeighted("zunionstoreKeyOutWeighted", Seq(("zunionstoreKey1", 2), ("zunionstoreKey2", 3)))
+        zunionstoreWeighted <- redis.zunionstoreWeighted("zunionstoreKeyOutWeighted", Map("zunionstoreKey1" -> 2, "zunionstoreKey2" -> 3))
         zrWeighted <- redis.zrangeWithscores("zunionstoreKeyOutWeighted", 0, -1)
       } yield {
         z1 mustEqual 2

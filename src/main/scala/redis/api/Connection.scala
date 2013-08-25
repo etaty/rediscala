@@ -4,14 +4,14 @@ import redis._
 import akka.util.ByteString
 import redis.protocol.Status
 
-case class Auth[A](value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandStatus[Status] {
-  val encodedRequest: ByteString = encode("AUTH", Seq(convert.from(value)))
+case class Auth[V](value: V)(implicit convert: ByteStringSerializer[V]) extends RedisCommandStatus[Status] {
+  val encodedRequest: ByteString = encode("AUTH", Seq(convert.serialize(value)))
 
   def decodeReply(s: Status) = s
 }
 
-case class Echo[A](value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = encode("ECHO", Seq(convert.from(value)))
+case class Echo[V](value: V)(implicit convert: ByteStringSerializer[V]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = encode("ECHO", Seq(convert.serialize(value)))
 }
 
 case object Ping extends RedisCommandStatus[String] {

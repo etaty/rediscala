@@ -12,18 +12,18 @@ case class RedisScript(script: String) {
   }
 }
 
-case class Eval(script: String, keys: Seq[String] = Seq(), args: Seq[String] = Seq()) extends RedisCommandRedisReplyRedisReply {
+case class Eval[KK, KA](script: String, keys: Seq[KK] = Seq(), args: Seq[KA] = Seq())(implicit redisKeys: ByteStringSerializer[KK], redisArgs: ByteStringSerializer[KA]) extends RedisCommandRedisReplyRedisReply {
   val encodedRequest: ByteString = encode("EVAL",
     (ByteString(script)
       +: ByteString(keys.length.toString)
-      +: keys.map(ByteString(_))) ++ args.map(ByteString(_)))
+      +: keys.map(redisKeys.serialize)) ++ args.map(redisArgs.serialize))
 }
 
-case class Evalsha(sha1: String, keys: Seq[String] = Seq(), args: Seq[String] = Seq()) extends RedisCommandRedisReplyRedisReply {
+case class Evalsha[KK, KA](sha1: String, keys: Seq[KK] = Seq(), args: Seq[KA] = Seq())(implicit redisKeys: ByteStringSerializer[KK], redisArgs: ByteStringSerializer[KA]) extends RedisCommandRedisReplyRedisReply {
   val encodedRequest: ByteString = encode("EVALSHA",
     (ByteString(sha1)
       +: ByteString(keys.length.toString)
-      +: keys.map(ByteString(_))) ++ args.map(ByteString(_)))
+      +: keys.map(redisKeys.serialize)) ++ args.map(redisArgs.serialize))
 }
 
 case object ScriptFlush extends RedisCommandStatusBoolean {

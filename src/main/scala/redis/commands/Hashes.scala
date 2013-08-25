@@ -1,49 +1,49 @@
 package redis.commands
 
-import redis.{RedisValueConverter, Request}
+import redis.{ByteStringSerializer, Request}
 import akka.util.ByteString
 import scala.concurrent.Future
 import redis.api.hashes._
 
 trait Hashes extends Request {
 
-  def hdel(key: String, fields: String*): Future[Long] =
+  def hdel[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, fields: KK*): Future[Long] =
     send(Hdel(key, fields))
 
-  def hexists(key: String, field: String): Future[Boolean] =
+  def hexists[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, field: KK): Future[Boolean] =
     send(Hexists(key, field))
 
-  def hget(key: String, field: String): Future[Option[ByteString]] =
+  def hget[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, field: KK): Future[Option[ByteString]] =
     send(Hget(key, field))
 
-  def hgetall(key: String): Future[Map[String, ByteString]] =
+  def hgetall[K: ByteStringSerializer](key: K): Future[Map[String, ByteString]] =
     send(Hgetall(key))
 
-  def hincrby(key: String, fields: String, increment: Long): Future[Long] =
+  def hincrby[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, fields: KK, increment: Long): Future[Long] =
     send(Hincrby(key, fields, increment))
 
-  def hincrbyfloat(key: String, fields: String, increment: Double): Future[Double] =
+  def hincrbyfloat[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, fields: KK, increment: Double): Future[Double] =
     send(Hincrbyfloat(key, fields, increment))
 
-  def hkeys(key: String): Future[Seq[String]] =
+  def hkeys[K: ByteStringSerializer](key: K): Future[Seq[String]] =
     send(Hkeys(key))
 
-  def hlen(key: String): Future[Long] =
+  def hlen[K: ByteStringSerializer](key: K): Future[Long] =
     send(Hlen(key))
 
-  def hmget(key: String, fields: String*): Future[Seq[Option[ByteString]]] =
+  def hmget[K: ByteStringSerializer, KK:ByteStringSerializer](key: K, fields: KK*): Future[Seq[Option[ByteString]]] =
     send(Hmget(key, fields))
 
-  def hmset[A](key: String, keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def hmset[K: ByteStringSerializer, KK:ByteStringSerializer, V: ByteStringSerializer](key: K, keysValues: Map[KK, V]): Future[Boolean] =
     send(Hmset(key, keysValues))
 
-  def hset[A](key: String, field: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def hset[K: ByteStringSerializer, KK:ByteStringSerializer, V: ByteStringSerializer](key: K, field: KK, value: V): Future[Boolean] =
     send(Hset(key, field, value))
 
-  def hsetnx[A](key: String, field: String, value: A)(implicit convert: RedisValueConverter[A]): Future[Boolean] =
+  def hsetnx[K: ByteStringSerializer, KK:ByteStringSerializer, V: ByteStringSerializer](key: K, field: KK, value: V): Future[Boolean] =
     send(Hsetnx(key, field, value))
 
-  def hvals(key: String): Future[Seq[ByteString]] =
+  def hvals[K: ByteStringSerializer](key: K): Future[Seq[ByteString]] =
     send(Hvals(key))
 
 }

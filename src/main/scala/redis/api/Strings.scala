@@ -5,93 +5,93 @@ import akka.util.ByteString
 import redis.protocol.{RedisReply, MultiBulk, Status, RedisProtocolRequest}
 import redis.api.BitOperator
 
-case class Append[A](key: String, value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("APPEND", Seq(ByteString(key), convert.from(value)))
+case class Append[K, V](key: K, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("APPEND", Seq(redisKey.serialize(key), convert.serialize(value)))
 }
 
-case class Bitcount(key: String) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("BITCOUNT", Seq(ByteString(key)))
+case class Bitcount[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("BITCOUNT", Seq(redisKey.serialize(key)))
 }
 
-case class BitcountRange(key: String, start: Long, end: Long) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("BITCOUNT", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString)))
+case class BitcountRange[K](key: K, start: Long, end: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("BITCOUNT", Seq(redisKey.serialize(key), ByteString(start.toString), ByteString(end.toString)))
 }
 
-case class Bitop(operation: BitOperator, destkey: String, keys: Seq[String]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("BITOP", Seq(ByteString(operation.toString), ByteString(destkey)) ++ keys.map(ByteString.apply))
+case class Bitop[K, KK](operation: BitOperator, destkey: K, keys: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("BITOP", Seq(ByteString(operation.toString), redisKey.serialize(destkey)) ++ keys.map(redisKeys.serialize))
 }
 
-case class Decr(key: String) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("DECR", Seq(ByteString(key)))
+case class Decr[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("DECR", Seq(redisKey.serialize(key)))
 }
 
-case class Decrby(key: String, decrement: Long) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("DECRBY", Seq(ByteString(key), ByteString(decrement.toString)))
+case class Decrby[K](key: K, decrement: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("DECRBY", Seq(redisKey.serialize(key), ByteString(decrement.toString)))
 }
 
-case class Get(key: String) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = RedisProtocolRequest.multiBulk("GET", Seq(ByteString(key)))
+case class Get[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = RedisProtocolRequest.multiBulk("GET", Seq(redisKey.serialize(key)))
 }
 
-case class Getbit(key: String, offset: Long) extends RedisCommandIntegerBoolean {
-  val encodedRequest: ByteString = encode("GETBIT", Seq(ByteString(key), ByteString(offset.toString)))
+case class Getbit[K](key: K, offset: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+  val encodedRequest: ByteString = encode("GETBIT", Seq(redisKey.serialize(key), ByteString(offset.toString)))
 }
 
-case class Getrange(key: String, start: Long, end: Long) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = encode("GETRANGE", Seq(ByteString(key), ByteString(start.toString), ByteString(end.toString)))
+case class Getrange[K](key: K, start: Long, end: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = encode("GETRANGE", Seq(redisKey.serialize(key), ByteString(start.toString), ByteString(end.toString)))
 }
 
-case class Getset[A](key: String, value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = encode("GETSET", Seq(ByteString(key), convert.from(value)))
+case class Getset[K, V](key: K, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = encode("GETSET", Seq(redisKey.serialize(key), convert.serialize(value)))
 }
 
-case class Incr(key: String) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("INCR", Seq(ByteString(key)))
+case class Incr[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("INCR", Seq(redisKey.serialize(key)))
 }
 
-case class Incrby(key: String, increment: Long) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("INCRBY", Seq(ByteString(key), ByteString(increment.toString)))
+case class Incrby[K](key: K, increment: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("INCRBY", Seq(redisKey.serialize(key), ByteString(increment.toString)))
 }
 
-case class Incrbyfloat(key: String, increment: Double) extends RedisCommandBulkOptionDouble {
-  val encodedRequest: ByteString = encode("INCRBYFLOAT", Seq(ByteString(key), ByteString(increment.toString)))
+case class Incrbyfloat[K](key: K, increment: Double)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionDouble {
+  val encodedRequest: ByteString = encode("INCRBYFLOAT", Seq(redisKey.serialize(key), ByteString(increment.toString)))
 }
 
-case class Mget(keys: Seq[String]) extends RedisCommandMultiBulk[Seq[Option[ByteString]]] {
-  val encodedRequest: ByteString = encode("MGET", keys.map(ByteString.apply))
+case class Mget[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandMultiBulk[Seq[Option[ByteString]]] {
+  val encodedRequest: ByteString = encode("MGET", keys.map(redisKey.serialize))
 
   def decodeReply(mb: MultiBulk) = mb.responses.map(res => {
     res.map(_.asOptByteString)
   }).get
 }
 
-case class Mset[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]) extends RedisCommandStatusBoolean {
+case class Mset[K, V](keysValues: Map[K, V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandStatusBoolean {
   val encodedRequest: ByteString = encode("MSET",
     keysValues.foldLeft(Seq[ByteString]())({
-      case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
+      case (acc, e) => redisKey.serialize(e._1) +: convert.serialize(e._2) +: acc
     }))
 }
 
-case class Msetnx[A](keysValues: Map[String, A])(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerBoolean {
+case class Msetnx[K, V](keysValues: Map[K, V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerBoolean {
   val encodedRequest: ByteString = encode("MSETNX", keysValues.foldLeft(Seq[ByteString]())({
-    case (acc, e) => ByteString(e._1) +: convert.from(e._2) +: acc
+    case (acc, e) => redisKey.serialize(e._1) +: convert.serialize(e._2) +: acc
   }))
 }
 
-case class Psetex[A](key: String, milliseconds: Long, value: A)(implicit convert: RedisValueConverter[A])
+case class Psetex[K, V](key: K, milliseconds: Long, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V])
   extends RedisCommandStatusBoolean {
-  val encodedRequest: ByteString = encode("PSETEX", Seq(ByteString(key), ByteString(milliseconds.toString), convert.from(value)))
+  val encodedRequest: ByteString = encode("PSETEX", Seq(redisKey.serialize(key), ByteString(milliseconds.toString), convert.serialize(value)))
 }
 
-case class Set[A](key: String, value: A, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None,
-                  NX: Boolean = false, XX: Boolean = false)
-                 (implicit convert: RedisValueConverter[A]) extends RedisCommandRedisReply[Boolean] {
+case class Set[K, V](key: K, value: V, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None,
+                     NX: Boolean = false, XX: Boolean = false)
+                    (implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandRedisReply[Boolean] {
   val encodedRequest: ByteString = {
     val seq = if (NX) Seq(ByteString("NX")) else if (XX) Seq(ByteString("XX")) else Seq.empty[ByteString]
     val options: Seq[ByteString] = exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
       .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
       .getOrElse(seq)
-    val args = ByteString(key) +: convert.from(value) +: options
+    val args = redisKey.serialize(key) +: convert.serialize(value) +: options
     RedisProtocolRequest.multiBulk("SET", args)
   }
 
@@ -101,23 +101,23 @@ case class Set[A](key: String, value: A, exSeconds: Option[Long] = None, pxMilli
   }
 }
 
-case class Setbit(key: String, offset: Long, value: Boolean) extends RedisCommandIntegerBoolean {
-  val encodedRequest: ByteString = encode("SETBIT", Seq(ByteString(key), ByteString(offset.toString), ByteString(if (value) "1" else "0")))
+case class Setbit[K](key: K, offset: Long, value: Boolean)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+  val encodedRequest: ByteString = encode("SETBIT", Seq(redisKey.serialize(key), ByteString(offset.toString), ByteString(if (value) "1" else "0")))
 }
 
-case class Setex[A](key: String, seconds: Long, value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandStatusBoolean {
-  val encodedRequest: ByteString = encode("SETEX", Seq(ByteString(key), ByteString(seconds.toString), convert.from(value)))
+case class Setex[K, V](key: K, seconds: Long, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandStatusBoolean {
+  val encodedRequest: ByteString = encode("SETEX", Seq(redisKey.serialize(key), ByteString(seconds.toString), convert.serialize(value)))
 }
 
-case class Setnx[A](key: String, value: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerBoolean {
-  val encodedRequest: ByteString = encode("SETNX", Seq(ByteString(key), convert.from(value)))
+case class Setnx[K, V](key: K, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerBoolean {
+  val encodedRequest: ByteString = encode("SETNX", Seq(redisKey.serialize(key), convert.serialize(value)))
 }
 
-case class Setrange[A](key: String, offset: Long, value: A)(implicit convert: RedisValueConverter[A])
+case class Setrange[K, V](key: K, offset: Long, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V])
   extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SETRANGE", Seq(ByteString(key), ByteString(offset.toString), convert.from(value)))
+  val encodedRequest: ByteString = encode("SETRANGE", Seq(redisKey.serialize(key), ByteString(offset.toString), convert.serialize(value)))
 }
 
-case class Strlen(key: String) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("STRLEN", Seq(ByteString(key)))
+case class Strlen[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("STRLEN", Seq(redisKey.serialize(key)))
 }

@@ -1,13 +1,6 @@
 package redis.commands
 
-import akka.util.ByteString
-import redis.{MultiBulkConverter, Request}
-import scala.concurrent.Future
-import redis.protocol._
-import redis.protocol.Integer
-import redis.protocol.Status
-import redis.protocol.Bulk
-import scala.util.Try
+import redis.Request
 
 trait Server extends Request {
 /*

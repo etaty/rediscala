@@ -1,16 +1,16 @@
 package redis.commands
 
 import akka.util.ByteString
-import redis.{RedisValueConverter, Request}
+import redis.{ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.protocol.Status
 import redis.api.connection._
 
 trait Connection extends Request {
-  def auth[A](value: A)(implicit convert: RedisValueConverter[A]): Future[Status] =
+  def auth[V: ByteStringSerializer](value: V): Future[Status] =
     send(Auth(value))
 
-  def echo[A](value: A)(implicit convert: RedisValueConverter[A]): Future[Option[ByteString]] =
+  def echo[V: ByteStringSerializer](value: V): Future[Option[ByteString]] =
     send(Echo(value))
 
   def ping(): Future[String] =

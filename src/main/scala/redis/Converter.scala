@@ -6,54 +6,6 @@ import scala.util.Try
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-trait RedisValueConverter[A] {
-  def from(a: A): ByteString
-}
-
-object RedisValueConverter {
-
-  implicit object StringConverter extends RedisValueConverter[String] {
-    def from(s: String): ByteString = ByteString(s)
-  }
-
-  implicit object ShortConverter extends RedisValueConverter[Short] {
-    def from(i: Short): ByteString = ByteString(i.toString)
-  }
-
-  implicit object IntConverter extends RedisValueConverter[Int] {
-    def from(i: Int): ByteString = ByteString(i.toString)
-  }
-
-  implicit object LongConverter extends RedisValueConverter[Long] {
-    def from(i: Long): ByteString = ByteString(i.toString)
-  }
-
-  implicit object FloatConverter extends RedisValueConverter[Float] {
-    def from(f: Float): ByteString = ByteString(f.toString)
-  }
-
-  implicit object DoubleConverter extends RedisValueConverter[Double] {
-    def from(d: Double): ByteString = ByteString(d.toString)
-  }
-
-  implicit object CharConverter extends RedisValueConverter[Char] {
-    def from(c: Char): ByteString = ByteString(c)
-  }
-
-  implicit object ByteConverter extends RedisValueConverter[Byte] {
-    def from(b: Byte): ByteString = ByteString(b)
-  }
-
-  implicit object ArrayByteConverter extends RedisValueConverter[Array[Byte]] {
-    def from(b: Array[Byte]): ByteString = ByteString(b)
-  }
-
-  implicit object ByteStringConverter extends RedisValueConverter[ByteString] {
-    def from(bs: ByteString): ByteString = bs
-  }
-
-}
-
 trait MultiBulkConverter[A] {
   def to(redisReply: MultiBulk): Try[A]
 }
@@ -106,6 +58,56 @@ object MultiBulkConverter {
     reply.responses.map(r => {
       r.map(_.toString == "1")
     }).get
+  }
+
+}
+
+trait ByteStringSerializer[K] {
+  def serialize(key: K): ByteString
+}
+
+object ByteStringSerializer extends ByteStringSerializerLowPriority
+
+trait ByteStringSerializerLowPriority {
+
+  implicit object String extends ByteStringSerializer[String] {
+    def serialize(key: String): ByteString = ByteString(key)
+  }
+
+  implicit object ShortConverter extends ByteStringSerializer[Short] {
+    def serialize(i: Short): ByteString = ByteString(i.toString)
+  }
+
+  implicit object IntConverter extends ByteStringSerializer[Int] {
+    def serialize(i: Int): ByteString = ByteString(i.toString)
+  }
+
+  implicit object LongConverter extends ByteStringSerializer[Long] {
+    def serialize(i: Long): ByteString = ByteString(i.toString)
+  }
+
+  implicit object FloatConverter extends ByteStringSerializer[Float] {
+    def serialize(f: Float): ByteString = ByteString(f.toString)
+  }
+
+  implicit object DoubleConverter extends ByteStringSerializer[Double] {
+    def serialize(d: Double): ByteString = ByteString(d.toString)
+  }
+
+  implicit object CharConverter extends ByteStringSerializer[Char] {
+    def serialize(c: Char): ByteString = ByteString(c)
+  }
+
+  implicit object ByteConverter extends ByteStringSerializer[Byte] {
+    def serialize(b: Byte): ByteString = ByteString(b)
+  }
+
+  implicit object ArrayByteConverter extends ByteStringSerializer[Array[Byte]] {
+    def serialize(b: Array[Byte]): ByteString = ByteString(b)
+  }
+
+  implicit object ByteStringConverter extends ByteStringSerializer[ByteString] {
+    def serialize(bs: ByteString): ByteString = bs
   }
 
 }

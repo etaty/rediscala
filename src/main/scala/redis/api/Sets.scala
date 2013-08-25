@@ -3,63 +3,70 @@ package redis.api.sets
 import redis._
 import akka.util.ByteString
 
-case class Sadd[A](key: String, members: Seq[A])(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SADD", ByteString(key) +: members.map(v => convert.from(v)))
+case class Sadd[K, V](key: K, members: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SADD", redisKey.serialize(key) +: members.map(v => convert.serialize(v)))
 }
 
-case class Scard(key: String) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SCARD", Seq(ByteString(key)))
+case class Scard[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SCARD", Seq(redisKey.serialize(key)))
 }
 
-case class Sdiff(key: String, keys: Seq[String]) extends RedisCommandMultiBulkSeqByteString {
-  val encodedRequest: ByteString = encode("SDIFF", ByteString(key) +: keys.map(ByteString.apply))
+case class Sdiff[K, KK](key: K, keys: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK]) extends RedisCommandMultiBulkSeqByteString {
+  val encodedRequest: ByteString = encode("SDIFF", redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
 
-case class Sdiffstore(destination: String, key: String, keys: Seq[String]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SDIFFSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply))
+case class Sdiffstore[KD, K, KK](destination: KD, key: K, keys: Seq[KK])
+                                (implicit redisDest: ByteStringSerializer[KD], redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK])
+  extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SDIFFSTORE", redisDest.serialize(destination) +: redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
 
-case class Sinter(key: String, keys: Seq[String]) extends RedisCommandMultiBulkSeqByteString {
-  val encodedRequest: ByteString = encode("SINTER", ByteString(key) +: keys.map(ByteString.apply))
+case class Sinter[K, KK](key: K, keys: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK]) extends RedisCommandMultiBulkSeqByteString {
+  val encodedRequest: ByteString = encode("SINTER", redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
 
-case class Sinterstore(destination: String, key: String, keys: Seq[String]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SINTERSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply))
+case class Sinterstore[KD, K, KK](destination: KD, key: K, keys: Seq[KK])
+                                 (implicit redisDest: ByteStringSerializer[KD], redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK])
+  extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SINTERSTORE", redisDest.serialize(destination) +: redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
 
-case class Sismember[A](key: String, member: A)(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerBoolean {
-  val encodedRequest: ByteString = encode("SISMEMBER", Seq(ByteString(key), convert.from(member)))
+case class Sismember[K, V](key: K, member: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerBoolean {
+  val encodedRequest: ByteString = encode("SISMEMBER", Seq(redisKey.serialize(key), convert.serialize(member)))
 }
 
-case class Smembers(key: String) extends RedisCommandMultiBulkSeqByteString {
-  val encodedRequest: ByteString = encode("SMEMBERS", Seq(ByteString(key)))
+case class Smembers[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteString {
+  val encodedRequest: ByteString = encode("SMEMBERS", Seq(redisKey.serialize(key)))
 }
 
-case class Smove[A](source: String, destination: String, member: A)(implicit convert: RedisValueConverter[A])
+case class Smove[KS, KD, V](source: KS, destination: KD, member: V)(implicit redisSource: ByteStringSerializer[KS], redisDest: ByteStringSerializer[KD], convert: ByteStringSerializer[V])
   extends RedisCommandIntegerBoolean {
-  val encodedRequest: ByteString = encode("SMOVE", Seq(ByteString(source), ByteString(destination), convert.from(member)))
+  val encodedRequest: ByteString = encode("SMOVE", Seq(redisSource.serialize(source), redisDest.serialize(destination), convert.serialize(member)))
 }
 
-case class Spop(key: String) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = encode("SPOP", Seq(ByteString(key)))
+case class Spop[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = encode("SPOP", Seq(redisKey.serialize(key)))
 }
 
-case class Srandmember(key: String) extends RedisCommandBulkOptionByteString {
-  val encodedRequest: ByteString = encode("SRANDMEMBER", Seq(ByteString(key)))
+case class Srandmember[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+  val encodedRequest: ByteString = encode("SRANDMEMBER", Seq(redisKey.serialize(key)))
 }
 
-case class Srandmembers(key: String, count: Long) extends RedisCommandMultiBulkSeqByteString {
-  val encodedRequest: ByteString = encode("SRANDMEMBER", Seq(ByteString(key), ByteString(count.toString)))
+case class Srandmembers[K](key: K, count: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteString {
+  val encodedRequest: ByteString = encode("SRANDMEMBER", Seq(redisKey.serialize(key), ByteString(count.toString)))
 }
 
-case class Srem[A](key: String, members: Seq[A])(implicit convert: RedisValueConverter[A]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SREM", ByteString(key) +: members.map(v => convert.from(v)))
+case class Srem[K, V](key: K, members: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SREM", redisKey.serialize(key) +: members.map(v => convert.serialize(v)))
 }
 
-case class Sunion(key: String, keys: Seq[String]) extends RedisCommandMultiBulkSeqByteString {
-  val encodedRequest: ByteString = encode("SUNION", ByteString(key) +: keys.map(ByteString.apply))
+case class Sunion[K, KK](key: K, keys: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK]) extends RedisCommandMultiBulkSeqByteString {
+  val encodedRequest: ByteString = encode("SUNION", redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
 
-case class Sunionstore(destination: String, key: String, keys: Seq[String]) extends RedisCommandIntegerLong {
-  val encodedRequest: ByteString = encode("SUNIONSTORE", ByteString(destination) +: ByteString(key) +: keys.map(ByteString.apply))
+
+case class Sunionstore[KD, K, KK](destination: KD, key: K, keys: Seq[KK])
+                                 (implicit redisDest: ByteStringSerializer[KD], redisKey: ByteStringSerializer[K], redisKeys: ByteStringSerializer[KK])
+  extends RedisCommandIntegerLong {
+  val encodedRequest: ByteString = encode("SUNIONSTORE", redisDest.serialize(destination) +: redisKey.serialize(key) +: keys.map(redisKeys.serialize))
 }
