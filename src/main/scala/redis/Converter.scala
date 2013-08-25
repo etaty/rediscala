@@ -3,7 +3,7 @@ package redis
 import akka.util.ByteString
 import redis.protocol._
 import scala.util.Try
-import scala.annotation.tailrec
+import scala.annotation.{implicitNotFound, tailrec}
 import scala.collection.mutable
 
 trait RedisValueConverter[A] {
@@ -112,6 +112,7 @@ object MultiBulkConverter {
 
 }
 
+@implicitNotFound(msg = "No ByteString deserializer found for type ${T}. Try to implement an implicit ByteStringDeserializer for this type.")
 trait ByteStringDeserializer[T] {
   def deserialize(bs: ByteString): T
 }
@@ -119,14 +120,18 @@ trait ByteStringDeserializer[T] {
 
 object ByteStringDeserializer extends LowPriorityDefaultByteStringDeserializerImplicits
 
-trait LowPriorityDefaultByteStringDeserializerImplicits {
-
-  implicit object ByteString extends ByteStringDeserializer[ByteString] {
-    def deserialize(bs: ByteString): ByteString = bs
-  }
+trait LowPriorityDefaultByteStringDeserializerImplicits extends Noop {
 
   implicit object String extends ByteStringDeserializer[String] {
     def deserialize(bs: ByteString): String = bs.utf8String
+  }
+
+}
+
+trait Noop {
+
+  implicit object ByteString extends ByteStringDeserializer[ByteString] {
+    def deserialize(bs: ByteString): ByteString = bs
   }
 
 }

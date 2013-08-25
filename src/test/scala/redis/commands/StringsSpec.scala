@@ -95,14 +95,14 @@ class StringsSpec extends RedisSpec {
       val r = redis.get("getKeyNonexisting")
       val rr = for {
         //_ <- redis.set("getKey", "Hello")
-        _ <- redis.send(api.strings.Set("getKey", SomeCaseClass("Hello")))
+        _ <- redis.set("getKey", SomeCaseClass("Hello"))
         getBS <- redis.get("getKey")
-        //getString <- redis.getT("getKey")
+        getString <- redis.getT("getKey")
         getCustom <- getSomeCaseClass("getKey")
       } yield {
         getBS mustEqual Some(ByteString("Hello"))
-        //getString mustEqual Some("Hello")
-        //getCustom mustEqual Some(SomeCaseClass("Hello"))
+        getString mustEqual Some("Hello")
+        getCustom mustEqual Some(SomeCaseClass("Hello"))
       }
       Await.result(r, timeOut) mustEqual None
       Await.result(rr, timeOut)
