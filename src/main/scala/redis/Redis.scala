@@ -189,6 +189,8 @@ case class SentinelMonitoredRedisClient(
 
   def redisConnection() = redisClient().redisConnection
 
+  def disconnect() = redisClient().disconnect()
+
 }
 
 private[redis] object Redis {

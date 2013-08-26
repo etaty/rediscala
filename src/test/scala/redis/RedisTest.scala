@@ -5,6 +5,8 @@ import akka.util.ByteString
 
 class RedisTest extends RedisSpec {
 
+  import RedisServerHelper._
+
   sequential
 
   "basic test" should {
@@ -28,62 +30,62 @@ class RedisTest extends RedisSpec {
 
   "sentinel monitored test" should {
     "ping" in {
-      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
+      Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
     }
     "auto failover" in {
-      val port = smRedis.redisClient.port
-      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
+      val port = clSmRedis.redisClient.port
+      Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
 
-      Await.result(sentinel.failover(masterName), timeOut) mustEqual true
+      Await.result(clSentinel.failover(masterName), timeOut) mustEqual true
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
 
-      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
-      smRedis.redisClient.port mustNotEqual port
+      Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
+      clSmRedis.redisClient.port mustNotEqual port
 
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
-      Await.result(sentinel.failover(masterName), timeOut) mustEqual true
+      Await.result(clSentinel.failover(masterName), timeOut) mustEqual true
       Await.result( future { Thread.sleep(15000) }, longTimeOut )
 
-      Await.result(smRedis.ping, timeOut) mustEqual "PONG"
-      smRedis.redisClient.port mustEqual  port
+      Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
+      clSmRedis.redisClient.port mustEqual  port
     }
   }
 
   "sentinel test" should {
     "masters" in {
-      val r = Await.result(sentinel.masters, timeOut)
+      val r = Await.result(clSentinel.masters, timeOut)
       r(0)("name") mustEqual masterName
       r(0)("flags").startsWith("master") mustEqual true
     }
     "no such master" in {
-      Await.result(sentinel.getMasterAddr("no-such-master"), timeOut) match {
+      Await.result(clSentinel.getMasterAddr("no-such-master"), timeOut) match {
         case None => ok
         case _ => ko(s"unexpected: master with name '$masterName' was not supposed to be found")
       }
     }
     "unknown master state" in {
-      Await.result(sentinel.isMasterDown("no.such.ip.address", 1234), timeOut) match {
+      Await.result(clSentinel.isMasterDown("no.such.ip.address", 1234), timeOut) match {
         case None => ok
         case _ => ko(s"unexpected: master state should be unknown")
       }
     }
     "master ok" in {
-      Await.result(sentinel.getMasterAddr(masterName), timeOut) match {
+      Await.result(clSentinel.getMasterAddr(masterName), timeOut) match {
         case Some((ip, port)) =>
-          Await.result(sentinel.isMasterDown(ip, port), timeOut) mustEqual Some(false)
+          Await.result(clSentinel.isMasterDown(ip, port), timeOut) mustEqual Some(false)
         case _ =>
           ko(s"unexpected: master with name '$masterName' was not found")
       }
     }
     "slaves" in {
-      val r = Await.result(sentinel.slaves(masterName), timeOut)
+      val r = Await.result(clSentinel.slaves(masterName), timeOut)
       r(0)("flags").startsWith("slave") mustEqual true
     }
     "reset bogus master" in {
-      !Await.result(sentinel.resetMaster("no-such-master"), timeOut)
+      !Await.result(clSentinel.resetMaster("no-such-master"), timeOut)
     }
     "reset master" in {
-      Await.result(sentinel.resetMaster(masterName), timeOut)
+      Await.result(clSentinel.resetMaster(masterName), timeOut)
     }
   }
 

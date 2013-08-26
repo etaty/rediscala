@@ -95,10 +95,11 @@ class KeysSpec extends RedisSpec {
 
       withRedisCluster((masterPort, slavePort, sentinelPort) => {
         val redisMigrate = RedisClient("localhost", masterPort)
+        val key = "migrateKey-" + System.currentTimeMillis()
         val r = for {
-          _ <- redis.set("migrateKey", "value")
-          m <- redis.migrate("localhost", masterPort, "migrateKey", 0, 10 seconds)
-          get <- redisMigrate.get("migrateKey")
+          _ <- redis.set(key, "value")
+          m <- redis.migrate("localhost", masterPort, key, 0, 10 seconds)
+          get <- redisMigrate.get(key)
         } yield {
           m must beTrue
           get mustEqual Some(ByteString("value"))
