@@ -37,14 +37,14 @@ class RedisTest extends RedisSpec {
       Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
 
       Await.result(clSentinel.failover(masterName), timeOut) mustEqual true
-      Await.result( future { Thread.sleep(15000) }, longTimeOut )
+      Await.result( future { Thread.sleep(20000) }, longTimeOut )
 
       Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
       clSmRedis.redisClient.port mustNotEqual port
 
-      Await.result( future { Thread.sleep(15000) }, longTimeOut )
+      Await.result( future { Thread.sleep(20000) }, longTimeOut )
       Await.result(clSentinel.failover(masterName), timeOut) mustEqual true
-      Await.result( future { Thread.sleep(15000) }, longTimeOut )
+      Await.result( future { Thread.sleep(20000) }, longTimeOut )
 
       Await.result(clSmRedis.ping, timeOut) mustEqual "PONG"
       clSmRedis.redisClient.port mustEqual  port

@@ -35,8 +35,8 @@ trait RedisCommands
   with Connection
   with Server
 
-case class RedisClient(host: String = "localhost",
-                       port: Int = 6379,
+case class RedisClient(var host: String = "localhost",
+                       var port: Int = 6379,
                        name: String = "RedisClient")
                       (implicit system: ActorSystem) extends RedisCommands with Transactions {
   implicit val executionContext = system.dispatcher
@@ -46,6 +46,14 @@ case class RedisClient(host: String = "localhost",
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
+
+  def reconnect(host: String = host, port: Int = port) = {
+    if (this.host != host || this.port != port) {
+      this.host = host
+      this.port = port
+      redisConnection ! new InetSocketAddress(host, port)
+    }
+  }
 
   // will disconnect from the server
   def disconnect() {
@@ -168,28 +176,22 @@ case class SentinelMonitoredRedisClient(
 
   implicit val executionContext = system.dispatcher
 
-  private val onMasterChange =
-          (ip: String, port: Int) => {
-            val oldrc = rc
-            rc = new RedisClient(ip, port, "SMRedisClient")
-            oldrc.disconnect()
-          }
+  private val onMasterChange = (ip: String, port: Int) => { redisClient.reconnect(ip, port) }
 
-  private val sc = new SentinelClient(sentinelHost, sentinelPort, onMasterChange, "SMSentinelClient")
+  private val sentinelClient =
+      new SentinelClient(sentinelHost, sentinelPort, onMasterChange, "SMSentinelClient")
 
-  private var rc: RedisClient = {
-    val f = sc.getMasterAddr(master) map {
+  val redisClient: RedisClient = {
+    val f = sentinelClient.getMasterAddr(master) map {
       case Some((ip: String, port: Int)) => new RedisClient(ip, port, "SMRedisClient")
       case _ => throw new Exception(s"No such master '$master'")
     }
     Await.result(f, 15 seconds)
   }
 
-  def redisClient() = rc
+  def redisConnection = redisClient.redisConnection
 
-  def redisConnection() = redisClient().redisConnection
-
-  def disconnect() = redisClient().disconnect()
+  def disconnect() = redisClient.disconnect()
 
 }
 
