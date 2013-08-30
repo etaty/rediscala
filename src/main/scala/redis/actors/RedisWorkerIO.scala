@@ -13,7 +13,9 @@ import akka.io.Tcp.Received
 
 trait RedisWorkerIO extends Actor with ActorLogging{
 
-  def address: InetSocketAddress
+  def address(): InetSocketAddress
+
+  private var currAddress = address()
 
   import context._
 
@@ -30,8 +32,8 @@ trait RedisWorkerIO extends Actor with ActorLogging{
     if (tcpWorker != null) {
       tcpWorker ! Close
     }
-    log.info(s"Connect to $address")
-    tcp ! Connect(address)
+    log.info(s"Connect to $currAddress")
+    tcp ! Connect(currAddress)
   }
 
   override def postStop() {
@@ -45,6 +47,7 @@ trait RedisWorkerIO extends Actor with ActorLogging{
   def receive = connecting orElse writing
 
   def connecting: Receive = {
+    case a: InetSocketAddress => onAddressChanged(a)
     case c: Connected => onConnected(c)
     case Reconnect => preStart()
     case c: CommandFailed => onConnectingCommandFailed(c)
@@ -70,9 +73,16 @@ trait RedisWorkerIO extends Actor with ActorLogging{
   private def reading: Receive = {
     case WriteAck => tryWrite()
     case Received(dataByteString) => onDataReceived(dataByteString)
+    case a: InetSocketAddress => onAddressChanged(a)
     case c: ConnectionClosed => onConnectionClosed(c)
     case c: CommandFailed => onConnectedCommandFailed(c)
+  }
 
+  def onAddressChanged(addr: InetSocketAddress) {
+    log.info(s"Address change [old=$address, new=$addr]")
+    currAddress = addr
+    cleanState()
+    scheduleReconnect()
   }
 
   def onConnectionClosed(c: ConnectionClosed) = {

@@ -79,21 +79,27 @@ object MultiBulkConverter {
   }
 
   def toSeqTuple2ByteStringDouble(reply: MultiBulk): Seq[(ByteString, Double)] = {
-    @tailrec
-    def recur(s: Seq[ByteString], builder: mutable.Builder[(ByteString, Double), Seq[(ByteString, Double)]]): Unit = {
-      if (s.nonEmpty) {
-        val double = java.lang.Double.parseDouble(s.tail.head.utf8String)
-        builder += ((s.head, double))
-        recur(s.tail.tail, builder)
-      }
-    }
-
-    reply.responses.map(r => {
-      val seq = r.map(_.toByteString)
+    reply.responses.map { r => {
+      val s = r.map(_.toByteString)
       val builder = Seq.newBuilder[(ByteString, Double)]
-      recur(seq, builder)
+      s.grouped(2).foreach { case Seq(a, b) => builder += ((a, b.utf8String.toDouble)) }
       builder.result()
-    }).get
+    }}.get
+  }
+
+  def toSeqMapString(reply: MultiBulk): Seq[Map[String, String]] = {
+    reply.responses.map { s =>
+          s.map ({
+            case m: MultiBulk => {
+              m.responses.map { s =>
+                val builder = Seq.newBuilder[(String, String)]
+                s.grouped(2).foreach { case Seq(a, b) => builder += ((a.toString, b.toString)) }
+                builder.result()
+              }.getOrElse(Seq())
+            }
+            case _ => Seq()
+          }).map { _.toMap }
+      }.get
   }
 
   def toOptionStringByteString(reply: MultiBulk): Option[(String, ByteString)] = {

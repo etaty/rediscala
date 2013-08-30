@@ -11,8 +11,8 @@ class ServerSpec extends RedisSpec {
 
   "Server commands" should {
 
-    withRedisServer(port => {
-      val redis = RedisClient(port = port)
+    withRedisCluster((masterPort, slavePort, sentinelPort) => {
+      val redis = RedisClient(port = masterPort)
 
       "BGREWRITEAOF && BGSAVE" in {
         val r = for {
