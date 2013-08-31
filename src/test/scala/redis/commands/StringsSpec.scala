@@ -96,7 +96,7 @@ class StringsSpec extends RedisSpec {
       val rr = for {
         //_ <- redis.set("getKey", "Hello")
         _ <- redis.set("getKey", SomeCaseClass("Hello"))
-        getBS <- redis.get("getKey")
+        getBS <- redis.getT("getKey")
         getString <- redis.getT("getKey")
         getCustom <- getSomeCaseClass("getKey")
       } yield {
