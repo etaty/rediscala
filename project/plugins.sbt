@@ -7,7 +7,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.1")
 
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.1.1")
 
-resolvers += "scct-github-repository" at "http://mtkopone.github.com/scct/maven-repo"
+resolvers += "scct-github-repository" at "http://mtkopone.github.io/scct/maven-repo"
 
 addSbtPlugin("reaktor" % "sbt-scct" % "0.2-SNAPSHOT")
 
