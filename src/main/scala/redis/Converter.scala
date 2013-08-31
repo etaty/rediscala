@@ -3,7 +3,7 @@ package redis
 import akka.util.ByteString
 import redis.protocol._
 import scala.util.Try
-import scala.annotation.tailrec
+import scala.annotation.{implicitNotFound, tailrec}
 import scala.collection.mutable
 
 trait MultiBulkConverter[A] {
@@ -62,6 +62,7 @@ object MultiBulkConverter {
 
 }
 
+@implicitNotFound(msg = "No ByteString serializer found for type ${T}. Try to implement an implicit ByteStringSerializer for this type.")
 trait ByteStringSerializer[K] {
   def serialize(key: K): ByteString
 }
