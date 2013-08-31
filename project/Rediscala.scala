@@ -75,6 +75,13 @@ object RediscalaBuild extends Build {
           "-doc-title", "Rediscala "+v+" API",
           "-doc-version", version
         )
+      },
+      parallelExecution in Test := false,
+      testOptions in Test += Tests.Setup { loader =>
+        loader.loadClass("redis.RedisServerHelper").getDeclaredMethod("setup").invoke(null)
+      },
+      testOptions in Test += Tests.Cleanup { loader =>
+        loader.loadClass("redis.RedisServerHelper").getDeclaredMethod("cleanup").invoke(null)
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
     ScctPlugin.instrumentSettings ++

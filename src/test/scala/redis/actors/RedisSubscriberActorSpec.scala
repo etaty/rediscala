@@ -29,7 +29,8 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
       val channels = Seq("channel")
       val patterns = Seq("pattern.*")
 
-      val subscriberActor = TestActorRef[SubscriberActor](Props(classOf[SubscriberActor], channels, patterns, probeMock.ref)
+      val subscriberActor = TestActorRef[SubscriberActor](Props(classOf[SubscriberActor],
+        new InetSocketAddress("localhost", 6379), channels, patterns, probeMock.ref)
         .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
 
       val connectMsg = probeMock.expectMsgType[Connect]
@@ -65,12 +66,12 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
   }
 }
 
-class SubscriberActor(
+class SubscriberActor( override val address: InetSocketAddress,
                        channels: Seq[String],
                        patterns: Seq[String],
                        probeMock: ActorRef
                        ) extends RedisSubscriberActor(channels, patterns) {
-  override val address: InetSocketAddress = new InetSocketAddress("localhost", 6379)
+
   override val tcp = probeMock
 
   override def onMessage(m: Message) = {
