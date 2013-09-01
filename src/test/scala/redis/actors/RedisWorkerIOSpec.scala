@@ -156,6 +156,11 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       probeTcpWorker.send(redisWorkerIO, Received(ByteString("PONG")))
       probeMock.expectMsgType[ByteString] mustEqual ByteString("PONG")
     }
+
+    "Address Changed" in {
+      // stop / close akka worker ?
+      todo
+    }
   }
 }
 
