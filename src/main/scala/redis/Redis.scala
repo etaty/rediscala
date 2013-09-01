@@ -93,8 +93,10 @@ case class RedisPubSub(
     name + '-' + Redis.tempName()
   )
 
-  // will disconnect from the server
-  def disconnect() {
+  /**
+   * Disconnect from the server (stop the actor)
+   */
+  def stop() {
     system stop redisConnection
   }
 
@@ -147,7 +149,9 @@ case class SentinelClient(var host: String = "localhost",
     name + '-' + Redis.tempName()
   )
 
-  // will disconnect from the server
+  /**
+   * Disconnect from the server (stop the actors)
+   */
   override def stop() {
     system stop redisConnection
     system stop redisPubSubConnection
@@ -189,6 +193,9 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
 
   def redisConnection = redisClient.redisConnection
 
+  /**
+   * Disconnect from the server (stop the actors)
+   */
   def stop() = {
     redisClient.stop()
     sentinelClient.stop()

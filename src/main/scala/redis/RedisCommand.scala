@@ -2,17 +2,11 @@ package redis
 
 import akka.util.ByteString
 import redis.protocol._
-import scala.Long
-import redis.protocol.MultiBulk
-import scala.Some
-import redis.protocol.Bulk
 
 trait RedisCommand[RedisReplyT <: RedisReply, T] {
   val encodedRequest: ByteString
 
   def decodeReply(r: RedisReplyT): T
-
-  //def decodeRedisReply(r: RedisReply) = decodeReply(r.asInstanceOf[RedisReplyT])
 
   val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReplyT, ByteString)]]
 
