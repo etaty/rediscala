@@ -35,10 +35,10 @@ trait RedisCommands
   with Connection
   with Server
 
-case class RedisClient(var host: String = "localhost",
-                       var port: Int = 6379,
-                       name: String = "RedisClient")
-                      (implicit system: ActorSystem) extends RedisCommands with Transactions {
+abstract class RedisClientActorLike(system: ActorSystem) {
+  var host: String
+  var port: Int
+  val name: String
   implicit val executionContext = system.dispatcher
 
   val redisConnection: ActorRef = system.actorOf(
@@ -55,30 +55,25 @@ case class RedisClient(var host: String = "localhost",
     }
   }
 
-  // will disconnect from the server
-  def disconnect() {
+  /**
+   * Disconnect from the server (stop the actor)
+   */
+  def stop() {
     system stop redisConnection
   }
+}
+
+case class RedisClient(var host: String = "localhost",
+                       var port: Int = 6379,
+                       name: String = "RedisClient")
+                      (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
 
 }
 
-case class RedisBlockingClient(host: String = "localhost",
-                               port: Int = 6379,
+case class RedisBlockingClient(var host: String = "localhost",
+                               var port: Int = 6379,
                                name: String = "RedisBlockingClient")
-                              (implicit system: ActorSystem) extends BLists {
-  implicit val executionContext = system.dispatcher
-
-  val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port))
-      .withDispatcher(Redis.dispatcher),
-    name + '-' + Redis.tempName()
-  )
-
-  // will disconnect from the server
-  def disconnect() {
-    system stop redisConnection
-  }
-
+                              (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with BLists {
 }
 
 case class RedisPubSub(
@@ -123,21 +118,14 @@ case class RedisPubSub(
 trait SentinelCommands
   extends Sentinel
 
-case class SentinelClient(host: String = "localhost",
-                          port: Int = 26379,
-                          onMasterChange: (String, Int) => Unit = (ip: String, port: Int) => {},
+case class SentinelClient(var host: String = "localhost",
+                          var port: Int = 26379,
+                          onMasterChange: (String, String, Int) => Unit = (masterName: String, ip: String, port: Int) => {},
                           name: String = "SentinelClient")
-                         (implicit system: ActorSystem) extends SentinelCommands {
-
-  implicit val executionContext = system.dispatcher
+                         (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with SentinelCommands {
+  val system: ActorSystem = _system
 
   val log = Logging.getLogger(system, this)
-
-  val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port))
-      .withDispatcher(Redis.dispatcher),
-    name + '-' + Redis.tempName()
-  )
 
   val channels = Seq("+switch-master")
 
@@ -146,7 +134,7 @@ case class SentinelClient(host: String = "localhost",
     if (message.data != null) {
       message.data.split(" ") match {
         case Array(master, oldip, oldport, newip, newport) =>
-          onMasterChange(newip, newport.toInt)
+          onMasterChange(master, newip, newport.toInt)
         case _ => {}
       }
     }
@@ -160,39 +148,73 @@ case class SentinelClient(host: String = "localhost",
   )
 
   // will disconnect from the server
-  def disconnect() {
+  override def stop() {
     system stop redisConnection
     system stop redisPubSubConnection
   }
 
 }
 
-case class SentinelMonitoredRedisClient(
-                           sentinelHost: String = "localhost",
-                           sentinelPort: Int = 26379,
-                           master: String)
-                          (implicit system: ActorSystem) extends RedisCommands with Transactions {
-  import scala.concurrent.duration._
+abstract class SentinelMonitored(system: ActorSystem) {
+  val sentinelHost: String
+  val sentinelPort: Int
+  val master: String
+  val onMasterChange: (String, Int) => Unit
 
   implicit val executionContext = system.dispatcher
 
-  private val onMasterChange = (ip: String, port: Int) => { redisClient.reconnect(ip, port) }
+  val sentinelClient = new SentinelClient(sentinelHost, sentinelPort, onSwitchMaster, "SMSentinelClient")(system)
 
-  private val sentinelClient =
-      new SentinelClient(sentinelHost, sentinelPort, onMasterChange, "SMSentinelClient")
+  def onSwitchMaster(masterName: String, ip: String, port: Int) = {
+    if (master == masterName)
+      onMasterChange(ip, port)
+  }
 
-  val redisClient: RedisClient = {
+  def withMasterAddr[T](initFunction: (String, Int) => T): T = {
+    import scala.concurrent.duration._
+
     val f = sentinelClient.getMasterAddr(master) map {
-      case Some((ip: String, port: Int)) => new RedisClient(ip, port, "SMRedisClient")
+      case Some((ip: String, port: Int)) => initFunction(ip, port)
       case _ => throw new Exception(s"No such master '$master'")
     }
     Await.result(f, 15 seconds)
   }
+}
+
+abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends SentinelMonitored(system) {
+  val redisClient: RedisClientActorLike
+  val onMasterChange = (ip: String, port: Int) => {
+    redisClient.reconnect(ip, port)
+  }
 
   def redisConnection = redisClient.redisConnection
 
-  def disconnect() = redisClient.disconnect()
+  def stop() = {
+    redisClient.stop()
+    sentinelClient.stop()
+  }
 
+}
+
+case class SentinelMonitoredRedisClient(
+                                         sentinelHost: String = "localhost",
+                                         sentinelPort: Int = 26379,
+                                         master: String)
+                                       (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
+
+  val redisClient: RedisClient = withMasterAddr((ip, port) => {
+    new RedisClient(ip, port, "SMRedisClient")
+  })
+
+}
+
+case class SentinelMonitoredRedisBlockingClient(sentinelHost: String = "localhost",
+                                                sentinelPort: Int = 26379,
+                                                master: String)
+                                               (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
+  val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
+    new RedisBlockingClient(ip, port, "SMRedisClient")
+  })
 }
 
 private[redis] object Redis {
