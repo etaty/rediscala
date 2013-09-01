@@ -67,7 +67,7 @@ Supported :
 * [Pub/Sub](http://redis.io/commands#pubsub) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Publish))
 * [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
 * [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
-* [Scripting](http://redis.io/commands#scripting) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Scripting)) (work in progress)
+* [Scripting](http://redis.io/commands#scripting) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Scripting))
 
 Soon :
 * [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
