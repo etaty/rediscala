@@ -29,8 +29,9 @@ case class Decrby[K](key: K, decrement: Long)(implicit redisKey: ByteStringSeria
   val encodedRequest: ByteString = encode("DECRBY", Seq(redisKey.serialize(key), ByteString(decrement.toString)))
 }
 
-case class Get[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+case class Get[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializer2 : ByteStringDeserializer[R]) extends RedisCommandBulkOptionR[R] {
   val encodedRequest: ByteString = RedisProtocolRequest.multiBulk("GET", Seq(redisKey.serialize(key)))
+  val deserializer: ByteStringDeserializer[R] = deserializer2
 }
 
 case class Getbit[K](key: K, offset: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {

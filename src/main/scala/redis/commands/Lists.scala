@@ -8,52 +8,52 @@ import redis.api.{AFTER, BEFORE, ListPivot}
 
 trait Lists extends Request {
 
-  def lindex[K: ByteStringSerializer](key: K, index: Long): Future[Option[ByteString]] =
+  def lindex(key: String, index: Long): Future[Option[ByteString]] =
     send(Lindex(key, index))
 
-  def linsertAfter[K: ByteStringSerializer, KP: ByteStringSerializer, V: ByteStringSerializer](key: K, pivot: KP, value: V): Future[Long] =
+  def linsertAfter[V: ByteStringSerializer](key: String, pivot: String, value: V): Future[Long] =
     linsert(key, AFTER, pivot, value)
 
-  def linsertBefore[K: ByteStringSerializer, KP: ByteStringSerializer, V: ByteStringSerializer](key: K, pivot: KP, value: V): Future[Long] =
+  def linsertBefore[V: ByteStringSerializer](key: String, pivot: String, value: V): Future[Long] =
     linsert(key, BEFORE, pivot, value)
 
-  def linsert[K: ByteStringSerializer, KP: ByteStringSerializer, V: ByteStringSerializer](key: K, beforeAfter: ListPivot, pivot: KP, value: V): Future[Long] =
+  def linsert[V: ByteStringSerializer](key: String, beforeAfter: ListPivot, pivot: String, value: V): Future[Long] =
     send(Linsert(key, beforeAfter, pivot, value))
 
-  def llen[K: ByteStringSerializer](key: K): Future[Long] =
+  def llen(key: String): Future[Long] =
     send(Llen(key))
 
-  def lpop[K: ByteStringSerializer](key: K): Future[Option[ByteString]] =
+  def lpop(key: String): Future[Option[ByteString]] =
     send(Lpop(key))
 
-  def lpush[K: ByteStringSerializer, V: ByteStringSerializer](key: K, values: V*): Future[Long] =
+  def lpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
     send(Lpush(key, values))
 
-  def lpushx[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V): Future[Long] =
+  def lpushx[V: ByteStringSerializer](key: String, value: V): Future[Long] =
     send(Lpushx(key, value))
 
-  def lrange[K: ByteStringSerializer](key: K, start: Long, stop: Long): Future[Seq[ByteString]] =
+  def lrange(key: String, start: Long, stop: Long): Future[Seq[ByteString]] =
     send(Lrange(key, start, stop))
 
-  def lrem[K: ByteStringSerializer, V: ByteStringSerializer](key: K, count: Long, value: V): Future[Long] =
+  def lrem[V: ByteStringSerializer](key: String, count: Long, value: V): Future[Long] =
     send(Lrem(key, count, value))
 
-  def lset[K: ByteStringSerializer, V: ByteStringSerializer](key: K, index: Long, value: V): Future[Boolean] =
+  def lset[V: ByteStringSerializer](key: String, index: Long, value: V): Future[Boolean] =
     send(Lset(key, index, value))
 
-  def ltrim[K: ByteStringSerializer](key: K, start: Long, stop: Long): Future[Boolean] =
+  def ltrim(key: String, start: Long, stop: Long): Future[Boolean] =
     send(Ltrim(key, start, stop))
 
-  def rpop[K: ByteStringSerializer](key: K): Future[Option[ByteString]] =
+  def rpop(key: String): Future[Option[ByteString]] =
     send(Rpop(key))
 
-  def rpoplpush[KS: ByteStringSerializer, KD: ByteStringSerializer](source: KS, destination: KD): Future[Option[ByteString]] =
+  def rpoplpush(source: String, destination: String): Future[Option[ByteString]] =
     send(Rpoplpush(source, destination))
 
-  def rpush[K: ByteStringSerializer, V: ByteStringSerializer](key: K, values: V*): Future[Long] =
+  def rpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
     send(Rpush(key, values))
 
-  def rpushx[K: ByteStringSerializer, V: ByteStringSerializer](key: K, value: V): Future[Long] =
+  def rpushx[V: ByteStringSerializer](key: String, value: V): Future[Long] =
     send(Rpushx(key, value))
 
 }

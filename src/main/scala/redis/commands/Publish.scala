@@ -5,6 +5,6 @@ import scala.concurrent.Future
 import redis.api.publish.Publish
 
 trait Publish extends Request {
-  def publish[A](channel: String, value: A)(implicit convert: ByteStringSerializer[A]): Future[Long] =
+  def publish[V: ByteStringSerializer](channel: String, value: V): Future[Long] =
     send(Publish(channel, value))
 }

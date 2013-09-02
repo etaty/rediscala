@@ -81,6 +81,13 @@ class StringsSpec extends RedisSpec {
       })
       Await.result(r, timeOut) mustEqual None
       Await.result(r2, timeOut) mustEqual Some(ByteString("Hello"))
+
+      val rrr = for {
+        r3 <- redis.get[String]("getKey")
+      } yield {
+        r3 must beSome("Hello")
+      }
+      Await.result(rrr, timeOut)
     }
 
     "GETBIT" in {

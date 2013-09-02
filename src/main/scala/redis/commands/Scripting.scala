@@ -10,17 +10,17 @@ trait Scripting extends Request {
   /**
    * Try EVALSHA, if NOSCRIPT returned, fallback to EVAL
    */
-  def evalshaOrEval[KK: ByteStringSerializer, KA: ByteStringSerializer](redisScript: RedisScript, keys: Seq[KK] = Seq.empty[String], args: Seq[KA] = Seq.empty[String]): Future[RedisReply] = {
+  def evalshaOrEval(redisScript: RedisScript, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[RedisReply] = {
     evalsha(redisScript.sha1, keys, args).recoverWith({
       case ReplyErrorException(message) if message.startsWith("NOSCRIPT") => eval(redisScript.script, keys, args)
     })
   }
 
-  def eval[KK: ByteStringSerializer, KA: ByteStringSerializer](script: String, keys: Seq[KK] = Seq.empty[String], args: Seq[KA] = Seq.empty[String]): Future[RedisReply] = {
+  def eval(script: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[RedisReply] = {
     send(Eval(script, keys, args))
   }
 
-  def evalsha[KK: ByteStringSerializer, KA: ByteStringSerializer](sha1: String, keys: Seq[KK] = Seq.empty[String], args: Seq[KA] = Seq.empty[String]): Future[RedisReply] = {
+  def evalsha(sha1: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[RedisReply] = {
     send(Evalsha(sha1, keys, args))
   }
 

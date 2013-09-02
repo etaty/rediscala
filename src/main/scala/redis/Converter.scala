@@ -31,27 +31,37 @@ object MultiBulkConverter {
   }
 
   def toSeqTuple2ByteStringDouble(reply: MultiBulk): Seq[(ByteString, Double)] = {
-    reply.responses.map { r => {
-      val s = r.map(_.toByteString)
-      val builder = Seq.newBuilder[(ByteString, Double)]
-      s.grouped(2).foreach { case Seq(a, b) => builder += ((a, b.utf8String.toDouble)) }
-      builder.result()
-    }}.get
+    reply.responses.map {
+      r => {
+        val s = r.map(_.toByteString)
+        val builder = Seq.newBuilder[(ByteString, Double)]
+        s.grouped(2).foreach {
+          case Seq(a, b) => builder += ((a, b.utf8String.toDouble))
+        }
+        builder.result()
+      }
+    }.get
   }
 
   def toSeqMapString(reply: MultiBulk): Seq[Map[String, String]] = {
-    reply.responses.map { s =>
-          s.map ({
-            case m: MultiBulk => {
-              m.responses.map { s =>
+    reply.responses.map {
+      s =>
+        s.map({
+          case m: MultiBulk => {
+            m.responses.map {
+              s =>
                 val builder = Seq.newBuilder[(String, String)]
-                s.grouped(2).foreach { case Seq(a, b) => builder += ((a.toString, b.toString)) }
+                s.grouped(2).foreach {
+                  case Seq(a, b) => builder += ((a.toString, b.toString))
+                }
                 builder.result()
-              }.getOrElse(Seq())
-            }
-            case _ => Seq()
-          }).map { _.toMap }
-      }.get
+            }.getOrElse(Seq())
+          }
+          case _ => Seq()
+        }).map {
+          _.toMap
+        }
+    }.get
   }
 
   def toOptionStringByteString(reply: MultiBulk): Option[(String, ByteString)] = {
@@ -68,7 +78,7 @@ object MultiBulkConverter {
 
 }
 
-@implicitNotFound(msg = "No ByteString serializer found for type ${T}. Try to implement an implicit ByteStringSerializer for this type.")
+@implicitNotFound(msg = "No ByteString serializer found for type ${K}. Try to implement an implicit ByteStringSerializer for this type.")
 trait ByteStringSerializer[K] {
   def serialize(key: K): ByteString
 }
@@ -115,6 +125,29 @@ trait ByteStringSerializerLowPriority {
 
   implicit object ByteStringConverter extends ByteStringSerializer[ByteString] {
     def serialize(bs: ByteString): ByteString = bs
+  }
+
+}
+
+@implicitNotFound(msg = "No ByteString deserializer found for type ${T}. Try to implement an implicit ByteStringDeserializer for this type.")
+trait ByteStringDeserializer[T] {
+  def deserialize(bs: ByteString): T
+}
+
+object ByteStringDeserializer extends ByteStringDeserializerLowPriority
+
+trait ByteStringDeserializerLowPriority extends ByteStringDeserializerDefault {
+
+  implicit object ByteString extends ByteStringDeserializer[ByteString] {
+    def deserialize(bs: ByteString): ByteString = bs
+  }
+
+}
+
+trait ByteStringDeserializerDefault {
+
+  implicit object String extends ByteStringDeserializer[String] {
+    def deserialize(bs: ByteString): String = bs.utf8String
   }
 
 }

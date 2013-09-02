@@ -58,6 +58,11 @@ trait RedisCommandBulkOptionByteString extends RedisCommandBulk[Option[ByteStrin
   def decodeReply(bulk: Bulk) = bulk.response
 }
 
+trait RedisCommandBulkOptionR[R] extends RedisCommandBulk[Option[R]] {
+  val deserializer: ByteStringDeserializer[R]
+  def decodeReply(bulk: Bulk) = bulk.response.map(deserializer.deserialize)
+}
+
 trait RedisCommandBulkDouble extends RedisCommandBulk[Double] {
   def decodeReply(bulk: Bulk) = bulk.response.map(v => java.lang.Double.parseDouble(v.utf8String)).get
 }
