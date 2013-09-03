@@ -117,6 +117,51 @@ class RedisReplyDecoderSpec
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
     }
+
+    "redis reply in many chunks" in {
+      val promise1 = Promise[String]()
+      val promise2 = Promise[String]()
+      val operation1 = Operation(Ping, promise1)
+      val operation2 = Operation(Ping, promise2)
+      val q = mutable.Queue[Operation[_, _]]()
+      q.enqueue(operation1)
+      q.enqueue(operation2)
+
+      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+
+      redisReplyDecoder.underlyingActor.queuePromises must beEmpty
+
+      redisReplyDecoder ! q
+      awaitCond({
+        redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 2
+      }, 3 seconds)
+
+      redisReplyDecoder ! ByteString("+P")
+      awaitCond({
+        redisReplyDecoder.underlyingActor.bufferRead == ByteString("+P")
+      }, 3 seconds)
+
+      redisReplyDecoder ! ByteString("ONG\r")
+      awaitCond({
+        redisReplyDecoder.underlyingActor.bufferRead == ByteString("+PONG\r")
+      }, 3 seconds)
+
+      redisReplyDecoder ! ByteString("\n+PONG2")
+      awaitCond({
+        redisReplyDecoder.underlyingActor.bufferRead == ByteString("+PONG2")
+      }, 3 seconds)
+
+      Await.result(promise1.future, 3 seconds) mustEqual "PONG"
+
+      redisReplyDecoder ! ByteString("\r\n")
+      awaitCond({
+        redisReplyDecoder.underlyingActor.bufferRead.isEmpty
+      }, 3 seconds)
+
+      Await.result(promise2.future, 3 seconds) mustEqual "PONG2"
+
+      redisReplyDecoder.underlyingActor.queuePromises must beEmpty
+    }
   }
 }
 

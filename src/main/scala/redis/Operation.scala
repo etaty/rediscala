@@ -4,10 +4,12 @@ import scala.concurrent.Promise
 import redis.protocol.RedisReply
 import akka.util.ByteString
 
-case class Operation[RedisReplyT <: RedisReply,T](redisCommand: RedisCommand[RedisReplyT, T], promise: Promise[T]) {
-  def decodeRedisReplyThenComplete(bs: ByteString): Option[(RedisReplyT, ByteString)]= {
+case class Operation[RedisReplyT <: RedisReply, T](redisCommand: RedisCommand[RedisReplyT, T], promise: Promise[T]) {
+  def decodeRedisReplyThenComplete(bs: ByteString): Option[(RedisReplyT, ByteString)] = {
     val r = redisCommand.decodeRedisReply.apply(bs)
-    completeSuccess(r.get._1)
+    if (r.isDefined) {
+      completeSuccess(r.get._1)
+    }
     r
   }
 
@@ -26,4 +28,4 @@ case class Operation[RedisReplyT <: RedisReply,T](redisCommand: RedisCommand[Red
   def completeFailed(t: Throwable) = promise.failure(t)
 }
 
-case class Transaction(commands: Seq[Operation[_,_]])
+case class Transaction(commands: Seq[Operation[_, _]])
