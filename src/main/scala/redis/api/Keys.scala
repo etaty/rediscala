@@ -13,8 +13,9 @@ case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) exte
   val encodedRequest: ByteString = encode("DEL", keys.map(redisKey.serialize))
 }
 
-case class Dump[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulkOptionByteString {
+case class Dump[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
   val encodedRequest: ByteString = encode("DUMP", Seq(redisKey.serialize(key)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case class Exists[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
@@ -82,8 +83,9 @@ case class Pttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends R
   val encodedRequest: ByteString = encode("PTTL", Seq(redisKey.serialize(key)))
 }
 
-case object Randomkey extends RedisCommandBulkOptionByteString {
+case class Randomkey[R](implicit deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
   val encodedRequest: ByteString = encode("RANDOMKEY")
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case class Rename[K, NK](key: K, newkey: NK)(implicit redisKey: ByteStringSerializer[K], newKeySer: ByteStringSerializer[NK]) extends RedisCommandStatusBoolean {
@@ -120,13 +122,16 @@ private[redis] object Sort {
   }
 }
 
-case class Sort[K: ByteStringSerializer](key: K,
-                                         byPattern: Option[String],
-                                         limit: Option[LimitOffsetCount],
-                                         getPatterns: Seq[String],
-                                         order: Option[Order],
-                                         alpha: Boolean) extends RedisCommandMultiBulkSeqByteString {
+case class Sort[K: ByteStringSerializer, R](key: K,
+                                            byPattern: Option[String],
+                                            limit: Option[LimitOffsetCount],
+                                            getPatterns: Seq[String],
+                                            order: Option[Order],
+                                            alpha: Boolean)
+                                           (implicit deserializerR: ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("SORT", Sort.buildArgs(key, byPattern, limit, getPatterns, order, alpha))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case class SortStore[K: ByteStringSerializer, KS: ByteStringSerializer](key: K,

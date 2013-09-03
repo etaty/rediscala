@@ -1,14 +1,13 @@
 package redis.commands
 
-import redis.{ByteStringSerializer, Request}
-import akka.util.ByteString
+import redis.{ByteStringDeserializer, ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.api.lists._
 import redis.api.{AFTER, BEFORE, ListPivot}
 
 trait Lists extends Request {
 
-  def lindex(key: String, index: Long): Future[Option[ByteString]] =
+  def lindex[R: ByteStringDeserializer](key: String, index: Long): Future[Option[R]] =
     send(Lindex(key, index))
 
   def linsertAfter[V: ByteStringSerializer](key: String, pivot: String, value: V): Future[Long] =
@@ -23,7 +22,7 @@ trait Lists extends Request {
   def llen(key: String): Future[Long] =
     send(Llen(key))
 
-  def lpop(key: String): Future[Option[ByteString]] =
+  def lpop[R: ByteStringDeserializer](key: String): Future[Option[R]] =
     send(Lpop(key))
 
   def lpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
@@ -32,7 +31,7 @@ trait Lists extends Request {
   def lpushx[V: ByteStringSerializer](key: String, value: V): Future[Long] =
     send(Lpushx(key, value))
 
-  def lrange(key: String, start: Long, stop: Long): Future[Seq[ByteString]] =
+  def lrange[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[R]] =
     send(Lrange(key, start, stop))
 
   def lrem[V: ByteStringSerializer](key: String, count: Long, value: V): Future[Long] =
@@ -44,10 +43,10 @@ trait Lists extends Request {
   def ltrim(key: String, start: Long, stop: Long): Future[Boolean] =
     send(Ltrim(key, start, stop))
 
-  def rpop(key: String): Future[Option[ByteString]] =
+  def rpop[R: ByteStringDeserializer](key: String): Future[Option[R]] =
     send(Rpop(key))
 
-  def rpoplpush(source: String, destination: String): Future[Option[ByteString]] =
+  def rpoplpush[R: ByteStringDeserializer](source: String, destination: String): Future[Option[R]] =
     send(Rpoplpush(source, destination))
 
   def rpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =

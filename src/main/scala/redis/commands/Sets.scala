@@ -1,7 +1,6 @@
 package redis.commands
 
-import redis.{ByteStringSerializer, Request}
-import akka.util.ByteString
+import redis.{ByteStringDeserializer, ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.api.sets._
 
@@ -13,13 +12,13 @@ trait Sets extends Request {
   def scard(key: String): Future[Long] =
     send(Scard(key))
 
-  def sdiff(key: String, keys: String*): Future[Seq[ByteString]] =
+  def sdiff[R: ByteStringDeserializer](key: String, keys: String*): Future[Seq[R]] =
     send(Sdiff(key, keys))
 
   def sdiffstore(destination: String, key: String, keys: String*): Future[Long] =
     send(Sdiffstore(destination, key, keys))
 
-  def sinter(key: String, keys: String*): Future[Seq[ByteString]] =
+  def sinter[R: ByteStringDeserializer](key: String, keys: String*): Future[Seq[R]] =
     send(Sinter(key, keys))
 
   def sinterstore(destination: String, key: String, keys: String*): Future[Long] =
@@ -28,25 +27,25 @@ trait Sets extends Request {
   def sismember[V: ByteStringSerializer](key: String, member: V): Future[Boolean] =
     send(Sismember(key, member))
 
-  def smembers(key: String): Future[Seq[ByteString]] =
+  def smembers[R: ByteStringDeserializer](key: String): Future[Seq[R]] =
     send(Smembers(key))
 
   def smove[V: ByteStringSerializer](source: String, destination: String, member: V): Future[Boolean] =
     send(Smove(source, destination, member))
 
-  def spop(key: String): Future[Option[ByteString]] =
+  def spop[R: ByteStringDeserializer](key: String): Future[Option[R]] =
     send(Spop(key))
 
-  def srandmember(key: String): Future[Option[ByteString]] =
+  def srandmember[R: ByteStringDeserializer](key: String): Future[Option[R]] =
     send(Srandmember(key))
 
-  def srandmember(key: String, count: Long): Future[Seq[ByteString]] =
+  def srandmember[R: ByteStringDeserializer](key: String, count: Long): Future[Seq[R]] =
     send(Srandmembers(key, count))
 
   def srem[V: ByteStringSerializer](key: String, members: V*): Future[Long] =
     send(Srem(key, members))
 
-  def sunion(key: String, keys: String*): Future[Seq[ByteString]] =
+  def sunion[R: ByteStringDeserializer](key: String, keys: String*): Future[Seq[R]] =
     send(Sunion(key, keys))
 
   def sunionstore(destination: String, key: String, keys: String*): Future[Long] =

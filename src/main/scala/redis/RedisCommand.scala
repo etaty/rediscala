@@ -54,11 +54,7 @@ trait RedisCommandIntegerLong extends RedisCommandInteger[Long] {
   def decodeReply(i: Integer) = i.toLong
 }
 
-trait RedisCommandBulkOptionByteString extends RedisCommandBulk[Option[ByteString]] {
-  def decodeReply(bulk: Bulk) = bulk.response
-}
-
-trait RedisCommandBulkOptionR[R] extends RedisCommandBulk[Option[R]] {
+trait RedisCommandBulkOptionByteString[R] extends RedisCommandBulk[Option[R]] {
   val deserializer: ByteStringDeserializer[R]
   def decodeReply(bulk: Bulk) = bulk.response.map(deserializer.deserialize)
 }
@@ -71,12 +67,15 @@ trait RedisCommandBulkOptionDouble extends RedisCommandBulk[Option[Double]] {
   def decodeReply(bulk: Bulk) = bulk.response.map(v => java.lang.Double.parseDouble(v.utf8String))
 }
 
-trait RedisCommandMultiBulkSeqByteString extends RedisCommandMultiBulk[Seq[ByteString]] {
-  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqByteString(mb)
+trait RedisCommandMultiBulkSeqByteString[R] extends RedisCommandMultiBulk[Seq[R]] {
+  val deserializer: ByteStringDeserializer[R]
+  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqByteString(mb)(deserializer)
 }
 
-trait RedisCommandMultiBulkSeqByteStringDouble extends RedisCommandMultiBulk[Seq[(ByteString, Double)]] {
-  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqTuple2ByteStringDouble(mb)
+trait RedisCommandMultiBulkSeqByteStringDouble[R] extends RedisCommandMultiBulk[Seq[(R, Double)]] {
+  val deserializer: ByteStringDeserializer[R]
+
+  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqTuple2ByteStringDouble(mb)(deserializer)
 }
 
 trait RedisCommandRedisReplyOptionLong extends RedisCommandRedisReply[Option[Long]] {

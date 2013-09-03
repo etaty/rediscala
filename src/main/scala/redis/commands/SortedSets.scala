@@ -1,7 +1,6 @@
 package redis.commands
 
-import redis.{ByteStringSerializer, Request}
-import akka.util.ByteString
+import redis.{ByteStringDeserializer, ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.api._
 import redis.api.sortedsets._
@@ -27,16 +26,16 @@ trait SortedSets extends Request {
   def zinterstoreWeighted(destination: String, keys: Map[String, Double], aggregate: Aggregate = SUM): Future[Long] =
     send(ZinterstoreWeighted(destination, keys, aggregate))
 
-  def zrange(key: String, start: Long, stop: Long): Future[Seq[ByteString]] =
+  def zrange[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[R]] =
     send(Zrange(key, start, stop))
 
-  def zrangeWithscores(key: String, start: Long, stop: Long): Future[Seq[(ByteString, Double)]] =
+  def zrangeWithscores[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[(R, Double)]] =
     send(ZrangeWithscores(key, start, stop))
 
-  def zrangebyscore(key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[ByteString]] =
+  def zrangebyscore[R: ByteStringDeserializer](key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[R]] =
     send(Zrangebyscore(key, min, max, limit))
 
-  def zrangebyscoreWithscores(key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[(ByteString, Double)]] =
+  def zrangebyscoreWithscores[R: ByteStringDeserializer](key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[(R, Double)]] =
     send(ZrangebyscoreWithscores(key, min, max, limit))
 
   def zrank[V: ByteStringSerializer](key: String, member: V): Future[Option[Long]] =
@@ -51,16 +50,16 @@ trait SortedSets extends Request {
   def zremrangebyscore(key: String, min: Limit, max: Limit): Future[Long] =
     send(Zremrangebyscore(key, min, max))
 
-  def zrevrange(key: String, start: Long, stop: Long): Future[Seq[ByteString]] =
+  def zrevrange[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[R]] =
     send(Zrevrange(key, start, stop))
 
-  def zrevrangeWithscores(key: String, start: Long, stop: Long): Future[Seq[(ByteString, Double)]] =
+  def zrevrangeWithscores[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[(R, Double)]] =
     send(ZrevrangeWithscores(key, start, stop))
 
-  def zrevrangebyscore(key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[ByteString]] =
+  def zrevrangebyscore[R: ByteStringDeserializer](key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[R]] =
     send(Zrevrangebyscore(key, min, max, limit))
 
-  def zrevrangebyscoreWithscores(key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[(ByteString, Double)]] =
+  def zrevrangebyscoreWithscores[R: ByteStringDeserializer](key: String, min: Limit, max: Limit, limit: Option[(Long, Long)] = None): Future[Seq[(R, Double)]] =
     send(ZrevrangebyscoreWithscores(key, min, max, limit))
 
   def zrevrank[V: ByteStringSerializer](key: String, member: V): Future[Option[Long]] =

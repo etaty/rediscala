@@ -18,25 +18,25 @@ object MultiBulkConverter {
     }).get
   }
 
-  def toSeqByteString(reply: MultiBulk): Seq[ByteString] = {
+  def toSeqByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[R] = {
     reply.responses.map(r => {
-      r.map(_.toByteString)
+      r.map(reply => deserializer.deserialize(reply.toByteString))
     }).get
   }
 
-  def toSeqOptionByteString(reply: MultiBulk): Seq[Option[ByteString]] = {
+  def toSeqOptionByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[Option[R]] = {
     reply.responses.map(r => {
-      r.map(_.asOptByteString)
+      r.map(_.asOptByteString.map(deserializer.deserialize))
     }).get
   }
 
-  def toSeqTuple2ByteStringDouble(reply: MultiBulk): Seq[(ByteString, Double)] = {
+  def toSeqTuple2ByteStringDouble[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[(R, Double)] = {
     reply.responses.map {
       r => {
         val s = r.map(_.toByteString)
-        val builder = Seq.newBuilder[(ByteString, Double)]
+        val builder = Seq.newBuilder[(R, Double)]
         s.grouped(2).foreach {
-          case Seq(a, b) => builder += ((a, b.utf8String.toDouble))
+          case Seq(a, b) => builder += ((deserializer.deserialize(a), b.utf8String.toDouble))
         }
         builder.result()
       }
@@ -64,9 +64,9 @@ object MultiBulkConverter {
     }.get
   }
 
-  def toOptionStringByteString(reply: MultiBulk): Option[(String, ByteString)] = {
+  def toOptionStringByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Option[(String, R)] = {
     reply.responses.map(r => {
-      Some(r.head.toString, r.tail.head.toByteString)
+      Some(r.head.toString, deserializer.deserialize(r.tail.head.toByteString))
     }).getOrElse(None)
   }
 

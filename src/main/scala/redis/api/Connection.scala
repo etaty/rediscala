@@ -10,8 +10,9 @@ case class Auth[V](value: V)(implicit convert: ByteStringSerializer[V]) extends 
   def decodeReply(s: Status) = s
 }
 
-case class Echo[V](value: V)(implicit convert: ByteStringSerializer[V]) extends RedisCommandBulkOptionByteString {
+case class Echo[V, R](value: V)(implicit convert: ByteStringSerializer[V], deserializerR : ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
   val encodedRequest: ByteString = encode("ECHO", Seq(convert.serialize(value)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case object Ping extends RedisCommandStatus[String] {

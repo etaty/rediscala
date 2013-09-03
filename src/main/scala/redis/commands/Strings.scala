@@ -1,6 +1,5 @@
 package redis.commands
 
-import akka.util.ByteString
 import redis._
 import scala.concurrent.Future
 import redis.api.strings._
@@ -44,10 +43,10 @@ trait Strings extends Request {
   def getbit(key: String, offset: Long): Future[Boolean] =
     send(Getbit(key, offset))
 
-  def getrange(key: String, start: Long, end: Long): Future[Option[ByteString]] =
+  def getrange[R: ByteStringDeserializer](key: String, start: Long, end: Long): Future[Option[R]] =
     send(Getrange(key, start, end))
 
-  def getset[V: ByteStringSerializer](key: String, value: V): Future[Option[ByteString]] =
+  def getset[V: ByteStringSerializer, R: ByteStringDeserializer](key: String, value: V): Future[Option[R]] =
     send(Getset(key, value))
 
   def incr(key: String): Future[Long] =
@@ -59,7 +58,7 @@ trait Strings extends Request {
   def incrbyfloat(key: String, increment: Double): Future[Option[Double]] =
     send(Incrbyfloat(key, increment))
 
-  def mget(keys: String*): Future[Seq[Option[ByteString]]] =
+  def mget[R: ByteStringDeserializer](keys: String*): Future[Seq[Option[R]]] =
     send(Mget(keys))
 
   def mset[V: ByteStringSerializer](keysValues: Map[String, V]): Future[Boolean] =

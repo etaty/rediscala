@@ -1,7 +1,6 @@
 package redis.commands
 
-import redis.{ByteStringSerializer, Request}
-import akka.util.ByteString
+import redis.{ByteStringDeserializer, ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.api.hashes._
 
@@ -13,10 +12,10 @@ trait Hashes extends Request {
   def hexists(key: String, field: String): Future[Boolean] =
     send(Hexists(key, field))
 
-  def hget(key: String, field: String): Future[Option[ByteString]] =
+  def hget[R: ByteStringDeserializer](key: String, field: String): Future[Option[R]] =
     send(Hget(key, field))
 
-  def hgetall(key: String): Future[Map[String, ByteString]] =
+  def hgetall[R: ByteStringDeserializer](key: String): Future[Map[String, R]] =
     send(Hgetall(key))
 
   def hincrby(key: String, fields: String, increment: Long): Future[Long] =
@@ -31,7 +30,7 @@ trait Hashes extends Request {
   def hlen(key: String): Future[Long] =
     send(Hlen(key))
 
-  def hmget(key: String, fields: String*): Future[Seq[Option[ByteString]]] =
+  def hmget[R: ByteStringDeserializer](key: String, fields: String*): Future[Seq[Option[R]]] =
     send(Hmget(key, fields))
 
   def hmset[V: ByteStringSerializer](key: String, keysValues: Map[String, V]): Future[Boolean] =
@@ -43,7 +42,7 @@ trait Hashes extends Request {
   def hsetnx[V: ByteStringSerializer](key: String, field: String, value: V): Future[Boolean] =
     send(Hsetnx(key, field, value))
 
-  def hvals(key: String): Future[Seq[ByteString]] =
+  def hvals[R: ByteStringDeserializer](key: String): Future[Seq[R]] =
     send(Hvals(key))
 
 }

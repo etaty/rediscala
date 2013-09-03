@@ -1,6 +1,5 @@
 package redis.commands
 
-import akka.util.ByteString
 import redis._
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -12,7 +11,7 @@ trait Keys extends Request {
   def del(keys: String*): Future[Long] =
     send(Del(keys))
 
-  def dump(key: String): Future[Option[ByteString]] =
+  def dump[R: ByteStringDeserializer](key: String): Future[Option[R]] =
     send(Dump(key))
 
   def exists(key: String): Future[Boolean] =
@@ -55,8 +54,8 @@ trait Keys extends Request {
   def pttl(key: String): Future[Long] =
     send(Pttl(key))
 
-  def randomkey(): Future[Option[ByteString]] =
-    send(Randomkey)
+  def randomkey[R: ByteStringDeserializer](): Future[Option[R]] =
+    send(Randomkey())
 
   def rename(key: String, newkey: String): Future[Boolean] =
     send(Rename(key, newkey))
@@ -67,12 +66,12 @@ trait Keys extends Request {
   def restore[V: ByteStringSerializer](key: String, ttl: Long = 0, serializedValue: V): Future[Boolean] =
     send(Restore(key, ttl, serializedValue))
 
-  def sort(key: String,
+  def sort[R: ByteStringDeserializer](key: String,
                                     byPattern: Option[String] = None,
                                     limit: Option[LimitOffsetCount] = None,
                                     getPatterns: Seq[String] = Seq(),
                                     order: Option[Order] = None,
-                                    alpha: Boolean = false): Future[Seq[ByteString]] = {
+                                    alpha: Boolean = false): Future[Seq[R]] = {
     send(Sort(key, byPattern, limit, getPatterns, order, alpha))
   }
 

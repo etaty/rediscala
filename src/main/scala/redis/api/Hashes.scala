@@ -14,24 +14,26 @@ case class Hexists[K, KK](key: K, field: KK)(implicit redisKey: ByteStringSerial
   val encodedRequest: ByteString = encode("HEXISTS", Seq(redisKey.serialize(key), redisFields.serialize(field)))
 }
 
-case class Hget[K, KK](key: K, field: KK)(implicit redisKey: ByteStringSerializer[K], redisFields: ByteStringSerializer[KK]) extends RedisCommandBulkOptionByteString {
+case class Hget[K, KK, R](key: K, field: KK)(implicit redisKey: ByteStringSerializer[K], redisFields: ByteStringSerializer[KK], deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandBulkOptionByteString[R] {
   val encodedRequest: ByteString = encode("HGET", Seq(redisKey.serialize(key), redisFields.serialize(field)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Hgetall[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandMultiBulk[Map[String, ByteString]] {
+case class Hgetall[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulk[Map[String, R]] {
   val encodedRequest: ByteString = encode("HGETALL", Seq(redisKey.serialize(key)))
 
   def decodeReply(mb: MultiBulk) = mb.responses.map(r => {
     val seq = r.map(_.toByteString)
-    val builder = Map.newBuilder[String, ByteString]
+    val builder = Map.newBuilder[String, R]
     seqToMap(seq, builder)
     builder.result()
   }).get
 
   @tailrec
-  private def seqToMap(seq: Seq[ByteString], builder: mutable.Builder[(String, ByteString), Map[String, ByteString]]): Unit = {
+  private def seqToMap(seq: Seq[ByteString], builder: mutable.Builder[(String, R), Map[String, R]]): Unit = {
     if (seq.nonEmpty) {
-      builder += (seq.head.utf8String -> seq.tail.head)
+      builder += (seq.head.utf8String -> deserializerR.deserialize(seq.tail.head))
       seqToMap(seq.tail.tail, builder)
     }
   }
@@ -57,8 +59,8 @@ case class Hlen[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends R
   val encodedRequest: ByteString = encode("HLEN", Seq(redisKey.serialize(key)))
 }
 
-case class Hmget[K, KK](key: K, fields: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisFields: ByteStringSerializer[KK])
-  extends RedisCommandMultiBulk[Seq[Option[ByteString]]] {
+case class Hmget[K, KK, R](key: K, fields: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisFields: ByteStringSerializer[KK], deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandMultiBulk[Seq[Option[R]]] {
   val encodedRequest: ByteString = encode("HMGET", redisKey.serialize(key) +: fields.map(redisFields.serialize))
 
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqOptionByteString(mb)
@@ -81,6 +83,7 @@ case class Hsetnx[K, KK, V](key: K, field: KK, value: V)(implicit redisKey: Byte
   val encodedRequest: ByteString = encode("HSETNX", Seq(redisKey.serialize(key), redisFields.serialize(field), convert.serialize(value)))
 }
 
-case class Hvals[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteString {
+case class Hvals[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("HVALS", Seq(redisKey.serialize(key)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }

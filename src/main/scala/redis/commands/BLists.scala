@@ -1,7 +1,6 @@
 package redis.commands
 
-import redis.Request
-import akka.util.ByteString
+import redis.{ByteStringDeserializer, Request}
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import redis.api.blists._
@@ -12,12 +11,12 @@ import redis.api.blists._
 trait BLists extends Request {
 
   // TODO Future[Option[(KK, ByteString)]]
-  def blpop(keys: Seq[String], timeout: FiniteDuration = Duration.Zero): Future[Option[(String, ByteString)]] =
+  def blpop[R: ByteStringDeserializer](keys: Seq[String], timeout: FiniteDuration = Duration.Zero): Future[Option[(String, R)]] =
     send(Blpop(keys, timeout))
 
-  def brpop(keys: Seq[String], timeout: FiniteDuration = Duration.Zero): Future[Option[(String, ByteString)]] =
+  def brpop[R: ByteStringDeserializer](keys: Seq[String], timeout: FiniteDuration = Duration.Zero): Future[Option[(String, R)]] =
     send(Brpop(keys, timeout))
 
-  def brpopplush(source: String, destination: String, timeout: FiniteDuration = Duration.Zero): Future[Option[ByteString]] =
+  def brpopplush[R: ByteStringDeserializer](source: String, destination: String, timeout: FiniteDuration = Duration.Zero): Future[Option[R]] =
     send(Brpopplush(source, destination, timeout))
 }

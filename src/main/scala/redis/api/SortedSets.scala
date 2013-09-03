@@ -55,13 +55,15 @@ case class ZinterstoreWeighted[KD: ByteStringSerializer, K: ByteStringSerializer
   val encodedRequest: ByteString = encode("ZINTERSTORE", ZstoreWeighted.buildArgs(destination, keys, aggregate))
 }
 
-case class Zrange[K](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteString {
+case class Zrange[K, R](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("ZRANGE", Seq(keySeria.serialize(key), ByteString(start.toString), ByteString(stop.toString)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class ZrangeWithscores[K](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteStringDouble {
+case class ZrangeWithscores[K, R](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulkSeqByteStringDouble[R] {
   val encodedRequest: ByteString = encode("ZRANGE",
     Seq(keySeria.serialize(key), ByteString(start.toString), ByteString(stop.toString), ByteString("WITHSCORES")))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 private[redis] object Zrangebyscore {
@@ -79,14 +81,16 @@ private[redis] object Zrangebyscore {
   }
 }
 
-case class Zrangebyscore[K: ByteStringSerializer](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)
-  extends RedisCommandMultiBulkSeqByteString {
+case class Zrangebyscore[K: ByteStringSerializer, R](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)(implicit deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("ZRANGEBYSCORE", Zrangebyscore.buildArgs(key, min, max, withscores = false, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class ZrangebyscoreWithscores[K: ByteStringSerializer](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)
-  extends RedisCommandMultiBulkSeqByteStringDouble {
+case class ZrangebyscoreWithscores[K: ByteStringSerializer, R](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)(implicit deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteStringDouble[R] {
   val encodedRequest: ByteString = encode("ZRANGEBYSCORE", Zrangebyscore.buildArgs(key, min, max, withscores = true, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case class Zrank[K, V](key: K, member: V)(implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandRedisReplyOptionLong {
@@ -105,22 +109,26 @@ case class Zremrangebyscore[K](key: K, min: Limit, max: Limit)(implicit keySeria
   val encodedRequest: ByteString = encode("ZREMRANGEBYSCORE", Seq(keySeria.serialize(key), min.toByteString, max.toByteString))
 }
 
-case class Zrevrange[K](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteString {
+case class Zrevrange[K, R](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("ZREVRANGE", Seq(keySeria.serialize(key), ByteString(start.toString), ByteString(stop.toString)))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class ZrevrangeWithscores[K](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandMultiBulkSeqByteStringDouble {
+case class ZrevrangeWithscores[K, R](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K], deserializerR : ByteStringDeserializer[R]) extends RedisCommandMultiBulkSeqByteStringDouble[R] {
   val encodedRequest: ByteString = encode("ZREVRANGE", Seq(keySeria.serialize(key), ByteString(start.toString), ByteString(stop.toString), ByteString("WITHSCORES")))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Zrevrangebyscore[K: ByteStringSerializer](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)
-  extends RedisCommandMultiBulkSeqByteString {
+case class Zrevrangebyscore[K: ByteStringSerializer, R](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)(implicit deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteString[R] {
   val encodedRequest: ByteString = encode("ZREVRANGEBYSCORE", Zrangebyscore.buildArgs(key, min, max, withscores = false, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class ZrevrangebyscoreWithscores[K: ByteStringSerializer](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)
-  extends RedisCommandMultiBulkSeqByteStringDouble {
+case class ZrevrangebyscoreWithscores[K: ByteStringSerializer, R](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)(implicit deserializerR : ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteStringDouble[R] {
   val encodedRequest: ByteString = encode("ZREVRANGEBYSCORE", Zrangebyscore.buildArgs(key, min, max, withscores = true, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
 case class Zrevrank[K, V](key: K, member: V)(implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandRedisReplyOptionLong {
