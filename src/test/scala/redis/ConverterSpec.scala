@@ -3,11 +3,26 @@ package redis
 import org.specs2.mutable.Specification
 import akka.util.ByteString
 
+case class DumbClass(s1: String, s2: String)
+
+object DumbClass {
+  implicit val byteStringFormatter = new ByteStringFormatter[DumbClass] {
+    def serialize(data: DumbClass): ByteString = {
+      ByteString(data.s1 + "|" + data.s2)
+    }
+
+    def deserialize(bs: ByteString): DumbClass = {
+      val r = bs.utf8String.split('|').toList
+      DumbClass(r(0), r(1))
+    }
+  }
+}
+
 class ConverterSpec extends Specification {
 
   import redis.ByteStringSerializer._
 
-  "RedisValueConverter" should {
+  "ByteStringSerializer" should {
     "String" in {
       String.serialize("super string !") mustEqual ByteString("super string !")
     }
@@ -46,6 +61,17 @@ class ConverterSpec extends Specification {
 
     "ByteString" in {
       ByteStringConverter.serialize(ByteString("stupid")) mustEqual ByteString("stupid")
+    }
+  }
+
+  "ByteStringFormatter" should {
+    "DumbClass" in {
+      val dumb = DumbClass("aa", "bb")
+
+      val formatter = implicitly[ByteStringFormatter[DumbClass]]
+
+      formatter.serialize(dumb) mustEqual ByteString("aa|bb")
+      formatter.deserialize(ByteString("aa|bb")) mustEqual dumb
     }
   }
 
