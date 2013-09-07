@@ -11,7 +11,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 
-trait RedisWorkerIO extends Actor with ActorLogging{
+trait RedisWorkerIO extends Actor with ActorLogging {
 
   def address(): InetSocketAddress
 
@@ -36,6 +36,11 @@ trait RedisWorkerIO extends Actor with ActorLogging{
     tcp ! Connect(currAddress)
   }
 
+  def reconnect() = {
+    become(receive)
+    preStart()
+  }
+
   override def postStop() {
     log.info("RedisWorkerIO stop")
   }
@@ -49,7 +54,7 @@ trait RedisWorkerIO extends Actor with ActorLogging{
   def connecting: Receive = {
     case a: InetSocketAddress => onAddressChanged(a)
     case c: Connected => onConnected(c)
-    case Reconnect => preStart()
+    case Reconnect => reconnect()
     case c: CommandFailed => onConnectingCommandFailed(c)
   }
 
@@ -64,7 +69,6 @@ trait RedisWorkerIO extends Actor with ActorLogging{
 
   def onConnectingCommandFailed(cmdFailed: CommandFailed) = {
     log.error(cmdFailed.toString)
-    cleanState()
     scheduleReconnect()
   }
 
@@ -81,13 +85,11 @@ trait RedisWorkerIO extends Actor with ActorLogging{
   def onAddressChanged(addr: InetSocketAddress) {
     log.info(s"Address change [old=$address, new=$addr]")
     currAddress = addr
-    cleanState()
     scheduleReconnect()
   }
 
   def onConnectionClosed(c: ConnectionClosed) = {
     log.warning(s"ConnectionClosed $c")
-    cleanState()
     scheduleReconnect()
   }
 
@@ -100,6 +102,7 @@ trait RedisWorkerIO extends Actor with ActorLogging{
   }
 
   def scheduleReconnect() {
+    cleanState()
     log.info(s"Trying to reconnect in $reconnectDuration")
     this.context.system.scheduler.scheduleOnce(reconnectDuration, self, Reconnect)
     become(receive)
@@ -118,12 +121,7 @@ trait RedisWorkerIO extends Actor with ActorLogging{
 
   def onWriteSent()
 
-  def restartConnection() = {
-    if (tcpWorker != null) {
-      tcpWorker ! Close
-    }
-    scheduleReconnect()
-  }
+  def restartConnection() = reconnect()
 
   def tryWrite() {
     if (bufferWrite.length == 0) {

@@ -9,19 +9,17 @@ class RedisTest extends RedisSpec {
 
   "basic test" should {
     "ping" in {
+
+      val r = for {
+        i <- 0 to 5000
+      } yield {
+        Thread.sleep(10)
+        redis.ping()
+      }
+
+      Await.result(Future.sequence(r), timeOut)
+
       Await.result(redis.ping, timeOut) mustEqual "PONG"
-    }
-    "set" in {
-      Await.result(redis.set("key", "value"), timeOut) mustEqual true
-    }
-    "get" in {
-      Await.result(redis.get("key"), timeOut) mustEqual Some(ByteString("value"))
-    }
-    "del" in {
-      Await.result(redis.del("key"), timeOut) mustEqual 1
-    }
-    "get not found" in {
-      Await.result(redis.get("key"), timeOut) mustEqual None
     }
   }
 

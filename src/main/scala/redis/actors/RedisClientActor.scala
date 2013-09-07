@@ -10,9 +10,9 @@ import akka.actor.SupervisorStrategy.Stop
 class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO {
 
 
-  var repliesDecoder = initRepliesDecoder
+  var repliesDecoder = initRepliesDecoder()
 
-  def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
+  def initRepliesDecoder() = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 
   var queuePromises = mutable.Queue[Operation[_,_]]()
 
@@ -47,14 +47,14 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
     })
     queuePromises.clear()
     repliesDecoder ! PoisonPill
-    repliesDecoder = initRepliesDecoder
+    repliesDecoder = initRepliesDecoder()
   }
 
   override val supervisorStrategy =
     OneForOneStrategy() {
       case _: Exception => {
         // Start a new decoder
-        repliesDecoder = initRepliesDecoder
+        repliesDecoder = initRepliesDecoder()
         restartConnection()
         // stop the old one => clean the mailbox
         Stop
