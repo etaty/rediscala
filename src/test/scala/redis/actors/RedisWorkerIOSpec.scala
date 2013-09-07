@@ -93,9 +93,16 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       probeTcpWorker.expectMsgType[Write] mustEqual Write(ByteString("PING1"), WriteAck)
       probeMock.expectMsg(WriteSent) mustEqual WriteSent
 
+      redisWorkerIO ! "PING 2"
+      awaitCond({
+        redisWorkerIO.underlyingActor.bufferWrite.length mustEqual "PING 2".length
+      }, 1 seconds)
       // ConnectionClosed
       probeTcpWorker.send(redisWorkerIO, ErrorClosed("test"))
       probeMock.expectMsg(OnConnectionClosed) mustEqual OnConnectionClosed
+      awaitCond({
+        redisWorkerIO.underlyingActor.bufferWrite.length mustEqual 0
+      }, 1 seconds)
 
       // Reconnect
       val connectMsg2 = probeTcp.expectMsgType[Connect]

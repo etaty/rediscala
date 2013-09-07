@@ -111,6 +111,7 @@ trait RedisWorkerIO extends Actor with ActorLogging {
   def cleanState() {
     onConnectionClosed()
     readyToWrite = false
+    bufferWrite.clear()
   }
 
   def writing: Receive
