@@ -47,11 +47,11 @@ abstract class RedisSpec extends RedisHelper {
     val serverPort = RedisServerHelper.portNumber.getAndIncrement()
     val serverProcess = Process(s"$redisServerCmd --port $serverPort $redisServerLogLevel").run()
 
-    val result = Try(block(serverPort)).get
+    val result = Try(block(serverPort))
 
     serverProcess.destroy()
 
-    result
+    result.get
   }
 }
 
