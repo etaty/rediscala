@@ -94,26 +94,33 @@ class RedisReplyDecoderSpec
       Await.result(promise2.future, 10 seconds) must throwA(InvalidRedisReply)
     }
 
-    "no more promises" in {
+    "no more operations" in {
       val probeMock = TestProbe()
 
       val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher(Redis.dispatcher))
       val promise = Promise[String]()
       redisClientActor ! Operation(Ping, promise)
 
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      awaitCond({
+        redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      }, 1 seconds)
 
       EventFilter[NoSuchElementException](occurrences = 1).intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("+PONG\r\n"))
       })
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      awaitCond({
+        redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      }, 1 seconds)
+
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
-
       EventFilter[NoSuchElementException](occurrences = 1).intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("+PONG\r\n"))
       })
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      awaitCond({
+        redisClientActor.underlyingActor.queuePromises.length mustEqual 1
+      }, 1 seconds)
+
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
     }
