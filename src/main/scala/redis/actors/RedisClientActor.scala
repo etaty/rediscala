@@ -2,7 +2,7 @@ package redis.actors
 
 import akka.util.{ByteString, ByteStringBuilder}
 import java.net.InetSocketAddress
-import redis.{Operation, Transaction}
+import redis.{Redis, Operation, Transaction}
 import akka.actor.{OneForOneStrategy, Terminated, PoisonPill, Props}
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
@@ -12,7 +12,7 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   var repliesDecoder = initRepliesDecoder
 
-  def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+  def initRepliesDecoder = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 
   var queuePromises = mutable.Queue[Operation[_,_]]()
 

@@ -49,7 +49,7 @@ class RedisPubSubSpec extends RedisSpec {
       val subscriberActor = TestActorRef[SubscriberActor](
         Props(classOf[SubscriberActor], new InetSocketAddress("localhost", 6379),
               channels, patterns, probeMock.ref)
-          .withDispatcher("rediscala.rediscala-client-worker-dispatcher"),
+          .withDispatcher(Redis.dispatcher),
         "SubscriberActor"
       )
       import scala.concurrent.duration._

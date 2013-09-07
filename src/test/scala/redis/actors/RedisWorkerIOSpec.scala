@@ -12,6 +12,7 @@ import akka.io.Tcp.Connected
 import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
+import redis.Redis
 
 class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
@@ -24,7 +25,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val probeMock = TestProbe()
 
       val address = new InetSocketAddress("localhost", 6379)
-      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       val connectMsg = probeTcp.expectMsgType[Connect]
       connectMsg mustEqual Connect(address)
@@ -48,7 +49,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val probeMock = TestProbe()
 
       val address = new InetSocketAddress("localhost", 6379)
-      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       redisWorkerIO ! "PING1"
 
@@ -80,7 +81,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val probeMock = TestProbe()
 
       val address = new InetSocketAddress("localhost", 6379)
-      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       redisWorkerIO ! "PING1"
 
@@ -115,7 +116,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val probeMock = TestProbe()
 
       val address = new InetSocketAddress("localhost", 6379)
-      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       redisWorkerIO ! "PING1"
 
@@ -139,7 +140,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val probeMock = TestProbe()
 
       val address = new InetSocketAddress("localhost", 6379)
-      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisWorkerIO = system.actorOf(Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       redisWorkerIO ! "PING1"
 

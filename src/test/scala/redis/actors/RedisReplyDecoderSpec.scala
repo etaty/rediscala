@@ -9,7 +9,7 @@ import scala.concurrent.{Await, Promise}
 import scala.collection.mutable
 import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
-import redis.Operation
+import redis.{Redis, Operation}
 import redis.api.connection.Ping
 
 class RedisReplyDecoderSpec
@@ -28,7 +28,7 @@ class RedisReplyDecoderSpec
       val q = mutable.Queue[Operation[_, _]]()
       q.enqueue(operation)
 
-      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
 
@@ -63,7 +63,7 @@ class RedisReplyDecoderSpec
     "can't decode" in {
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher(Redis.dispatcher))
       val promise = Promise[String]()
       redisClientActor ! Operation(Ping, promise)
       awaitCond({
@@ -97,7 +97,7 @@ class RedisReplyDecoderSpec
     "no more promises" in {
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher(Redis.dispatcher))
       val promise = Promise[String]()
       redisClientActor ! Operation(Ping, promise)
 
@@ -127,7 +127,7 @@ class RedisReplyDecoderSpec
       q.enqueue(operation1)
       q.enqueue(operation2)
 
-      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
 

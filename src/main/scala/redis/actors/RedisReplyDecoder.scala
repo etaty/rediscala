@@ -29,13 +29,6 @@ class RedisReplyDecoder() extends Actor {
     case byteStringInput: ByteString => decodeReplies(byteStringInput)
   }
 
-  def onDecodedReply(reply: RedisReply) {
-    reply match {
-      case e: Error => queuePromises.dequeue().completeFailed(ReplyErrorException(e.toString()))
-      case _ => //queuePromises.dequeue().completeSuccess(reply)
-    }
-  }
-
   var bufferRead: ByteString = ByteString.empty
 
   def decodeReplies(dataByteString: ByteString) {

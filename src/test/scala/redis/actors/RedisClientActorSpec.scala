@@ -8,7 +8,7 @@ import java.net.InetSocketAddress
 import akka.util.ByteString
 import scala.concurrent.{Await, Promise}
 import scala.collection.mutable
-import redis.Operation
+import redis.{Redis, Operation}
 import redis.api.connection.Ping
 
 class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
@@ -21,7 +21,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeReplyDecoder = TestProbe()
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+      val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref).withDispatcher(Redis.dispatcher))
 
       val promise = Promise[String]()
       val op1 = Operation(Ping, promise)
@@ -57,7 +57,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeMock = TestProbe()
 
       val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref)
-        .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        .withDispatcher(Redis.dispatcher))
         .underlyingActor
 
       val promise3 = Promise[String]()
@@ -77,7 +77,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeMock = TestProbe()
 
       val redisClientActorRef = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref)
-        .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        .withDispatcher(Redis.dispatcher))
       val redisClientActor = redisClientActorRef.underlyingActor
 
       val promiseSent = Promise[String]()

@@ -63,6 +63,7 @@ class SentinelSpec extends RedisClusterClients {
     }
     "slaves" in {
       val r = Await.result(sentinelClient.slaves(masterName), timeOut)
+      r must not be empty
       r(0)("flags").startsWith("slave") mustEqual true
     }
     "reset bogus master" in {

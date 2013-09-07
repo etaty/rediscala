@@ -9,7 +9,7 @@ import akka.util.ByteString
 import scala.concurrent.{Await, Promise}
 import redis.protocol.{RedisProtocolRequest, RedisReply}
 import scala.collection.mutable
-import redis.Operation
+import redis.{Redis, Operation}
 import redis.api.pubsub.{PMessage, Message}
 import akka.io.Tcp._
 import akka.io.Tcp.Connected
@@ -31,7 +31,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 
       val subscriberActor = TestActorRef[SubscriberActor](Props(classOf[SubscriberActor],
         new InetSocketAddress("localhost", 6379), channels, patterns, probeMock.ref)
-        .withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        .withDispatcher(Redis.dispatcher))
 
       val connectMsg = probeMock.expectMsgType[Connect]
       connectMsg mustEqual Connect(subscriberActor.underlyingActor.address)

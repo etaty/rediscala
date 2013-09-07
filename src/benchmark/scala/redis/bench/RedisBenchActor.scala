@@ -25,7 +25,7 @@ class RedisBenchActor extends RedisSpec {
       for (i <- 1 to 10) yield {
         val ops = n //* i / 10
 
-        val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActorBench], new InetSocketAddress("localhost", 6379)).withDispatcher("rediscala.rediscala-client-worker-dispatcher"))
+        val redisConnection: ActorRef = system.actorOf(Props(classOf[RedisClientActorBench], new InetSocketAddress("localhost", 6379)).withDispatcher(Redis.dispatcher))
 
         //redisConnection ! new InetSocketAddress("localhost", 6379)
 
