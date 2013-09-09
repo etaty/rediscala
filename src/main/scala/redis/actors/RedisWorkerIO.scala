@@ -11,11 +11,9 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 
-trait RedisWorkerIO extends Actor with ActorLogging {
+abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with ActorLogging {
 
-  def address(): InetSocketAddress
-
-  private var currAddress = address()
+  private var currAddress = address
 
   import context._
 

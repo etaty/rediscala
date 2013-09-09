@@ -7,7 +7,7 @@ import akka.actor.{OneForOneStrategy, Terminated, PoisonPill, Props}
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
 
-class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO {
+class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO(address) {
 
 
   var repliesDecoder = initRepliesDecoder()

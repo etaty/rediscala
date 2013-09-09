@@ -169,7 +169,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
 }
 
 
-class RedisWorkerIOMock(probeTcp: ActorRef, override val address: InetSocketAddress, probeMock: ActorRef) extends RedisWorkerIO {
+class RedisWorkerIOMock(probeTcp: ActorRef, address: InetSocketAddress, probeMock: ActorRef) extends RedisWorkerIO(address) {
   override val tcp = probeTcp
 
   def writing: Receive = {

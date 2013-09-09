@@ -6,21 +6,14 @@ import org.specs2.mutable.{Tags, SpecificationLike}
 import org.specs2.time.NoTimeConversions
 import java.net.InetSocketAddress
 import akka.util.ByteString
-import scala.concurrent.{Await, Promise}
-import redis.protocol.{RedisProtocolRequest, RedisReply}
-import scala.collection.mutable
-import redis.{Redis, Operation}
-import redis.api.pubsub.{PMessage, Message}
+import redis.protocol.RedisProtocolRequest
+import redis.Redis
 import akka.io.Tcp._
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
 import redis.api.pubsub.Message
 import redis.api.pubsub.PMessage
 
 class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
-  import scala.concurrent.duration._
 
   "RedisClientActor" should {
 
@@ -66,11 +59,11 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
   }
 }
 
-class SubscriberActor( override val address: InetSocketAddress,
-                       channels: Seq[String],
-                       patterns: Seq[String],
-                       probeMock: ActorRef
-                       ) extends RedisSubscriberActor(channels, patterns) {
+class SubscriberActor(address: InetSocketAddress,
+                      channels: Seq[String],
+                      patterns: Seq[String],
+                      probeMock: ActorRef
+                       ) extends RedisSubscriberActor(address, channels, patterns) {
 
   override val tcp = probeMock
 

@@ -48,7 +48,7 @@ class RedisPubSubSpec extends RedisSpec {
 
       val subscriberActor = TestActorRef[SubscriberActor](
         Props(classOf[SubscriberActor], new InetSocketAddress("localhost", 6379),
-              channels, patterns, probeMock.ref)
+          channels, patterns, probeMock.ref)
           .withDispatcher(Redis.dispatcher),
         "SubscriberActor"
       )
@@ -85,11 +85,11 @@ class RedisPubSubSpec extends RedisSpec {
 
 }
 
-class SubscriberActor( override val address: InetSocketAddress,
-                       channels: Seq[String],
-                       patterns: Seq[String],
-                       probeMock: ActorRef
-                       ) extends RedisSubscriberActor(channels, patterns) {
+class SubscriberActor(address: InetSocketAddress,
+                      channels: Seq[String],
+                      patterns: Seq[String],
+                      probeMock: ActorRef
+                       ) extends RedisSubscriberActor(address, channels, patterns) {
 
   override def onMessage(m: Message) = {
     probeMock ! m

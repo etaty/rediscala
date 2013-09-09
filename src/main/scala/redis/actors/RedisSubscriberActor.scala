@@ -7,23 +7,22 @@ import java.net.InetSocketAddress
 import scala.collection.mutable
 
 class RedisSubscriberActorWithCallback(
-                                        override val address: InetSocketAddress,
+                                        address: InetSocketAddress,
                                         channels: Seq[String],
                                         patterns: Seq[String],
                                         messageCallback: Message => Unit,
                                         pmessageCallback: PMessage => Unit
-                                        ) extends RedisSubscriberActor(channels, patterns) {
+                                        ) extends RedisSubscriberActor(address, channels, patterns) {
   def onMessage(m: Message) = messageCallback(m)
 
   def onPMessage(pm: PMessage) = pmessageCallback(pm)
 }
 
 abstract class RedisSubscriberActor(
+                                     address: InetSocketAddress,
                                      channels: Seq[String],
                                      patterns: Seq[String]
-                                     ) extends RedisWorkerIO with DecodeReplies {
-
-  override val address: InetSocketAddress
+                                     ) extends RedisWorkerIO(address) with DecodeReplies {
 
   def onMessage(m: Message): Unit
 
