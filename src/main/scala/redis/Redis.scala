@@ -160,14 +160,13 @@ case class SentinelClient(var host: String = "localhost",
 }
 
 abstract class SentinelMonitored(system: ActorSystem) {
-  val sentinelHost: String
-  val sentinelPort: Int
+  val sentinels: Seq[(String, Int)]
   val master: String
   val onMasterChange: (String, Int) => Unit
 
   implicit val executionContext = system.dispatcher
 
-  val sentinelClient = new SentinelClient(sentinelHost, sentinelPort, onSwitchMaster, "SMSentinelClient")(system)
+  val sentinelClients = sentinels.map(hp => new SentinelClient(hp._1, hp._2, onSwitchMaster, "SMSentinelClient")(system))
 
   def onSwitchMaster(masterName: String, ip: String, port: Int) = {
     if (master == masterName)
@@ -177,7 +176,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def withMasterAddr[T](initFunction: (String, Int) => T): T = {
     import scala.concurrent.duration._
 
-    val f = sentinelClient.getMasterAddr(master) map {
+    val f = sentinelClients.head.getMasterAddr(master) map {
       case Some((ip: String, port: Int)) => initFunction(ip, port)
       case _ => throw new Exception(s"No such master '$master'")
     }
@@ -198,14 +197,12 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
    */
   def stop() = {
     redisClient.stop()
-    sentinelClient.stop()
+    sentinelClients.foreach(_.stop())
   }
 
 }
 
-case class SentinelMonitoredRedisClient(
-                                         sentinelHost: String = "localhost",
-                                         sentinelPort: Int = 26379,
+case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
                                          master: String)
                                        (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
 
@@ -215,9 +212,8 @@ case class SentinelMonitoredRedisClient(
 
 }
 
-case class SentinelMonitoredRedisBlockingClient(sentinelHost: String = "localhost",
-                                                sentinelPort: Int = 26379,
-                                                master: String)
+case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
+                                                 master: String)
                                                (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
     new RedisBlockingClient(ip, port, "SMRedisClient")
