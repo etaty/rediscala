@@ -176,11 +176,14 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def withMasterAddr[T](initFunction: (String, Int) => T): T = {
     import scala.concurrent.duration._
 
-    val f = sentinelClients.head.getMasterAddr(master) map {
-      case Some((ip: String, port: Int)) => initFunction(ip, port)
-      case _ => throw new Exception(s"No such master '$master'")
-    }
-    Await.result(f, 15 seconds)
+    val f = sentinelClients.map(_.getMasterAddr(master))
+    val ff = Future.find(f) { case Some((_: String, _: Int)) => true case _ => false }
+                   .map {
+                      case Some(Some((ip: String, port: Int))) => initFunction(ip, port)
+                      case _ => throw new Exception(s"No such master '$master'")
+                   }
+
+    Await.result(ff, 15 seconds)
   }
 }
 
