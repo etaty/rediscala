@@ -18,7 +18,7 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/releases/"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.1"
+  "com.etaty.rediscala" %% "rediscala" % "1.2"
 )
 ```
 
@@ -178,7 +178,9 @@ Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/ma
 
 ### Scaladoc
 
-[Rediscala scaladoc API (latest)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest 1.2)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.1)](http://etaty.github.io/rediscala/1.1/api/index.html#package)
 
 [Rediscala scaladoc API (version 1.0)](http://etaty.github.io/rediscala/1.0/api/index.html#package)
 
