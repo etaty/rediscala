@@ -11,7 +11,7 @@ class SentinelSpec extends RedisClusterClients {
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
       Await.result(redisClient.ping(), timeOut) mustEqual "PONG"
     }
-    "auto failover" in {
+    "master auto failover" in {
       val port = sentinelMonitoredRedisClient.redisClient.port
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
       Thread.sleep(10000)
@@ -32,6 +32,20 @@ class SentinelSpec extends RedisClusterClients {
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
       sentinelMonitoredRedisClient.redisClient.port mustEqual port
     //*/
+    }
+    "sentinel nodes auto discovery" in {
+      val sentinelCount = sentinelMonitoredRedisClient.sentinelClients.size
+      val sentinel = newSentinelProcess()
+
+      Thread.sleep(10000)
+      val sentinelCount2 = sentinelMonitoredRedisClient.sentinelClients.size
+
+      sentinel.destroy()
+      Thread.sleep(5000)
+      val sentinelCount3 = sentinelMonitoredRedisClient.sentinelClients.size
+
+      sentinelCount2 mustEqual (sentinelCount + 1)
+      sentinelCount3 mustEqual sentinelCount
     }
   }
 

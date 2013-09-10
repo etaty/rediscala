@@ -72,20 +72,22 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
                                    sentinels = sentinelPorts.map((redisHost, _)))
   var processes: Seq[Process] = null
 
+  lazy val sentinelConfPath = {
+      val sentinelConf =
+            s"""
+              |sentinel monitor $masterName $redisHost $masterPort 2
+              |sentinel down-after-milliseconds $masterName 5000
+              |sentinel can-failover $masterName yes
+              |sentinel parallel-syncs $masterName 1
+              |sentinel failover-timeout $masterName 10000
+            """.stripMargin
+
+      val sentinelConfFile = File.makeTemp("rediscala-sentinel", ".conf")
+      sentinelConfFile.writeAll(sentinelConf)
+      sentinelConfFile.path
+    }
+
   override def setup() = {
-    val sentinelConf =
-      s"""
-        |sentinel monitor $masterName $redisHost $masterPort 2
-        |sentinel down-after-milliseconds $masterName 5000
-        |sentinel can-failover $masterName yes
-        |sentinel parallel-syncs $masterName 1
-        |sentinel failover-timeout $masterName 10000
-      """.stripMargin
-
-    val sentinelConfFile = File.makeTemp("rediscala-sentinel", ".conf")
-    sentinelConfFile.writeAll(sentinelConf)
-    val sentinelConfPath = sentinelConfFile.path
-
     processes =
         Seq(
           Process(s"$redisServerCmd --port $masterPort $redisServerLogLevel").run(),
@@ -99,6 +101,12 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
   override def cleanup() = {
     processes.foreach(_.destroy())
   }
+
+  def newSentinelProcess() = {
+    val port = portNumber.getAndIncrement()
+    Process(s"$redisServerCmd $sentinelConfPath --port $port --sentinel $redisServerLogLevel").run()
+  }
+
 }
 
 object RedisServerHelper {
