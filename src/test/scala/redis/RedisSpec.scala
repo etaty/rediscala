@@ -37,6 +37,7 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   val redisServerCmd = "redis-server"
   val redisServerLogLevel = "--loglevel verbose"
+  val redisHost = "127.0.0.1"
 }
 
 abstract class RedisSpec extends RedisHelper {
@@ -62,41 +63,50 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
 
   val masterPort = portNumber.getAndIncrement()
   val slavePort = portNumber.getAndIncrement()
-  val sentinelPort = portNumber.getAndIncrement()
+  val sentinelPorts = Seq(portNumber.getAndIncrement(),portNumber.getAndIncrement())
 
   lazy val redisClient = RedisClient(port = masterPort)
-  lazy val sentinelClient = SentinelClient(port = sentinelPort)
-  lazy val sentinelMonitoredRedisClient = SentinelMonitoredRedisClient(sentinelPort = sentinelPort, master = masterName)
+  lazy val sentinelClient = SentinelClient(port = sentinelPorts.head)
+  lazy val sentinelMonitoredRedisClient =
+      SentinelMonitoredRedisClient(master = masterName,
+                                   sentinels = sentinelPorts.map((redisHost, _)))
+  var processes: Seq[Process] = null
 
-  var master: Process = null
-  var slave: Process = null
-  var sentinel: Process = null
+  lazy val sentinelConfPath = {
+      val sentinelConf =
+            s"""
+              |sentinel monitor $masterName $redisHost $masterPort 2
+              |sentinel down-after-milliseconds $masterName 5000
+              |sentinel can-failover $masterName yes
+              |sentinel parallel-syncs $masterName 1
+              |sentinel failover-timeout $masterName 10000
+            """.stripMargin
+
+      val sentinelConfFile = File.makeTemp("rediscala-sentinel", ".conf")
+      sentinelConfFile.writeAll(sentinelConf)
+      sentinelConfFile.path
+    }
 
   override def setup() = {
-    val sentinelConf =
-      s"""
-        |port $sentinelPort
-        |sentinel monitor $masterName 127.0.0.1 $masterPort 1
-        |sentinel down-after-milliseconds $masterName 5000
-        |sentinel can-failover $masterName yes
-        |sentinel parallel-syncs $masterName 1
-        |sentinel failover-timeout $masterName 10000
-      """.stripMargin
-
-    val sentinelConfFile = File.makeTemp("rediscala-sentinel", ".conf")
-    sentinelConfFile.writeAll(sentinelConf)
-    val sentinelConfPath = sentinelConfFile.path
-
-    master = Process(s"$redisServerCmd --port $masterPort $redisServerLogLevel").run()
-    slave = Process(s"$redisServerCmd --port $slavePort --slaveof 127.0.0.1 $masterPort $redisServerLogLevel").run()
-    sentinel = Process(s"$redisServerCmd $sentinelConfPath --sentinel $redisServerLogLevel").run()
+    processes =
+        Seq(
+          Process(s"$redisServerCmd --port $masterPort $redisServerLogLevel").run(),
+          Process(s"$redisServerCmd --port $slavePort --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+        ) ++
+        sentinelPorts.map(p =>
+          Process(s"$redisServerCmd $sentinelConfPath --port $p --sentinel $redisServerLogLevel").run()
+        )
   }
 
   override def cleanup() = {
-    sentinel.destroy()
-    slave.destroy()
-    master.destroy()
+    processes.foreach(_.destroy())
   }
+
+  def newSentinelProcess() = {
+    val port = portNumber.getAndIncrement()
+    Process(s"$redisServerCmd $sentinelConfPath --port $port --sentinel $redisServerLogLevel").run()
+  }
+
 }
 
 object RedisServerHelper {
