@@ -182,6 +182,15 @@ Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/ma
 [SentinelMonitoredRedisClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.SentinelMonitoredRedisClient) connect to a sentinel server to find the master addresse then start a connection. In case the master change your RedisClient connection will automatically connect to the new master server.
 If you are using a blocking client, you can use [SentinelMonitoredRedisBlockingClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.SentinelMonitoredRedisBlockingClient)
 
+### ByteStringSerializer ByteStringDeserializer ByteStringFormatter
+
+[ByteStringSerializer](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringSerializer)
+
+[ByteStringDeserializer](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringDeserializer)
+
+[ByteStringFormatter](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringFormatter)
+
+
 ### Scaladoc
 
 [Rediscala scaladoc API (latest 1.2)](http://etaty.github.io/rediscala/latest/api/index.html#package)
