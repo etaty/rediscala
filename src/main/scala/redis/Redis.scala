@@ -218,7 +218,7 @@ case class SentinelMonitoredRedisClient(
 case class SentinelMonitoredRedisBlockingClient(sentinelHost: String = "localhost",
                                                 sentinelPort: Int = 26379,
                                                 master: String)
-                                               (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
+                                               (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with BLists {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
     new RedisBlockingClient(ip, port, "SMRedisClient")
   })
