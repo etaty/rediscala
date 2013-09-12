@@ -190,6 +190,36 @@ If you are using a blocking client, you can use [SentinelMonitoredRedisBlockingC
 
 [ByteStringFormatter](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringFormatter)
 
+```scala
+case class DumbClass(s1: String, s2: String)
+
+object DumbClass {
+  implicit val byteStringFormatter = new ByteStringFormatter[DumbClass] {
+    def serialize(data: DumbClass): ByteString = {
+      //...
+    }
+
+    def deserialize(bs: ByteString): DumbClass = {
+      //...
+    }
+  }
+}
+//...
+
+  val dumb = DumbClass("s1", "s2")
+
+  val r = for {
+    set <- redis.set("dumbKey", dumb)
+    getDumbOpt <- redis.get[DumbClass]("dumbKey")
+  } yield {
+    getDumbOpt.map(getDumb => {
+      assert(getDumb == dumb)
+      println(getDumb)
+    })
+  }
+```
+
+Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleByteStringFormatter.scala)
 
 ### Scaladoc
 
