@@ -40,7 +40,7 @@ abstract class RedisSubscriberActor(
     write(PSUBSCRIBE(patternsSubscribed: _*).toByteString)
   }
 
-  def writing: Receive = {
+  def onWriting: Receive = {
     case message: SubscribeMessage => {
       write(message.toByteString)
       message match {

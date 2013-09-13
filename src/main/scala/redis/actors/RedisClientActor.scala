@@ -16,7 +16,7 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
 
   var queuePromises = mutable.Queue[Operation[_,_]]()
 
-  def writing: Receive = {
+  def onWriting: Receive = {
     case op : Operation[_,_] =>
       queuePromises enqueue op
       write(op.redisCommand.encodedRequest)

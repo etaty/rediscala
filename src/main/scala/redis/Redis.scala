@@ -131,7 +131,7 @@ case class SentinelClient(var host: String = "localhost",
 
   val log = Logging.getLogger(system, this)
 
-  val channels = Seq("+switch-master", "+sentinel", "+sdown")
+  val channels = Seq("+switch-master", "+sentinel", "+sdown", "+failover-state-send-slaveof-noone")
 
   val onMessage = (message: Message) => {
     if (log.isDebugEnabled)
@@ -145,21 +145,30 @@ case class SentinelClient(var host: String = "localhost",
           case _ => {}
         }
       }
+      case Message("+failover-state-send-slaveof-noone", data) => {
+        data.split(" ") match {
+          case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
+            onMasterChange(master, slaveip, slaveport.toInt)
+          case _ => {}
+        }
+      }
       case Message("+sentinel", data) => {
         data.split(" ") match {
-          case Array("sentinel", name, sentinelip, sentinelport, "@", master, masterip, masterport) =>
+          case Array("sentinel", sentName, sentinelip, sentinelport, "@", master, masterip, masterport) =>
             onNewSentinel(master, sentinelip, sentinelport.toInt)
           case _ => {}
         }
       }
       case Message("+sdown", data) => {
         data.split(" ") match {
-          case Array("sentinel", name, sentinelip, sentinelport, "@", master, masterip, masterport) =>
+          case Array("sentinel", sentName, sentinelip, sentinelport, "@", master, masterip, masterport) =>
             onSentinelDown(master, sentinelip, sentinelport.toInt)
           case _ => {}
         }
       }
-      case _ => {}
+      case _ => {
+        log.warning(s"SentinelClient.onMessage: unexpected message received: $message")
+      }
     }
   }
 

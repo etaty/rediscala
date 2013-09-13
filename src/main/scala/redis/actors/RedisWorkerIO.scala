@@ -112,7 +112,13 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     bufferWrite.clear()
   }
 
-  def writing: Receive
+  def maybeAddressChanged: Receive = {
+    case a: InetSocketAddress => onAddressChanged(a)
+  }
+
+  def onWriting: Receive
+
+  def writing: Receive = maybeAddressChanged orElse onWriting
 
   def onConnectionClosed()
 
