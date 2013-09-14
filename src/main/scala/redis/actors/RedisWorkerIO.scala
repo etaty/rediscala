@@ -60,7 +60,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     sender ! Register(self)
     tcpWorker = sender
     initConnectedBuffer()
-    tryWrite()
+    tryInitialWrite() // TODO write something in head buffer
     become(connected)
     log.info("Connected to " + cmd.remoteAddress)
   }
@@ -121,6 +121,19 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
   def onWriteSent()
 
   def restartConnection() = reconnect()
+
+  def onConnectWrite() : ByteString
+
+  def tryInitialWrite() {
+    val data = onConnectWrite()
+
+    if(data.nonEmpty) {
+      writeWorker(data ++ bufferWrite.result())
+      bufferWrite.clear()
+    } else {
+      tryWrite()
+    }
+  }
 
   def tryWrite() {
     if (bufferWrite.length == 0) {

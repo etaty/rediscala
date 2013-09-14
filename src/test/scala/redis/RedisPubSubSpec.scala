@@ -6,6 +6,7 @@ import redis.actors.RedisSubscriberActor
 import java.net.InetSocketAddress
 import akka.actor.{Props, ActorRef}
 import akka.testkit.{TestActorRef, TestProbe}
+import akka.util.ByteString
 
 class RedisPubSubSpec extends RedisSpec {
 

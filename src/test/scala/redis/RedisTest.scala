@@ -25,4 +25,21 @@ class RedisTest extends RedisSpec {
     }
   }
 
+  "init connection test" should {
+    "ok" in {
+      withRedisServer(port => {
+        val redis = RedisClient(port = port)
+        // TODO set password (CONFIG SET requiredpass password)
+        val r = for {
+          _ <- redis.select(2)
+          _ <- redis.set("keyDbSelect", "2")
+        } yield {
+          val redis = RedisClient(port = port, password = Some("password"), db = Some(2))
+          Await.result(redis.get[String]("keyDbSelect"), timeOut) must beSome("2")
+        }
+        Await.result(r, timeOut)
+      })
+    }
+  }
+
 }

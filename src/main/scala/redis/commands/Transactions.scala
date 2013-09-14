@@ -12,7 +12,7 @@ import scala.util.{Failure, Success}
 import redis.api.transactions.{Watch, Exec, Multi}
 import akka.util.ByteString
 
-trait Transactions extends Request {
+trait Transactions extends ActorRequest {
 
   def multi(): TransactionBuilder = transaction()
 
@@ -32,9 +32,9 @@ trait Transactions extends Request {
 
 }
 
-case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) extends RedisCommands {
+case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) extends BufferedRequest with RedisCommands {
 
-  val operations = Queue.newBuilder[Operation[_, _]]
+  //val operations = Queue.newBuilder[Operation[_, _]]
   val watcher = Set.newBuilder[String]
 
   def unwatch() {
@@ -59,13 +59,6 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
     val p = Promise[MultiBulk]()
     t.process(p)
     p.future
-  }
-
-
-  override def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
-    val promise = Promise[T]()
-    operations += Operation(redisCommand, promise)
-    promise.future
   }
 }
 

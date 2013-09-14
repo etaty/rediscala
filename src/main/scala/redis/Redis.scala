@@ -9,19 +9,6 @@ import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
 import akka.event.Logging
-import redis.protocol.RedisReply
-
-trait Request {
-  implicit val executionContext: ExecutionContext
-
-  def redisConnection: ActorRef
-
-  def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
-    val promise = Promise[T]()
-    redisConnection ! Operation(redisCommand, promise)
-    promise.future
-  }
-}
 
 trait RedisCommands
   extends Keys
@@ -35,14 +22,16 @@ trait RedisCommands
   with Connection
   with Server
 
-abstract class RedisClientActorLike(system: ActorSystem) {
+abstract class RedisClientActorLike(system: ActorSystem) extends ActorRequest {
   var host: String
   var port: Int
   val name: String
+  val password: Option[String] = None
+  val db: Option[Int] = None
   implicit val executionContext = system.dispatcher
 
   val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port))
+    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -55,6 +44,20 @@ abstract class RedisClientActorLike(system: ActorSystem) {
     }
   }
 
+  def onConnect(redis: RedisCommands): Unit = {
+    password.foreach(redis.auth(_)) // TODO log on auth failure
+    db.foreach(redis.select(_))
+  }
+
+  def getConnectOperations: () => Seq[Operation[_, _]] = () => {
+    val self = this
+    val redis = new BufferedRequest with RedisCommands {
+      implicit val executionContext: ExecutionContext = self.executionContext
+    }
+    onConnect(redis)
+    redis.operations.result()
+  }
+
   /**
    * Disconnect from the server (stop the actor)
    */
@@ -65,14 +68,18 @@ abstract class RedisClientActorLike(system: ActorSystem) {
 
 case class RedisClient(var host: String = "localhost",
                        var port: Int = 6379,
-                       name: String = "RedisClient")
+                       name: String = "RedisClient",
+                       override val password: Option[String] = None,
+                       override val db: Option[Int] = None)
                       (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
 
 }
 
 case class RedisBlockingClient(var host: String = "localhost",
                                var port: Int = 6379,
-                               name: String = "RedisBlockingClient")
+                               name: String = "RedisBlockingClient",
+                               override val password: Option[String] = None,
+                               override val db: Option[Int] = None)
                               (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with BLists {
 }
 
@@ -83,12 +90,13 @@ case class RedisPubSub(
                         patterns: Seq[String],
                         onMessage: Message => Unit = _ => {},
                         onPMessage: PMessage => Unit = _ => {},
+                        authPassword: Option[String] = None,
                         name: String = "RedisPubSub"
                         )(implicit system: ActorSystem) {
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage)
+      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -144,7 +152,7 @@ case class SentinelClient(var host: String = "localhost",
 
   val redisPubSubConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {})
+      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -185,7 +193,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
   }
 }
 
-abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends SentinelMonitored(system) {
+abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends SentinelMonitored(system) with ActorRequest {
   val redisClient: RedisClientActorLike
   val onMasterChange = (ip: String, port: Int) => {
     redisClient.reconnect(ip, port)

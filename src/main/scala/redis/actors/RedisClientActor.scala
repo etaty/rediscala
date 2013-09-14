@@ -7,7 +7,7 @@ import akka.actor.{OneForOneStrategy, Terminated, PoisonPill, Props}
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
 
-class RedisClientActor(override val address: InetSocketAddress) extends RedisWorkerIO(address) {
+class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]]) extends RedisWorkerIO(address) {
 
 
   var repliesDecoder = initRepliesDecoder()
@@ -60,6 +60,19 @@ class RedisClientActor(override val address: InetSocketAddress) extends RedisWor
         Stop
       }
     }
+
+  def onConnectWrite(): ByteString = {
+    val ops = getConnectOperations()
+    val buffer = new ByteStringBuilder
+
+    val queuePromisesConnect = mutable.Queue[Operation[_,_]]()
+    ops.foreach(operation => {
+      buffer.append(operation.redisCommand.encodedRequest)
+      queuePromisesConnect enqueue operation
+    })
+    queuePromises = queuePromisesConnect ++ queuePromises
+    buffer.result()
+  }
 }
 
 case object NoConnectionException extends RuntimeException("No Connection established")
