@@ -15,6 +15,7 @@ case class Brpop[KK: ByteStringSerializer, R: ByteStringDeserializer](keys: Seq[
 
 private[redis] abstract class BXpop[KK, R](command: String)(implicit redisKeys: ByteStringSerializer[KK], deserializerR: ByteStringDeserializer[R])
   extends RedisCommandMultiBulk[Option[(String, R)]] {
+  val isMasterOnly = true
   val keys: Seq[KK]
   val timeout: FiniteDuration
 
@@ -26,6 +27,7 @@ private[redis] abstract class BXpop[KK, R](command: String)(implicit redisKeys: 
 case class Brpopplush[KS, KD, R](source: KS, destination: KD, timeout: FiniteDuration = Duration.Zero)
                              (implicit bsSource: ByteStringSerializer[KS], bsDest: ByteStringSerializer[KD], deserializerR: ByteStringDeserializer[R])
   extends RedisCommandRedisReply[Option[R]] {
+  val isMasterOnly = true
   val encodedRequest: ByteString = encode("BRPOPLPUSH",
     Seq(bsSource.serialize(source), bsDest.serialize(destination), ByteString(timeout.toSeconds.toString)))
 

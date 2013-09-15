@@ -4,6 +4,7 @@ import akka.util.ByteString
 import redis.protocol._
 
 trait RedisCommand[RedisReplyT <: RedisReply, T] {
+  val isMasterOnly: Boolean
   val encodedRequest: ByteString
 
   def decodeReply(r: RedisReplyT): T
@@ -56,6 +57,7 @@ trait RedisCommandIntegerLong extends RedisCommandInteger[Long] {
 
 trait RedisCommandBulkOptionByteString[R] extends RedisCommandBulk[Option[R]] {
   val deserializer: ByteStringDeserializer[R]
+
   def decodeReply(bulk: Bulk) = bulk.response.map(deserializer.deserialize)
 }
 
@@ -69,6 +71,7 @@ trait RedisCommandBulkOptionDouble extends RedisCommandBulk[Option[Double]] {
 
 trait RedisCommandMultiBulkSeqByteString[R] extends RedisCommandMultiBulk[Seq[R]] {
   val deserializer: ByteStringDeserializer[R]
+
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqByteString(mb)(deserializer)
 }
 

@@ -81,6 +81,7 @@ case class Transaction(watcher: Set[String], operations: Queue[Operation[_, _]],
 
   def operationToQueuedOperation(op: Operation[_, _]) = {
     val cmd = new RedisCommandStatus[String] {
+      val isMasterOnly = true
       val encodedRequest: ByteString = op.redisCommand.encodedRequest
 
       def decodeReply(r: Status): String = r.toString

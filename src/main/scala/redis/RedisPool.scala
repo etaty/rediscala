@@ -3,7 +3,9 @@ package redis
 import akka.actor.{Props, ActorRef, ActorSystem}
 import redis.actors.RedisClientActor
 import java.net.InetSocketAddress
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
+import redis.protocol.RedisReply
+import redis.commands.Transactions
 
 
 case class RedisServer(host: String = "localhost",
@@ -51,3 +53,23 @@ abstract class RedisClientPoolLike(system: ActorSystem) extends RoundRobinPoolRe
 case class RedisClientPool(redisServers: Seq[RedisServer],
                            name: String = "RedisClientPool")
                           (implicit _system: ActorSystem) extends RedisClientPoolLike(_system) with RedisCommands
+
+case class RedisClientMasterSlaves(master: RedisServer,
+                                   slaves: Seq[RedisServer])
+                                  (implicit _system: ActorSystem) extends RedisCommands with Transactions {
+  implicit val executionContext = _system.dispatcher
+
+  val masterClient = RedisClient(master.host, master.port, master.password, master.db)
+
+  val slavesClients = RedisClientPool(slaves)
+
+  override def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
+    if (redisCommand.isMasterOnly) {
+      masterClient.send(redisCommand)
+    } else {
+      slavesClients.send(redisCommand)
+    }
+  }
+
+  def redisConnection: ActorRef = masterClient.redisConnection
+}
