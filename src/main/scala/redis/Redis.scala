@@ -68,18 +68,18 @@ abstract class RedisClientActorLike(system: ActorSystem) extends ActorRequest {
 
 case class RedisClient(var host: String = "localhost",
                        var port: Int = 6379,
-                       name: String = "RedisClient",
                        override val password: Option[String] = None,
-                       override val db: Option[Int] = None)
+                       override val db: Option[Int] = None,
+                       name: String = "RedisClient")
                       (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
 
 }
 
 case class RedisBlockingClient(var host: String = "localhost",
                                var port: Int = 6379,
-                               name: String = "RedisBlockingClient",
                                override val password: Option[String] = None,
-                               override val db: Option[Int] = None)
+                               override val db: Option[Int] = None,
+                               name: String = "RedisBlockingClient")
                               (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with BLists {
 }
 
@@ -218,7 +218,7 @@ case class SentinelMonitoredRedisClient(
                                        (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
 
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
-    new RedisClient(ip, port, "SMRedisClient")
+    new RedisClient(ip, port, name = "SMRedisClient")
   })
 
 }
@@ -228,7 +228,7 @@ case class SentinelMonitoredRedisBlockingClient(sentinelHost: String = "localhos
                                                 master: String)
                                                (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with BLists {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
-    new RedisBlockingClient(ip, port, "SMRedisClient")
+    new RedisBlockingClient(ip, port, name = "SMRedisClient")
   })
 }
 
