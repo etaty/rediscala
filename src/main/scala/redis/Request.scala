@@ -48,11 +48,27 @@ trait RoundRobinPoolRequest {
     redisConnectionPool(next.getAndIncrement % redisConnectionPool.size)
   }
 
-  def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
+  private def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
     val promise = Promise[T]()
-    // TODO empty Pool ?
-    val redisConnection = getNextConnection
     redisConnection ! Operation(redisCommand, promise)
     promise.future
+  }
+
+  def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
+    // TODO empty Pool ?
+    val redisConnection = getNextConnection
+    send(redisConnection, redisCommand)
+  }
+
+  /**
+   *
+   * @param redisCommand
+   * @tparam T
+   * @return behave nicely with Future helpers like firstCompletedOf or sequence
+   */
+  def broadcast[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Seq[Future[T]] = {
+    redisConnectionPool.map(redisConnection => {
+      send(redisConnection, redisCommand)
+    })
   }
 }
