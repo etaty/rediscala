@@ -3,7 +3,8 @@ package redis
 import akka.util.ByteString
 import redis.protocol._
 import scala.util.Try
-import scala.annotation.implicitNotFound
+import scala.annotation.{tailrec, implicitNotFound}
+import scala.collection.mutable
 
 trait MultiBulkConverter[A] {
   def to(redisReply: MultiBulk): Try[A]
@@ -17,19 +18,19 @@ object MultiBulkConverter {
     }).get
   }
 
-  def toSeqByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[R] = {
+  def toSeqByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[R] = {
     reply.responses.map(r => {
       r.map(reply => deserializer.deserialize(reply.toByteString))
     }).get
   }
 
-  def toSeqOptionByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[Option[R]] = {
+  def toSeqOptionByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[Option[R]] = {
     reply.responses.map(r => {
       r.map(_.asOptByteString.map(deserializer.deserialize))
     }).get
   }
 
-  def toSeqTuple2ByteStringDouble[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Seq[(R, Double)] = {
+  def toSeqTuple2ByteStringDouble[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[(R, Double)] = {
     reply.responses.map {
       r => {
         val s = r.map(_.toByteString)
@@ -40,6 +41,22 @@ object MultiBulkConverter {
         builder.result()
       }
     }.get
+  }
+
+  def toMapString(reply: MultiBulk): Map[String, String] = {
+    reply.responses.map(bs => {
+      val builder = Map.newBuilder[String, String]
+      seqtoMapString(bs, builder)
+      builder.result()
+    }).getOrElse(Map.empty)
+  }
+
+  @tailrec
+  private def seqtoMapString(bsSeq: Seq[RedisReply], acc: mutable.Builder[(String, String), Map[String, String]]): Unit = {
+    if (bsSeq.nonEmpty) {
+      acc += ((bsSeq.head.asOptByteString.map(_.utf8String).getOrElse(""), bsSeq.tail.head.asOptByteString.map(_.utf8String).getOrElse("")))
+      seqtoMapString(bsSeq.tail.tail, acc)
+    }
   }
 
   def toSeqMapString(reply: MultiBulk): Seq[Map[String, String]] = {
@@ -63,7 +80,7 @@ object MultiBulkConverter {
     }.get
   }
 
-  def toOptionStringByteString[R](reply: MultiBulk)(implicit deserializer : ByteStringDeserializer[R]): Option[(String, R)] = {
+  def toOptionStringByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Option[(String, R)] = {
     reply.responses.map(r => {
       Some(r.head.toString, deserializer.deserialize(r.tail.head.toByteString))
     }).getOrElse(None)
