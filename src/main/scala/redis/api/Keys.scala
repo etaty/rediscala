@@ -170,9 +170,7 @@ case class Ttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends Re
   val encodedRequest: ByteString = encode("TTL", Seq(redisKey.serialize(key)))
 }
 
-case class Type[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandStatus[String] {
+case class Type[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandStatusString {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("TYPE", Seq(redisKey.serialize(key)))
-
-  def decodeReply(s: Status) = s.toString
 }

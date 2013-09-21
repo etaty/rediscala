@@ -17,11 +17,9 @@ case class Echo[V, R](value: V)(implicit convert: ByteStringSerializer[V], deser
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case object Ping extends RedisCommandStatus[String] {
+case object Ping extends RedisCommandStatusString {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("PING")
-
-  def decodeReply(s: Status) = s.toString
 }
 
 case object Quit extends RedisCommandStatusBoolean {

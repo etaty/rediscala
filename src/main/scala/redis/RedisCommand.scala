@@ -37,6 +37,10 @@ trait RedisCommandRedisReply[T] extends RedisCommand[RedisReply, T] {
   val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReply, ByteString)]] = RedisProtocolReply.decodeReplyPF
 }
 
+trait RedisCommandStatusString extends RedisCommandStatus[String] {
+  def decodeReply(s: Status) = s.toString
+}
+
 trait RedisCommandStatusBoolean extends RedisCommandStatus[Boolean] {
   def decodeReply(s: Status): Boolean = s.toBoolean
 }
