@@ -42,3 +42,10 @@ sealed trait ListPivot
 case object AFTER extends ListPivot
 
 case object BEFORE extends ListPivot
+
+
+sealed trait ShutdownModifier
+
+case object SAVE extends ShutdownModifier
+
+case object NOSAVE extends ShutdownModifier

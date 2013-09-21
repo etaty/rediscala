@@ -2,108 +2,126 @@ package redis.commands
 
 import redis._
 import scala.concurrent.Await
-import akka.util.ByteString
-import redis.actors.ReplyErrorException
+import redis.actors.{InvalidRedisReply, ReplyErrorException}
+import redis.api.NOSAVE
 
-class ServerSpec extends RedisSpec {
-/*
+class ServerSpec extends RedisStandaloneServer {
+
   sequential
 
   "Server commands" should {
 
-    withRedisCluster((masterPort, slavePort, sentinelPort) => {
-      val redis = RedisClient(port = masterPort)
+    "BGREWRITEAOF" in {
+      Await.result(redis.bgsave(), timeOut) mustEqual "Background saving started"
+    }
 
-      "BGREWRITEAOF && BGSAVE" in {
-        val r = for {
-          bgrewriteaof <- redis.bgrewriteaof()
-          bgsave <- {
-            Thread.sleep(2000) // ERR Can't BGSAVE while AOF log rewriting is in progress
-            redis.bgsave()
-          }
-        } yield {
-          bgrewriteaof mustEqual "Background append only file rewriting started"
-          bgsave mustEqual "Background saving started"
-        }
+    "CLIENT KILL" in {
+      Await.result(redis.clientKill("8.8.8.8", 53), timeOut) must throwA[ReplyErrorException]("ERR No such client")
+    }
 
-        Await.result(r, timeOut)
+    "CLIENT LIST" in {
+      val list = Await.result(redis.clientList(), timeOut)
+      list must beAnInstanceOf[Seq[Map[String, String]]]
+      list must not beEmpty
+    }
+
+    "CLIENT GETNAME" in {
+      Await.result(redis.clientGetname(), timeOut) mustEqual None
+    }
+
+    "CLIENT SETNAME" in {
+      Await.result(redis.clientSetname("rediscala"), timeOut) mustEqual true
+    }
+
+    "CONFIG GET" in {
+      val map = Await.result(redis.configGet("*"), timeOut)
+      map must beAnInstanceOf[Map[String, String]]
+      map must not beEmpty
+
+    }
+    "CONFIG SET" in {
+      val r = for {
+        set <- redis.configSet("loglevel", "warning")
+        loglevel <- redis.configGet("loglevel")
+      } yield {
+        set must beTrue
+        loglevel.get("loglevel") must beSome("warning")
       }
+      Await.result(r, timeOut)
+    }
 
-      "CLIENT KILL" in {
-        Await.result(redis.clientKill("8.8.8.8", 53), timeOut) must throwA[ReplyErrorException]("ERR No such client")
+    "CONFIG RESETSTAT" in {
+      Await.result(redis.configResetstat(), timeOut) must beTrue
+    }
+
+    "DBSIZE" in {
+      Await.result(redis.dbsize(), timeOut) must be_>=(0l)
+    }
+
+    "DEBUG OBJECT" in {
+      Await.result(redis.debugObject("serverDebugObj"), timeOut) must throwA[ReplyErrorException]("ERR no such key")
+    }
+
+    "DEBUG SEGFAULT" in {
+      todo
+    }
+
+    "FLUSHALL" in {
+      Await.result(redis.flushall(), timeOut) must beTrue
+    }
+
+    "FLUSHDB" in {
+      Await.result(redis.flushdb(), timeOut) must beTrue
+    }
+
+    "INFO" in {
+      val r = for {
+        info <- redis.info()
+        infoCpu <- redis.info("cpu")
+      } yield {
+        info must beAnInstanceOf[String]
+        infoCpu must beAnInstanceOf[String]
       }
+      Await.result(r, timeOut)
+    }
 
-      "CLIENT LIST" in {
-        Await.result(redis.clientList(), timeOut) must beAnInstanceOf[String]
+    "LASTSAVE" in {
+      Await.result(redis.lastsave(), timeOut) must be_>=(0l)
+    }
+
+    "SAVE" in {
+      Await.result(redis.save(), timeOut) must beTrue
+    }
+
+    "SLAVE OF" in {
+      Await.result(redis.slaveof("server", 12345), timeOut) must beTrue
+    }
+
+    "SLAVE OF NO ONE" in {
+      Await.result(redis.slaveofNoOne(), timeOut) must beTrue
+    }
+
+    "TIME" in {
+      Await.result(redis.time(), timeOut) match {
+        case (t1: Long, t2: Long) => ok
+        case x => ko(x.toString())
       }
+    }
 
-      "CLIENT GETNAME" in {
-        Await.result(redis.clientGetname(), timeOut) mustEqual None
-      }
+    "BGREWRITEAOF" in {
+      Await.result(redis.bgrewriteaof(), timeOut) mustEqual "Background append only file rewriting started"
+    }
 
-      "CLIENT SETNAME" in {
-        Await.result(redis.clientSetname("rediscala"), timeOut) mustEqual true
-      }
+    "SHUTDOWN" in {
+      Await.result(redis.shutdown(), timeOut) must throwA(InvalidRedisReply)
+    }
 
-      "CONFIG GET" in {
-        Await.result(redis.configGet("*"), timeOut) must beAnInstanceOf[String]
+    "SHUTDOWN (with modifier)" in {
+      withRedisServer(port => {
+        val redis = RedisClient(port = port)
+        Await.result(redis.shutdown(NOSAVE), timeOut) must throwA(InvalidRedisReply)
+      })
+    }
 
-      }
-      "CONFIG SET" in {
-        todo
-      }
-
-      "CONFIG RESETSTAT" in {
-        todo
-      }
-
-      "DBSIZE" in {
-        Await.result(redis.dbsize(), timeOut) must be_>=(0l)
-      }
-
-      "DEBUG OBJECT" in {
-        todo
-      }
-
-      "DEBUG SEGFAULT" in {
-        todo
-      }
-
-      "FLUSHALL" in {
-        todo
-      }
-
-      "FLUSHDB" in {
-        //TODO new redis connection / change db / set / flushdb
-        todo
-      }
-
-      "INFO" in {
-        val r = for {
-          info <- redis.info()
-          infoCpu <- redis.info("cpu")
-        } yield {
-          info must beAnInstanceOf[String]
-          infoCpu must beAnInstanceOf[String]
-        }
-        Await.result(r, timeOut)
-      }
-
-      "LASTSAVE" in {
-        Await.result(redis.lastsave(), timeOut) must be_>=(0l)
-      }
-
-      "SAVE" in {
-        //Await.result(redis.save(), timeOut) mustEqual true
-        todo
-      }
-
-      "SHUTDOWN" in {
-        todo
-      }
-
-
-    })
   }
-  */
 }

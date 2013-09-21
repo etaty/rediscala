@@ -1,88 +1,74 @@
 package redis.commands
 
 import redis.Request
+import redis.api.servers._
+import scala.concurrent.Future
+import redis.api.ShutdownModifier
 
 trait Server extends Request {
-/*
-  def bgrewriteaof[A](): Future[String] =
-    send("BGREWRITEAOF").mapTo[Status].map(_.toString)
+  def bgrewriteaof(): Future[String] = send(Bgrewriteaof)
 
-  def bgsave(): Future[String] =
-    send("BGSAVE").mapTo[Status].map(_.toString)
+  def bgsave(): Future[String] = send(Bgsave)
 
   def clientKill(ip: String, port: Int): Future[Boolean] =
-    send("CLIENT", Seq(ByteString("KILL"), ByteString(ip + ':' + port.toString))).mapTo[Status].map(_.toBoolean)
+    send(ClientKill(ip, port))
 
-  def clientList(): Future[String] =
-    send("CLIENT", Seq(ByteString("LIST"))).mapTo[Bulk].map(_.toString)
+  def clientList(): Future[Seq[Map[String, String]]] =
+    send(ClientList)
 
   def clientGetname(): Future[Option[String]] =
-    send("CLIENT", Seq(ByteString("GETNAME"))).mapTo[Bulk].map(_.toOptString)
+    send(ClientGetname)
 
   def clientSetname(connectionName: String): Future[Boolean] =
-    send("CLIENT", Seq(ByteString("SETNAME"), ByteString(connectionName))).mapTo[Status].map(_.toBoolean)
+    send(ClientSetname(connectionName))
 
-  def configGet(parameter: String): Future[Option[String]] =
-    send("CONFIG GET", Seq(ByteString(parameter))).mapTo[Bulk].map(_.toOptString)
+  def configGet(parameter: String): Future[Map[String, String]] =
+    send(ConfigGet(parameter))
 
   def configSet(parameter: String, value: String): Future[Boolean] =
-    send("CONFIG SET", Seq(ByteString(parameter), ByteString(value))).mapTo[Status].map(_.toBoolean)
+    send(ConfigSet(parameter, value))
 
-  def configResetstat(parameter: String, value: String): Future[Boolean] =
-    send("CONFIG RESETSTAT").mapTo[Status].map(_.toBoolean)
+  def configResetstat(): Future[Boolean] =
+    send(ConfigResetstat)
 
   def dbsize(): Future[Long] =
-    send("DBSIZE").mapTo[Integer].map(_.toLong)
+    send(Dbsize)
 
-  def debugObject(key: String): Future[ByteString] =
-    send("DEBUG OBJECT", Seq(ByteString(key))).mapTo[Status].map(_.toByteString)
+  def debugObject(key: String): Future[String] =
+    send(DebugObject(key))
 
-  def debugSegfault(): Future[ByteString] =
-    send("DEBUG SEGFAULT").mapTo[Status].map(_.toByteString)
+  def debugSegfault(): Future[String] =
+    send(DebugSegfault)
 
   def flushall(): Future[Boolean] =
-    send("FLUSHALL").mapTo[Status].map(_.toBoolean)
+    send(Flushall)
 
   def flushdb(): Future[Boolean] =
-    send("FLUSHDB").mapTo[Status].map(_.toBoolean)
+    send(Flushdb)
 
   def info(): Future[String] =
-    send("INFO").mapTo[Bulk].map(_.toString)
+    send(Info())
 
   def info(section: String): Future[String] =
-    send("INFO", Seq(ByteString(section))).mapTo[Bulk].map(_.toString)
+    send(Info(Some(section)))
 
   def lastsave(): Future[Long] =
-    send("LASTSAVE").mapTo[Integer].map(_.toLong)
-
-  def monitor(): Future[Long] = ??? // TODO blocking!
+    send(Lastsave)
 
   def save(): Future[Boolean] =
-    send("SAVE").mapTo[Status].map(_.toBoolean)
+    send(Save)
 
   def shutdown(): Future[Boolean] =
-    send("SHUTDOWN").mapTo[Status].map(_.toBoolean)
+    send(Shutdown())
 
-  // timeout on success LOL
   def shutdown(modifier: ShutdownModifier): Future[Boolean] =
-    send("SHUTDOWN", Seq(ByteString(modifier.toString))).mapTo[Status].map(_.toBoolean)
+    send(Shutdown(Some(modifier)))
 
-  def slaveof(host: String, port: Int): Future[String] =
-    send("SLAVEOF", Seq(ByteString(host), ByteString(port.toString))).mapTo[Status].map(_.toString)
+  def slaveof(host: String, port: Int): Future[Boolean] =
+    send(Slaveof(host, port))
 
-  def slowlog(subcommand: String, argument: String): Future[String] =
-    send("SLOWLOG", Seq(ByteString(subcommand), ByteString(argument))).mapTo[Status].map(_.toString)
+  def slaveofNoOne(): Future[Boolean] = send(SlaveofNoOne)
 
-  def sync(): Future[RedisReply] =
-    send("SYNC").mapTo[RedisReply]
-
-  def time()(implicit convert: MultiBulkConverter[Seq[ByteString]]): Future[Try[Seq[ByteString]]] =
-    send("TIME").mapTo[MultiBulk].map(_.asTry[Seq[ByteString]])
-*/
+  def time(): Future[(Long, Long)] =
+    send(Time)
 }
-
-sealed trait ShutdownModifier
-
-case object NOSAVE extends ShutdownModifier
-
-case object SAVE extends ShutdownModifier
