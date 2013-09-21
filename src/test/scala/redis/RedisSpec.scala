@@ -39,10 +39,12 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
   val redisServerLogLevel = "--loglevel verbose"
 }
 
-abstract class RedisSpec extends RedisHelper {
+abstract class RedisSpec extends RedisHelper with WithRedisServerLauncher {
 
   val redis = RedisClient()
+}
 
+trait WithRedisServerLauncher extends RedisHelper {
   def withRedisServer[T](block: (Int) => T): T = {
     val serverPort = RedisServerHelper.portNumber.getAndIncrement()
     val serverProcess = Process(s"$redisServerCmd --port $serverPort $redisServerLogLevel").run()
@@ -52,6 +54,25 @@ abstract class RedisSpec extends RedisHelper {
     serverProcess.destroy()
 
     result.get
+  }
+}
+
+abstract class RedisStandaloneServer extends RedisHelper with WithRedisServerLauncher {
+
+  import RedisServerHelper._
+
+  val port = portNumber.getAndIncrement()
+
+  lazy val redis = RedisClient(port = port)
+
+  var server: Process = null
+
+  override def setup() = {
+    server = Process(s"$redisServerCmd --port $port $redisServerLogLevel").run()
+  }
+
+  override def cleanup() = {
+    server.destroy()
   }
 }
 
