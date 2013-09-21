@@ -2,7 +2,7 @@ package redis.actors
 
 import akka.actor.Actor
 import scala.collection.mutable
-import redis.protocol.{Error, RedisProtocolReply, RedisReply}
+import redis.protocol.{RedisProtocolReply, RedisReply}
 import akka.util.ByteString
 import akka.event.Logging
 import scala.annotation.tailrec
@@ -10,7 +10,6 @@ import redis.Operation
 
 class RedisReplyDecoder() extends Actor {
 
-  import context._
 
   val queuePromises = mutable.Queue[Operation[_,_]]()
 
@@ -74,7 +73,7 @@ class RedisReplyDecoder() extends Actor {
 
 case class ReplyErrorException(message: String) extends Exception(message)
 
-object InvalidRedisReply extends RuntimeException("Could not decode the redis reply")
+object InvalidRedisReply extends RuntimeException("Could not decode the redis reply (Connection closed)")
 
 trait DecodeReplies {
   var bufferRead: ByteString = ByteString.empty
