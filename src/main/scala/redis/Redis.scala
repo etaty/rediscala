@@ -218,7 +218,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) = {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && !sentinelClients.contains(k)) {
-      synchronized {
+      sentinelClients.synchronized {
         if (!sentinelClients.contains(k))
           sentinelClients += k -> makeSentinelClient(sentinelip, sentinelport)
       }
@@ -228,7 +228,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def onSentinelDown(masterName: String, sentinelip: String, sentinelport: Int) = {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && sentinelClients.contains(k)) {
-      synchronized {
+      sentinelClients.synchronized {
         if (sentinelClients.contains(k))
           sentinelClients -= k
       }
