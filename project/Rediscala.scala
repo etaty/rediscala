@@ -77,7 +77,7 @@ object RediscalaBuild extends Build {
         )
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
-    ScctPlugin.instrumentSettings ++
+    sbt.scct.ScctPlugin.instrumentSettings ++
     com.github.theon.coveralls.CoverallsPlugin.coverallsSettings
 
   lazy val BenchTest = config("bench") extend Test
