@@ -54,6 +54,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     case c: Connected => onConnected(c)
     case Reconnect => reconnect()
     case c: CommandFailed => onConnectingCommandFailed(c)
+    case c: ConnectionClosed => onClosingConnectionClosed() // not the current opening connection
   }
 
   def onConnected(cmd: Connected) = {
@@ -74,14 +75,25 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
 
   private def reading: Receive = {
     case WriteAck => tryWrite()
-    case Received(dataByteString) => onDataReceived(dataByteString)
+    case Received(dataByteString) => {
+      if(sender == tcpWorker)
+        onDataReceived(dataByteString)
+      else
+        onDataReceivedOnClosingConnection(dataByteString)
+    }
     case a: InetSocketAddress => onAddressChanged(a)
-    case c: ConnectionClosed => onConnectionClosed(c)
+    case c: ConnectionClosed => {
+      if(sender == tcpWorker)
+        onConnectionClosed(c)
+      else
+        onClosingConnectionClosed()
+    }
     case c: CommandFailed => onConnectedCommandFailed(c)
   }
 
   def onAddressChanged(addr: InetSocketAddress) {
     log.info(s"Address change [old=$address, new=$addr]")
+    tcpWorker ! ConfirmedClose // close the sending direction of the connection (TCP FIN)
     currAddress = addr
     scheduleReconnect()
   }
@@ -118,16 +130,20 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
 
   def onDataReceived(dataByteString: ByteString)
 
+  def onDataReceivedOnClosingConnection(dataByteString: ByteString)
+
+  def onClosingConnectionClosed()
+
   def onWriteSent()
 
   def restartConnection() = reconnect()
 
-  def onConnectWrite() : ByteString
+  def onConnectWrite(): ByteString
 
   def tryInitialWrite() {
     val data = onConnectWrite()
 
-    if(data.nonEmpty) {
+    if (data.nonEmpty) {
       writeWorker(data ++ bufferWrite.result())
       bufferWrite.clear()
     } else {

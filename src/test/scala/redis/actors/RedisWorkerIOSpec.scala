@@ -162,8 +162,55 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
     }
 
     "Address Changed" in {
-      // stop / close akka worker ?
-      todo
+      val probeTcp = TestProbe()
+      val probeMock = TestProbe()
+
+      val redisWorkerIO = TestActorRef[RedisWorkerIOMock](Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref, ByteString.empty).withDispatcher(Redis.dispatcher))
+
+      redisWorkerIO ! "PING1"
+
+      val connectMsg = probeTcp.expectMsgType[Connect]
+      connectMsg mustEqual Connect(address)
+      val probeTcpWorker = TestProbe()
+      probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
+
+      probeTcpWorker.expectMsgType[Register] mustEqual Register(redisWorkerIO)
+
+      probeTcpWorker.expectMsgType[Write] mustEqual Write(ByteString("PING1"), WriteAck)
+      probeMock.expectMsg(WriteSent) mustEqual WriteSent
+      probeTcpWorker.reply(WriteAck)
+
+      // change adresse
+      val address2 = new InetSocketAddress("localhost", 6380)
+      redisWorkerIO ! address2
+
+      probeMock.expectMsg(OnConnectionClosed) mustEqual OnConnectionClosed
+
+      redisWorkerIO ! "PING2"
+
+      val connectMsg2 = probeTcp.expectMsgType[Connect]
+      connectMsg2 mustEqual Connect(address2)
+
+      val probeTcpWorker2 = TestProbe()
+      probeTcpWorker2.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
+
+      probeTcpWorker2.expectMsgType[Register] mustEqual Register(redisWorkerIO)
+
+      probeTcpWorker2.expectMsgType[Write] mustEqual Write(ByteString("PING2"), WriteAck)
+      probeMock.expectMsg(WriteSent) mustEqual WriteSent
+      probeTcpWorker2.reply(WriteAck)
+
+      // receiving data on connection with the sending direction closed
+      probeTcpWorker.send(redisWorkerIO, Received(ByteString("PONG1")))
+      probeMock.expectMsg(DataReceivedOnClosingConnection) mustEqual DataReceivedOnClosingConnection
+
+      // receiving data on open connection
+      probeTcpWorker2.send(redisWorkerIO, Received(ByteString("PONG2")))
+      probeMock.expectMsgType[ByteString] mustEqual ByteString("PONG2")
+
+      // close connection
+      probeTcpWorker.send(redisWorkerIO, ConfirmedClosed)
+      probeMock.expectMsg(ClosingConnectionClosed) mustEqual ClosingConnectionClosed
     }
 
     "on connect write" in {
@@ -231,8 +278,16 @@ class RedisWorkerIOMock(probeTcp: ActorRef, address: InetSocketAddress, probeMoc
   }
 
   def onConnectWrite(): ByteString = _onConnectWrite
+
+  def onDataReceivedOnClosingConnection(dataByteString: ByteString): Unit = probeMock ! DataReceivedOnClosingConnection
+
+  def onClosingConnectionClosed(): Unit = probeMock ! ClosingConnectionClosed
 }
 
 object WriteSent
 
 object OnConnectionClosed
+
+object DataReceivedOnClosingConnection
+
+object ClosingConnectionClosed

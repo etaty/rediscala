@@ -97,4 +97,8 @@ abstract class RedisSubscriberActor(
       case _ => // subscribe or psubscribe
     }
   }
+
+  def onDataReceivedOnClosingConnection(dataByteString: ByteString): Unit = decodeReplies(dataByteString)
+
+  def onClosingConnectionClosed(): Unit = {}
 }

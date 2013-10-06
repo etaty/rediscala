@@ -35,7 +35,6 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val opConnectGet = Operation(getCmd, promiseConnect2)
 
       val getConnectOperations: () => Seq[Operation[_, _]] = () => {
-        println("lolll")
         Seq(opConnectPing, opConnectGet)
       }
 
@@ -73,7 +72,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val deathWatcher = TestProbe()
       deathWatcher.watch(probeReplyDecoder.ref)
       redisClientActor.underlyingActor.onConnectionClosed()
-      deathWatcher.expectTerminated(probeReplyDecoder.ref) must beAnInstanceOf[Terminated]
+      deathWatcher.expectTerminated(probeReplyDecoder.ref, 30 seconds) must beAnInstanceOf[Terminated]
     }
 
     "onConnectionClosed with promises queued" in {
@@ -92,7 +91,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       deathWatcher.watch(probeReplyDecoder.ref)
 
       redisClientActor.onConnectionClosed()
-      deathWatcher.expectTerminated(probeReplyDecoder.ref) must beAnInstanceOf[Terminated]
+      deathWatcher.expectTerminated(probeReplyDecoder.ref, 30 seconds) must beAnInstanceOf[Terminated]
       Await.result(promise3.future, 10 seconds) must throwA(NoConnectionException)
     }
 
