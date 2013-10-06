@@ -90,7 +90,7 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "SAVE" in {
-      Await.result(redis.save(), timeOut) must beTrue
+      Await.result(redis.save(), timeOut) must beTrue or throwA(ReplyErrorException("ERR Background save already in progress"))
     }
 
     "SLAVE OF" in {
