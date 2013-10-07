@@ -22,7 +22,7 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   var queuePromises = mutable.Queue[Operation[_, _]]()
 
   def writing: Receive = {
-    case op: Operation[_, _] =>
+    case op : Operation[_,_] =>
       queuePromises enqueue op
       write(op.redisCommand.encodedRequest)
     case Transaction(commands) => {
