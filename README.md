@@ -18,7 +18,7 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/releases/"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.2"
+  "com.etaty.rediscala" %% "rediscala" % "1.3"
 )
 ```
 
@@ -55,7 +55,7 @@ You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run
 
 ### Redis Commands
 
-Supported :
+All commands are supported :
 * [Keys](http://redis.io/commands#generic) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Keys))
 * [Strings](http://redis.io/commands#string) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Strings))
 * [Hashes](http://redis.io/commands#hash) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Hashes))
@@ -68,9 +68,7 @@ Supported :
 * [Transactions](http://redis.io/commands#transactions) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Transactions))
 * [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
 * [Scripting](http://redis.io/commands#scripting) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Scripting))
-
-Soon :
-* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server)) (work in progress)
+* [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server))
 
 
 ### Blocking commands
@@ -223,7 +221,9 @@ Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-de
 
 ### Scaladoc
 
-[Rediscala scaladoc API (latest 1.2)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest version 1.3)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.2)](http://etaty.github.io/rediscala/1.2/api/index.html#package)
 
 [Rediscala scaladoc API (version 1.1)](http://etaty.github.io/rediscala/1.1/api/index.html#package)
 
