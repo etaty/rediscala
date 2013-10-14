@@ -180,6 +180,16 @@ Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/ma
 [SentinelMonitoredRedisClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.SentinelMonitoredRedisClient) connect to a sentinel server to find the master addresse then start a connection. In case the master change your RedisClient connection will automatically connect to the new master server.
 If you are using a blocking client, you can use [SentinelMonitoredRedisBlockingClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.SentinelMonitoredRedisBlockingClient)
 
+### Pool
+
+[RedisClientPool](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisClientPool) connect to a pool of redis servers.
+Redis commands are dispatched to redis connection in a round robin way.
+
+### Master Slave
+
+[RedisClientMasterSlaves](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisClientMasterSlaves) connect to a master and a pool of slaves.
+The `write` commands are sent to the master, while the read commands are sent to the slaves in the [RedisClientPool](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisClientPool)
+
 ### ByteStringSerializer ByteStringDeserializer ByteStringFormatter
 
 [ByteStringSerializer](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringSerializer)
