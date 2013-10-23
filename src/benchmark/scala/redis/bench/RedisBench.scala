@@ -124,7 +124,7 @@ object RedisBench extends PerformanceTest {
 
   def redisTearDown(data: (Int, RedisBenchContext)) = data match {
     case (i: Int, redisBench: RedisBenchContext) =>
-      redisBench.redis.disconnect()
+      redisBench.redis.stop()
       redisBench.akkaSystem.shutdown()
       redisBench.akkaSystem.awaitTermination()
   }
