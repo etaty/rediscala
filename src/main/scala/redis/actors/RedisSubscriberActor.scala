@@ -4,7 +4,6 @@ import akka.util.ByteString
 import redis.protocol.{MultiBulk, RedisReply}
 import redis.api.pubsub._
 import java.net.InetSocketAddress
-import scala.collection.mutable
 import redis.api.connection.Auth
 
 class RedisSubscriberActorWithCallback(
@@ -37,13 +36,13 @@ abstract class RedisSubscriberActor(
   /**
    * Keep states of channels and actor in case of connection reset
    */
-  val channelsSubscribed = mutable.MutableList(channels: _*)
-  val patternsSubscribed = mutable.MutableList(patterns: _*)
+  var channelsSubscribed = channels.toSet
+  var patternsSubscribed = patterns.toSet
 
   override def preStart() {
     super.preStart()
-    write(SUBSCRIBE(channelsSubscribed: _*).toByteString)
-    write(PSUBSCRIBE(patternsSubscribed: _*).toByteString)
+    write(SUBSCRIBE(channelsSubscribed.toSeq: _*).toByteString)
+    write(PSUBSCRIBE(patternsSubscribed.toSeq: _*).toByteString)
   }
 
   def writing: Receive = {
@@ -51,13 +50,9 @@ abstract class RedisSubscriberActor(
       write(message.toByteString)
       message match {
         case s: SUBSCRIBE => channelsSubscribed ++= s.channel
-        case u: UNSUBSCRIBE => channelsSubscribed = channelsSubscribed.filter(c => {
-          u.channel.exists(_ == c)
-        })
+        case u: UNSUBSCRIBE => channelsSubscribed --= u.channel
         case ps: PSUBSCRIBE => patternsSubscribed ++= ps.pattern
-        case pu: PUNSUBSCRIBE => patternsSubscribed = patternsSubscribed.filter(c => {
-          pu.pattern.exists(_ == c)
-        })
+        case pu: PUNSUBSCRIBE => patternsSubscribed --= pu.pattern
       }
     }
   }
