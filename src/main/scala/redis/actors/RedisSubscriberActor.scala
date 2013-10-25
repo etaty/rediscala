@@ -51,11 +51,11 @@ abstract class RedisSubscriberActor(
       write(message.toByteString)
       message match {
         case s: SUBSCRIBE => channelsSubscribed ++= s.channel
-        case u: UNSUBSCRIBE => channelsSubscribed.filter(c => {
+        case u: UNSUBSCRIBE => channelsSubscribed = channelsSubscribed.filter(c => {
           u.channel.exists(_ == c)
         })
         case ps: PSUBSCRIBE => patternsSubscribed ++= ps.pattern
-        case pu: PUNSUBSCRIBE => patternsSubscribed.filter(c => {
+        case pu: PUNSUBSCRIBE => patternsSubscribed = patternsSubscribed.filter(c => {
           pu.pattern.exists(_ == c)
         })
       }
