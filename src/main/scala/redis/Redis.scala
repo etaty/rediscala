@@ -218,12 +218,12 @@ abstract class SentinelMonitored(system: ActorSystem) {
   }
 
 
-  def onSwitchMaster(masterName: String, ip: String, port: Int) = {
+  def onSwitchMaster(masterName: String, ip: String, port: Int) {
     if (master == masterName)
       onMasterChange(ip, port)
   }
 
-  def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) = {
+  def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && !sentinelClients.contains(k)) {
       sentinelClients.synchronized {
@@ -233,7 +233,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
     }
   }
 
-  def onSentinelDown(masterName: String, sentinelip: String, sentinelport: Int) = {
+  def onSentinelDown(masterName: String, sentinelip: String, sentinelport: Int) {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && sentinelClients.contains(k)) {
       sentinelClients.synchronized {
