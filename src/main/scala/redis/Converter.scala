@@ -15,19 +15,19 @@ object MultiBulkConverter {
   def toSeqString(reply: MultiBulk): Seq[String] = {
     reply.responses.map(r => {
       r.map(_.toString)
-    }).get
+    }).getOrElse(Seq.empty)
   }
 
   def toSeqByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[R] = {
     reply.responses.map(r => {
       r.map(reply => deserializer.deserialize(reply.toByteString))
-    }).get
+    }).getOrElse(Seq.empty)
   }
 
   def toSeqOptionByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[Option[R]] = {
     reply.responses.map(r => {
       r.map(_.asOptByteString.map(deserializer.deserialize))
-    }).get
+    }).getOrElse(Seq.empty)
   }
 
   def toSeqTuple2ByteStringDouble[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Seq[(R, Double)] = {
@@ -40,7 +40,7 @@ object MultiBulkConverter {
         }
         builder.result()
       }
-    }.get
+    }.getOrElse(Seq.empty)
   }
 
   def toMapString(reply: MultiBulk): Map[String, String] = {
@@ -77,7 +77,7 @@ object MultiBulkConverter {
         }).map {
           _.toMap
         }
-    }.get
+    }.getOrElse(Seq.empty)
   }
 
   def toOptionStringByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Option[(String, R)] = {
@@ -89,7 +89,7 @@ object MultiBulkConverter {
   def toSeqBoolean(reply: MultiBulk): Seq[Boolean] = {
     reply.responses.map(r => {
       r.map(_.toString == "1")
-    }).get
+    }).getOrElse(Seq.empty)
   }
 
 }
