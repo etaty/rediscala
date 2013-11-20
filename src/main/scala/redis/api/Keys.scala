@@ -20,9 +20,9 @@ case class Dump[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deseri
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Exists[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Exists[K](key: K, prefix: Option[String] = None)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("EXISTS", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("EXISTS", Seq(prefix.map(ByteString(_)).getOrElse(ByteString("")) ++ redisKey.serialize(key)))
 }
 
 case class Expire[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {

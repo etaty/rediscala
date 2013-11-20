@@ -17,6 +17,9 @@ trait Keys extends Request {
   def exists(key: String): Future[Boolean] =
     send(Exists(key))
 
+  def existsB[K](key: K, prefix: Option[String] = None)(implicit redisKey: ByteStringSerializer[K]): Future[Boolean] =
+    send(Exists(key))
+
   def expire(key: String, seconds: Long): Future[Boolean] =
     send(Expire(key, seconds))
 
