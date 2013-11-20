@@ -108,7 +108,7 @@ case class Psetex[K, V](key: K, milliseconds: Long, value: V)(implicit redisKey:
 }
 
 case class Set[K, V](key: K, value: V, exSeconds: Option[Long] = None, pxMilliseconds: Option[Long] = None,
-                     NX: Boolean = false, XX: Boolean = false)
+                     NX: Boolean = false, XX: Boolean = false, prefix: Option[String] = None)
                     (implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandRedisReply[Boolean] {
   val isMasterOnly = true
   val encodedRequest: ByteString = {
@@ -116,7 +116,7 @@ case class Set[K, V](key: K, value: V, exSeconds: Option[Long] = None, pxMillise
     val options: Seq[ByteString] = exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
       .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
       .getOrElse(seq)
-    val args = redisKey.serialize(key) +: convert.serialize(value) +: options
+    val args = (prefix.map(ByteString(_)).getOrElse(ByteString("")) ++ redisKey.serialize(key)) +: convert.serialize(value) +: options
     RedisProtocolRequest.multiBulk("SET", args)
   }
 

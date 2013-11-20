@@ -43,7 +43,7 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "1.3"
+  val v = "1.3-cs-branch"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
