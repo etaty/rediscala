@@ -26,7 +26,8 @@ object Dependencies {
 
   val specs2 = "org.specs2" %% "specs2" % "2.1.1"
 
-  val scalameter = "com.github.axel22" %% "scalameter" % "0.4-M2"
+  val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
+
 
   // @see https://github.com/mtkopone/scct/issues/54
   val scct = "reaktor" %% "scct" % "0.2-SNAPSHOT"
@@ -84,7 +85,7 @@ object RediscalaBuild extends Build {
 
   lazy val benchTestSettings = inConfig(BenchTest)(Defaults.testSettings ++ Seq(
     sourceDirectory in BenchTest <<= baseDirectory / "src/benchmark",
-    testOptions in BenchTest += Tests.Argument("-preJDK7"),
+    //testOptions in BenchTest += Tests.Argument("-preJDK7"),
     testFrameworks in BenchTest := Seq(new TestFramework("org.scalameter.ScalaMeterFramework")),
 
     //https://github.com/sbt/sbt/issues/539 => bug fixed in sbt 0.13.x
