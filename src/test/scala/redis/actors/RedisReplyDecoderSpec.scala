@@ -11,6 +11,7 @@ import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
 import redis.{Redis, Operation}
 import redis.api.connection.Ping
+import scala.concurrent.duration.DurationInt
 
 class RedisReplyDecoderSpec
   extends TestKit(ActorSystem("testsystem", ConfigFactory.parseString( """akka.loggers = ["akka.testkit.TestEventListener"]""")))
@@ -173,7 +174,7 @@ class RedisReplyDecoderSpec
 }
 
 class RedisClientActorMock2(probeMock: ActorRef)
-  extends RedisClientActor(new InetSocketAddress("localhost", 6379), () => {Seq()}) {
+  extends RedisClientActor(new InetSocketAddress("localhost", 6379), 2 seconds, () => {Seq()}) {
   override def preStart() {
     // disable preStart of RedisWorkerIO
   }

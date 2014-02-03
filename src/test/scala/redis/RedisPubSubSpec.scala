@@ -6,6 +6,7 @@ import redis.actors.RedisSubscriberActor
 import java.net.InetSocketAddress
 import akka.actor.{Props, ActorRef}
 import akka.testkit.{TestActorRef, TestProbe}
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
 class RedisPubSubSpec extends RedisSpec {
 
@@ -47,7 +48,7 @@ class RedisPubSubSpec extends RedisSpec {
       val patterns = Seq("pattern.*")
 
       val subscriberActor = TestActorRef[SubscriberActor](
-        Props(classOf[SubscriberActor], new InetSocketAddress("localhost", 6379),
+        Props(classOf[SubscriberActor], new InetSocketAddress("localhost", 6379), 2 seconds,
           channels, patterns, probeMock.ref)
           .withDispatcher(Redis.dispatcher),
         "SubscriberActor"
@@ -109,10 +110,11 @@ class RedisPubSubSpec extends RedisSpec {
 }
 
 class SubscriberActor(address: InetSocketAddress,
+                      reconnectDuration: FiniteDuration,
                       channels: Seq[String],
                       patterns: Seq[String],
                       probeMock: ActorRef
-                       ) extends RedisSubscriberActor(address, channels, patterns) {
+                       ) extends RedisSubscriberActor(address, channels, patterns, reconnectDuration) {
 
   override def onMessage(m: Message) = {
     probeMock ! m

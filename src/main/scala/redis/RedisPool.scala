@@ -6,7 +6,7 @@ import java.net.InetSocketAddress
 import scala.concurrent.{Future, ExecutionContext}
 import redis.protocol.RedisReply
 import redis.commands.Transactions
-
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
 case class RedisServer(host: String = "localhost",
                        port: Int = 6379,
@@ -16,12 +16,15 @@ case class RedisServer(host: String = "localhost",
 abstract class RedisClientPoolLike(system: ActorSystem) extends RoundRobinPoolRequest {
   val redisServers: Seq[RedisServer]
   val name: String
+  val reconnectDuration: FiniteDuration
   implicit val executionContext = system.dispatcher
 
   val redisConnectionPool: Seq[ActorRef] = redisServers.map(server => {
     system.actorOf(
-      Props(classOf[RedisClientActor], new InetSocketAddress(server.host, server.port), getConnectOperations(server))
-        .withDispatcher(Redis.dispatcher),
+      Props(classOf[RedisClientActor],
+        new InetSocketAddress(server.host, server.port),
+        reconnectDuration,
+        getConnectOperations(server)).withDispatcher(Redis.dispatcher),
       name + '-' + Redis.tempName()
     )
   })
@@ -51,7 +54,8 @@ abstract class RedisClientPoolLike(system: ActorSystem) extends RoundRobinPoolRe
 }
 
 case class RedisClientPool(redisServers: Seq[RedisServer],
-                           name: String = "RedisClientPool")
+                           name: String = "RedisClientPool",
+                           val reconnectDuration: FiniteDuration = 2 seconds)
                           (implicit _system: ActorSystem) extends RedisClientPoolLike(_system) with RedisCommands
 
 case class RedisClientMasterSlaves(master: RedisServer,

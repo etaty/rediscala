@@ -6,8 +6,11 @@ import redis.{Redis, Operation, Transaction}
 import akka.actor._
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
+import scala.concurrent.duration.FiniteDuration
 
-class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]]) extends RedisWorkerIO(address) {
+class RedisClientActor(override val address: InetSocketAddress,
+                       reconnectDuration: FiniteDuration,
+                       getConnectOperations: () => Seq[Operation[_, _]]) extends RedisWorkerIO(address, reconnectDuration) {
 
 
   import context._

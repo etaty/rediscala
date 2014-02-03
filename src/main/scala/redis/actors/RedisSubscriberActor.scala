@@ -5,6 +5,7 @@ import redis.protocol.{MultiBulk, RedisReply}
 import redis.api.pubsub._
 import java.net.InetSocketAddress
 import redis.api.connection.Auth
+import scala.concurrent.duration.FiniteDuration
 
 class RedisSubscriberActorWithCallback(
                                         address: InetSocketAddress,
@@ -12,8 +13,9 @@ class RedisSubscriberActorWithCallback(
                                         patterns: Seq[String],
                                         messageCallback: Message => Unit,
                                         pmessageCallback: PMessage => Unit,
+                                        reconnectDuration: FiniteDuration,
                                         authPassword: Option[String] = None
-                                        ) extends RedisSubscriberActor(address, channels, patterns, authPassword) {
+                                        ) extends RedisSubscriberActor(address, channels, patterns, reconnectDuration, authPassword) {
   def onMessage(m: Message) = messageCallback(m)
 
   def onPMessage(pm: PMessage) = pmessageCallback(pm)
@@ -23,8 +25,9 @@ abstract class RedisSubscriberActor(
                                      address: InetSocketAddress,
                                      channels: Seq[String],
                                      patterns: Seq[String],
+                                     reconnectDuration: FiniteDuration,
                                      authPassword: Option[String] = None
-                                     ) extends RedisWorkerIO(address) with DecodeReplies {
+                                     ) extends RedisWorkerIO(address, reconnectDuration) with DecodeReplies {
   def onConnectWrite(): ByteString = {
     authPassword.map(Auth(_).encodedRequest).getOrElse(ByteString.empty)
   }
