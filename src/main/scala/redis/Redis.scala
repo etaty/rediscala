@@ -9,6 +9,7 @@ import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
 import akka.event.Logging
+import scala.concurrent.duration.{FiniteDuration, DurationInt}
 
 trait RedisCommands
   extends Keys
@@ -28,11 +29,14 @@ abstract class RedisClientActorLike(system: ActorSystem) extends ActorRequest {
   val name: String
   val password: Option[String] = None
   val db: Option[Int] = None
+  val reconnectDuration: FiniteDuration
   implicit val executionContext = system.dispatcher
 
   val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations)
-      .withDispatcher(Redis.dispatcher),
+    Props(classOf[RedisClientActor],
+      new InetSocketAddress(host, port),
+      reconnectDuration,
+      getConnectOperations).withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
 
@@ -70,6 +74,7 @@ case class RedisClient(var host: String = "localhost",
                        var port: Int = 6379,
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
+                       override val reconnectDuration: FiniteDuration = 2 seconds,
                        name: String = "RedisClient")
                       (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
 
@@ -79,6 +84,7 @@ case class RedisBlockingClient(var host: String = "localhost",
                                var port: Int = 6379,
                                override val password: Option[String] = None,
                                override val db: Option[Int] = None,
+                               override val reconnectDuration: FiniteDuration = 2 seconds,
                                name: String = "RedisBlockingClient")
                               (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with BLists {
 }
@@ -86,6 +92,7 @@ case class RedisBlockingClient(var host: String = "localhost",
 case class RedisPubSub(
                         host: String = "localhost",
                         port: Int = 6379,
+                        reconnectDuration: FiniteDuration = 2 seconds,
                         channels: Seq[String],
                         patterns: Seq[String],
                         onMessage: Message => Unit = _ => {},
@@ -96,7 +103,7 @@ case class RedisPubSub(
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword)
+      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, reconnectDuration, authPassword)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -130,6 +137,7 @@ trait SentinelCommands
 
 case class SentinelClient(var host: String = "localhost",
                           var port: Int = 26379,
+                          val reconnectDuration: FiniteDuration = 2 seconds,
                           onMasterChange: (String, String, Int) => Unit = (masterName: String, ip: String, port: Int) => {},
                           onNewSentinel:  (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
                           onSentinelDown: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
@@ -182,7 +190,7 @@ case class SentinelClient(var host: String = "localhost",
 
   val redisPubSubConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None)
+      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, reconnectDuration, None)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -201,20 +209,21 @@ abstract class SentinelMonitored(system: ActorSystem) {
   val sentinels: Seq[(String, Int)]
   val master: String
   val onMasterChange: (String, Int) => Unit
+  val reconnectDuration: FiniteDuration
 
   implicit val executionContext = system.dispatcher
 
   val sentinelClients =
         collection.mutable.Map(
           sentinels.map(hp =>
-            (makeSentinelClientKey(hp._1, hp._2), makeSentinelClient(hp._1, hp._2))
+            (makeSentinelClientKey(hp._1, hp._2), makeSentinelClient(hp._1, hp._2, reconnectDuration))
           ):_*
         )
 
   def makeSentinelClientKey(host: String, port: Int) = s"$host:$port"
 
-  def makeSentinelClient(host: String, port: Int): SentinelClient = {
-    new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown, "SMSentinelClient")(system)
+  def makeSentinelClient(host: String, port: Int, reconnectDuration: FiniteDuration): SentinelClient = {
+    new SentinelClient(host, port, reconnectDuration, onSwitchMaster, onNewSentinel, onSentinelDown, "SMSentinelClient")(system)
   }
 
 
@@ -228,7 +237,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
     if (master == masterName && !sentinelClients.contains(k)) {
       sentinelClients.synchronized {
         if (!sentinelClients.contains(k))
-          sentinelClients += k -> makeSentinelClient(sentinelip, sentinelport)
+          sentinelClients += k -> makeSentinelClient(sentinelip, sentinelport, reconnectDuration)
       }
     }
   }
@@ -276,7 +285,8 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
 }
 
 case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
-                                         master: String)
+                                         master: String,
+                                         reconnectDuration: FiniteDuration = 2 seconds)
                                        (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
 
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
@@ -287,7 +297,8 @@ case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("l
 
 
 case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
-                                                 master: String)
+                                                 master: String,
+                                                 reconnectDuration: FiniteDuration = 2 seconds)
                                                (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with BLists {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
     new RedisBlockingClient(ip, port, name = "SMRedisBlockingClient")

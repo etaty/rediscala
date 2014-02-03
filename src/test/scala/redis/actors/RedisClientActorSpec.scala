@@ -8,10 +8,10 @@ import java.net.InetSocketAddress
 import akka.util.ByteString
 import scala.concurrent.{Await, Promise}
 import scala.collection.mutable
-import redis.{RedisCommand, Redis, Operation}
+import redis.{Redis, Operation}
 import redis.api.connection.Ping
 import redis.api.strings.Get
-import redis.protocol.Bulk
+import scala.concurrent.duration.DurationInt
 
 class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
@@ -127,8 +127,10 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
   }
 }
 
-class RedisClientActorMock(probeReplyDecoder: ActorRef, probeMock: ActorRef, getConnectOperations: () => Seq[Operation[_, _]])
-  extends RedisClientActor(new InetSocketAddress("localhost", 6379), getConnectOperations) {
+class RedisClientActorMock(probeReplyDecoder: ActorRef,
+                           probeMock: ActorRef,
+                           getConnectOperations: () => Seq[Operation[_, _]])
+  extends RedisClientActor(new InetSocketAddress("localhost", 6379), 2 seconds, getConnectOperations) {
   override def initRepliesDecoder() = probeReplyDecoder
 
   override def preStart() {

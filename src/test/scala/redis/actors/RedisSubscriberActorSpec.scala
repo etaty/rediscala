@@ -11,6 +11,7 @@ import redis.Redis
 import akka.io.Tcp._
 import redis.api.pubsub.Message
 import redis.api.pubsub.PMessage
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
 class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
@@ -23,7 +24,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
       val patterns = Seq("pattern.*")
 
       val subscriberActor = TestActorRef[SubscriberActor](Props(classOf[SubscriberActor],
-        new InetSocketAddress("localhost", 6379), channels, patterns, probeMock.ref)
+        new InetSocketAddress("localhost", 6379), channels, patterns, probeMock.ref, 2 seconds)
         .withDispatcher(Redis.dispatcher))
 
       val connectMsg = probeMock.expectMsgType[Connect]
@@ -62,8 +63,9 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 class SubscriberActor(address: InetSocketAddress,
                       channels: Seq[String],
                       patterns: Seq[String],
-                      probeMock: ActorRef
-                       ) extends RedisSubscriberActor(address, channels, patterns) {
+                      probeMock: ActorRef,
+                      reconnectDuration: FiniteDuration
+                       ) extends RedisSubscriberActor(address, channels, patterns, reconnectDuration) {
 
   override val tcp = probeMock
 
