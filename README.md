@@ -15,7 +15,7 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
 ```scala
-resolvers += "rediscala" at "https://github.com/etaty/rediscala-mvn/raw/master/releases/"
+resolvers += "rediscala" at "https://raw.github.com/etaty/rediscala-mvn/master/releases/"
 
 libraryDependencies ++= Seq(
   "com.etaty.rediscala" %% "rediscala" % "1.3"
