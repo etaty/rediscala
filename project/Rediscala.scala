@@ -5,6 +5,8 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
 import sbt.LocalProject
 import sbt.Tests.{InProcess, Group}
+import ScoverageSbtPlugin.instrumentSettings
+import CoverallsPlugin.coverallsSettings
 
 object Resolvers {
   val typesafe = Seq(
@@ -16,7 +18,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.2.1"
+  val akkaVersion = "2.3.2"
 
   import sbt._
 
@@ -28,29 +30,25 @@ object Dependencies {
 
   val scalameter = "com.github.axel22" %% "scalameter" % "0.4-M2"
 
-  // @see https://github.com/mtkopone/scct/issues/54
-  val scct = "reaktor" %% "scct" % "0.2-SNAPSHOT"
-
   val rediscalaDependencies = Seq(
     akkaActor,
     akkaTestkit % "test",
     scalameter % "test",
-    specs2 % "test",
-    scct % "test"
+    specs2 % "test"
   )
 }
 
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "1.3"
+  val v = "1.3.1"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
       name := "rediscala",
       version := v,
       organization := "com.etaty.rediscala",
-      scalaVersion := "2.10.2",
+      scalaVersion := "2.10.4",
       resolvers ++= Resolvers.resolversList,
 
       publishTo <<= version {
@@ -77,8 +75,7 @@ object RediscalaBuild extends Build {
         )
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
-    ScctPlugin.instrumentSettings ++
-    com.github.theon.coveralls.CoverallsPlugin.coverallsSettings
+    instrumentSettings ++ coverallsSettings
 
   lazy val BenchTest = config("bench") extend Test
 
