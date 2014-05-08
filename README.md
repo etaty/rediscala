@@ -20,7 +20,7 @@ From version 1.3.1 (rediscala use akka 2.3, and released for scala 2.10 & 2.11)
 resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.3"
+  "com.etaty.rediscala" %% "rediscala" % "1.3.1"
 )
 ```
 
