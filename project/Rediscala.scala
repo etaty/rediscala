@@ -5,8 +5,8 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
 import sbt.LocalProject
 import sbt.Tests.{InProcess, Group}
-import ScoverageSbtPlugin.instrumentSettings
-import CoverallsPlugin.coverallsSettings
+//import ScoverageSbtPlugin.instrumentSettings
+//import CoverallsPlugin.coverallsSettings
 
 object Resolvers {
   val typesafe = Seq(
@@ -26,15 +26,15 @@ object Dependencies {
 
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-  val specs2 = "org.specs2" %% "specs2" % "2.1.1"
+  val specs2 = "org.specs2" %% "specs2" % "2.3.11"
 
-  val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
+  //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
 
   val rediscalaDependencies = Seq(
     akkaActor,
     akkaTestkit % "test",
-    scalameter % "test",
+    //scalameter % "test",
     specs2 % "test"
   )
 }
@@ -50,6 +50,7 @@ object RediscalaBuild extends Build {
       version := v,
       organization := "com.etaty.rediscala",
       scalaVersion := "2.10.4",
+      crossScalaVersions := Seq("2.11.0", "2.10.4"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       resolvers ++= Resolvers.resolversList,
 
@@ -70,7 +71,7 @@ object RediscalaBuild extends Build {
         )
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
-    instrumentSettings ++ coverallsSettings ++ bintray.Plugin.bintrayPublishSettings
+    bintray.Plugin.bintrayPublishSettings
 
   lazy val BenchTest = config("bench") extend Test
 
@@ -89,7 +90,7 @@ object RediscalaBuild extends Build {
       libraryDependencies ++= Dependencies.rediscalaDependencies
     )
   ).configs(BenchTest)
-    .settings(benchTestSettings: _* )
+    //.settings(benchTestSettings: _* )
 
   def partitionTests(tests: Seq[TestDefinition]) = {
     Seq(new Group("inProcess", tests, InProcess))
