@@ -50,15 +50,9 @@ object RediscalaBuild extends Build {
       version := v,
       organization := "com.etaty.rediscala",
       scalaVersion := "2.10.4",
+      licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       resolvers ++= Resolvers.resolversList,
 
-      publishTo <<= version {
-        (version: String) =>
-          val localPublishRepo = "/Users/valerian/Projects/rediscala-mvn"
-          if (version.trim.endsWith("SNAPSHOT"))
-            Some(Resolver.file("snapshots", new File(localPublishRepo + "/snapshots")))
-          else Some(Resolver.file("releases", new File(localPublishRepo + "/releases")))
-      },
       publishMavenStyle := true,
       git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
 
@@ -76,7 +70,7 @@ object RediscalaBuild extends Build {
         )
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
-    instrumentSettings ++ coverallsSettings
+    instrumentSettings ++ coverallsSettings ++ bintray.Plugin.bintrayPublishSettings
 
   lazy val BenchTest = config("bench") extend Test
 
