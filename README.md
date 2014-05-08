@@ -14,6 +14,18 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
+From version 1.3.1 (rediscala use akka 2.3, and released for scala 2.10 & 2.11) 
+
+```scala
+resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
+
+libraryDependencies ++= Seq(
+  "com.etaty.rediscala" %% "rediscala" % "1.3"
+)
+```
+
+For older rediscala versions (<= 1.3) (rediscala use akka 2.2)
+
 ```scala
 resolvers += "rediscala" at "https://raw.github.com/etaty/rediscala-mvn/master/releases/"
 
