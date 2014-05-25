@@ -14,6 +14,7 @@ class ScriptingSpec extends RedisSpec {
   "Scripting commands" should {
     val redisScript = RedisScript("return 'rediscala'")
     val redisScriptKeysArgs = RedisScript("return {KEYS[1],ARGV[1]}")
+    val redisScriptConversionObject = RedisScript("return redis.call('get', 'dumbKey')")
 
     "evalshaOrEval (RedisScript)" in {
       Await.result(redis.scriptFlush(), timeOut) must beTrue
@@ -25,8 +26,37 @@ class ScriptingSpec extends RedisSpec {
       Await.result(redis.eval(redisScript.script), timeOut) mustEqual Bulk(Some(ByteString("rediscala")))
     }
 
+    "EVAL with type conversion" in {
+      val dumbObject = new DumbClass("foo", "bar")
+      val r = redis.set("dumbKey", dumbObject).flatMap(_ => {
+        redis.evalForTypeOf[DumbClass](redisScriptConversionObject.script)
+      })
+
+      Await.result(r, timeOut) mustEqual Some(dumbObject)
+    }
+
     "EVALSHA" in {
       Await.result(redis.evalsha(redisScript.sha1), timeOut) mustEqual Bulk(Some(ByteString("rediscala")))
+    }
+
+    "EVALSHA with type conversion" in {
+      val dumbObject = new DumbClass("foo2", "bar2")
+      val r = redis.set("dumbKey2", dumbObject).flatMap(_ => {
+        redis.evalshaForTypeOf[DumbClass](redisScriptConversionObject.sha1)
+      })
+
+      Await.result(r, timeOut) mustEqual Some(dumbObject)
+    }
+
+    "evalshaOrEvalForTypeOf (RedisScript)" in {
+      Await.result(redis.scriptFlush(), timeOut) must beTrue
+      val dumbObject = new DumbClass("foo3", "bar3")
+
+      val r = redis.set("dumbKey2", dumbObject).flatMap(_ => {
+        redis.evalshaOrEvalForTypeOf[DumbClass](redisScriptConversionObject)
+      })
+
+      Await.result(r, timeOut) mustEqual Some(dumbObject)
     }
 
     "SCRIPT FLUSH" in {

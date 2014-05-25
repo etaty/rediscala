@@ -90,6 +90,14 @@ class StringsSpec extends RedisSpec {
       Await.result(rrr, timeOut)
     }
 
+    "GET with conversion" in {
+      val dumbObject = new DumbClass("foo", "bar")
+      val r = redis.set("dumbKey", dumbObject).flatMap(_ => {
+        redis.get[DumbClass]("dumbKey")
+      })
+      Await.result(r, timeOut) mustEqual Some(dumbObject)
+    }
+
     "GETBIT" in {
       val r = redis.getbit("getbitKeyNonexisting", 0)
       val r2 = redis.set("getbitKey", "Hello").flatMap(_ => {

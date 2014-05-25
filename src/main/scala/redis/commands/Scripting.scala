@@ -24,6 +24,23 @@ trait Scripting extends Request {
     send(Evalsha(sha1, keys, args))
   }
 
+  /**
+   * Try EVALSHA, if NOSCRIPT returned, fallback to EVAL
+   */
+  def evalshaOrEvalForTypeOf[R: ByteStringDeserializer](redisScript: RedisScript, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[Option[R]] = {
+    evalshaForTypeOf[R](redisScript.sha1, keys, args).recoverWith({
+      case ReplyErrorException(message) if message.startsWith("NOSCRIPT") => evalForTypeOf[R](redisScript.script, keys, args)
+    })
+  }
+
+  def evalForTypeOf[R: ByteStringDeserializer](script: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[Option[R]] = {
+    send(EvalForTypeOf(script, keys, args))
+  }
+
+  def evalshaForTypeOf[R: ByteStringDeserializer](sha1: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[Option[R]] = {
+    send(EvalshaForTypeOf(sha1, keys, args))
+  }
+
   def scriptFlush(): Future[Boolean] = {
     send(ScriptFlush)
   }
