@@ -41,7 +41,7 @@ class ScriptingSpec extends RedisSpec {
 
     "EVALSHA with type conversion" in {
       val dumbObject = new DumbClass("foo2", "bar2")
-      val r = redis.set("dumbKey2", dumbObject).flatMap(_ => {
+      val r = redis.set("dumbKey", dumbObject).flatMap(_ => {
         redis.evalshaForTypeOf[DumbClass](redisScriptConversionObject.sha1)
       })
 
@@ -52,7 +52,7 @@ class ScriptingSpec extends RedisSpec {
       Await.result(redis.scriptFlush(), timeOut) must beTrue
       val dumbObject = new DumbClass("foo3", "bar3")
 
-      val r = redis.set("dumbKey2", dumbObject).flatMap(_ => {
+      val r = redis.set("dumbKey", dumbObject).flatMap(_ => {
         redis.evalshaOrEvalForTypeOf[DumbClass](redisScriptConversionObject)
       })
 
@@ -81,7 +81,7 @@ class ScriptingSpec extends RedisSpec {
         Thread.sleep(1000)
         redisKiller.scriptKill() must beTrue.await(retries = 3, timeOut)
         Await.result(infiniteScript, timeOut) must throwA(
-          ReplyErrorException("ERR Error running script (call to f_2817d960235dc23d2cea9cc2c716a0b123b56be8): Script killed by user with SCRIPT KILL... "))
+          ReplyErrorException("ERR Error running script (call to f_2817d960235dc23d2cea9cc2c716a0b123b56be8): @user_script:3: Script killed by user with SCRIPT KILL... "))
       })
     }
 
