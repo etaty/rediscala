@@ -41,7 +41,7 @@ class SentinelSpec extends RedisClusterClients {
       val sentinelCount2 = sentinelMonitoredRedisClient.sentinelClients.size
 
       sentinel.destroy()
-      Thread.sleep(5000)
+      Thread.sleep(10000)
       val sentinelCount3 = sentinelMonitoredRedisClient.sentinelClients.size
 
       sentinelCount2 mustEqual (sentinelCount + 1)
@@ -60,16 +60,11 @@ class SentinelSpec extends RedisClusterClients {
       opt must beNone.setMessage(s"unexpected: master with name '$masterName' was not supposed to be found")
     }
     "unknown master state" in {
-      val opt = Await.result(sentinelClient.isMasterDown("no.such.ip.address", 1234), timeOut)
+      val opt = Await.result(sentinelClient.isMasterDown("no-such-master"), timeOut)
       opt must beNone.setMessage("unexpected: master state should be unknown")
     }
     "master ok" in {
-      Await.result(sentinelClient.getMasterAddr(masterName), timeOut) match {
-        case Some((ip, port)) =>
-          Await.result(sentinelClient.isMasterDown(ip, port), timeOut) mustEqual Some(false)
-        case _ =>
-          ko(s"unexpected: master with name '$masterName' was not found")
-      }
+      Await.result(sentinelClient.isMasterDown(masterName), timeOut) must beSome(false).setMessage(s"unexpected: master with name '$masterName' was not found")
     }
     "slaves" in {
       val r = Await.result(sentinelClient.slaves(masterName), timeOut)

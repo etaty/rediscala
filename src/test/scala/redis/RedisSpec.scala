@@ -98,7 +98,6 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
             s"""
               |sentinel monitor $masterName $redisHost $masterPort 2
               |sentinel down-after-milliseconds $masterName 5000
-              |sentinel can-failover $masterName yes
               |sentinel parallel-syncs $masterName 1
               |sentinel failover-timeout $masterName 10000
             """.stripMargin
@@ -125,7 +124,9 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
 
   def newSentinelProcess() = {
     val port = portNumber.getAndIncrement()
-    Process(s"$redisServerCmd $sentinelConfPath --port $port --sentinel $redisServerLogLevel").run()
+    val sentinelProcess = Process(s"$redisServerCmd $sentinelConfPath --port $port --sentinel $redisServerLogLevel").run()
+    processes = processes :+ sentinelProcess
+    sentinelProcess
   }
 
 }
