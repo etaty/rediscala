@@ -56,16 +56,12 @@ class SentinelSpec extends RedisClusterClients {
       r(0)("flags").startsWith("master") mustEqual true
     }
     "no such master" in {
-      Await.result(sentinelClient.getMasterAddr("no-such-master"), timeOut) match {
-        case None => ok
-        case _ => ko(s"unexpected: master with name '$masterName' was not supposed to be found")
-      }
+      val opt = Await.result(sentinelClient.getMasterAddr("no-such-master"), timeOut)
+      opt must beNone.setMessage(s"unexpected: master with name '$masterName' was not supposed to be found")
     }
     "unknown master state" in {
-      Await.result(sentinelClient.isMasterDown("no.such.ip.address", 1234), timeOut) match {
-        case None => ok
-        case _ => ko(s"unexpected: master state should be unknown")
-      }
+      val opt = Await.result(sentinelClient.isMasterDown("no.such.ip.address", 1234), timeOut)
+      opt must beNone.setMessage("unexpected: master state should be unknown")
     }
     "master ok" in {
       Await.result(sentinelClient.getMasterAddr(masterName), timeOut) match {

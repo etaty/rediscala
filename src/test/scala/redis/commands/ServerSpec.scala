@@ -102,10 +102,8 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "TIME" in {
-      Await.result(redis.time(), timeOut) match {
-        case (t1: Long, t2: Long) => ok
-        case x => ko(x.toString())
-      }
+      val result = Await.result(redis.time(), timeOut)
+      result must beAnInstanceOf[Tuple2[Long, Long]].setMessage(result.toString())
     }
 
     "BGREWRITEAOF" in {
