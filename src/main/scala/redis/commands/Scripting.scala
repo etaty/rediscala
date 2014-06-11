@@ -16,11 +16,11 @@ trait Scripting extends Request {
     })
   }
 
-  def eval(script: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[RedisReply] = {
+  def eval[R: RedisReplyDeserializer](script: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[R] = {
     send(Eval(script, keys, args))
   }
 
-  def evalsha(sha1: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[RedisReply] = {
+  def evalsha[R: RedisReplyDeserializer](sha1: String, keys: Seq[String] = Seq.empty[String], args: Seq[String] = Seq.empty[String]): Future[R] = {
     send(Evalsha(sha1, keys, args))
   }
 
