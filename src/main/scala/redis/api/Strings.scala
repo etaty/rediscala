@@ -112,12 +112,25 @@ case class Set[K, V](key: K, value: V, exSeconds: Option[Long] = None, pxMillise
                     (implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandRedisReply[Boolean] {
   val isMasterOnly = true
   val encodedRequest: ByteString = {
-    val seq = if (NX) Seq(ByteString("NX")) else if (XX) Seq(ByteString("XX")) else Seq.empty[ByteString]
-    val options: Seq[ByteString] = seq ++ exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
-      .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
-      .getOrElse(Seq.empty[ByteString])
-    val args = redisKey.serialize(key) +: convert.serialize(value) +: options
-    RedisProtocolRequest.multiBulk("SET", args)
+    val builder = Seq.newBuilder[ByteString]
+
+    builder.+=(redisKey.serialize(key))
+    builder.+=(convert.serialize(value))
+
+    if (NX)
+      builder += ByteString("NX")
+    else if (XX)
+      builder += ByteString("XX")
+
+    if(exSeconds.isDefined) {
+      builder += ByteString("EX")
+      builder += ByteString(exSeconds.get.toString)
+    } else if(pxMilliseconds.isDefined) {
+      builder += ByteString("PX")
+      builder += ByteString(pxMilliseconds.get.toString)
+    }
+
+    RedisProtocolRequest.multiBulk("SET", builder.result())
   }
 
   def decodeReply(redisReply: RedisReply) = redisReply match {

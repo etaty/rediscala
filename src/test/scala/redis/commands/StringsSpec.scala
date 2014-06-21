@@ -202,6 +202,11 @@ class StringsSpec extends RedisSpec {
       val rr = for {
         r <- redis.set("setKey", "value")
         ex <- redis.set("setKey", "value", exSeconds = Some(2))
+        nxex <- redis.set("setKey2", "value", NX = true, exSeconds = Some(60))
+        ttlnxex <- redis.ttl("setKey2")
+        xxex <- redis.set("setKey2", "value", XX = true, exSeconds = Some(180))
+        ttlxxex <- redis.ttl("setKey2")
+        _ <- redis.del("setKey2")
         px <- redis.set("setKey", "value", pxMilliseconds = Some(1))
         nxTrue <- {
           Thread.sleep(20)
@@ -212,6 +217,10 @@ class StringsSpec extends RedisSpec {
       } yield {
         r mustEqual true
         ex mustEqual true
+        nxex must beTrue
+        ttlnxex must beBetween[Long](0, 60)
+        xxex must beTrue
+        ttlxxex must beBetween[Long](60, 180)
         px mustEqual true
         nxTrue mustEqual true // because pxMilliseconds = 1 millisecond
         xx mustEqual true
