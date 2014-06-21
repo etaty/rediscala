@@ -113,9 +113,9 @@ case class Set[K, V](key: K, value: V, exSeconds: Option[Long] = None, pxMillise
   val isMasterOnly = true
   val encodedRequest: ByteString = {
     val seq = if (NX) Seq(ByteString("NX")) else if (XX) Seq(ByteString("XX")) else Seq.empty[ByteString]
-    val options: Seq[ByteString] = exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
+    val options: Seq[ByteString] = seq ++ exSeconds.map(t => Seq(ByteString("EX"), ByteString(t.toString)))
       .orElse(pxMilliseconds.map(t => Seq(ByteString("PX"), ByteString(t.toString))))
-      .getOrElse(seq)
+      .getOrElse(Seq.empty[ByteString])
     val args = redisKey.serialize(key) +: convert.serialize(value) +: options
     RedisProtocolRequest.multiBulk("SET", args)
   }
