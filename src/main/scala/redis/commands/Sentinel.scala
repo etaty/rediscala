@@ -3,11 +3,8 @@ package redis.commands
 import redis.Request
 import scala.concurrent.Future
 import redis.api._
-import redis.api.SenMasters
-import redis.api.SenSlaves
-import redis.api.SenGetMasterAddr
 import scala.Some
-import redis.api.SenIsMasterDown
+import redis.actors.ReplyErrorException
 
 trait Sentinel extends Request {
 
@@ -17,9 +14,11 @@ trait Sentinel extends Request {
   def slaves(master: String): Future[Seq[Map[String,String]]] =
     send(SenSlaves(master))
 
-  def isMasterDown(masterIp: String, port: Int): Future[Option[Boolean]] =
-    send(SenIsMasterDown(masterIp, port)) map {
-      case Seq(sdown, runid) if runid != "?" => Some(sdown == "1")
+  def isMasterDown(master: String): Future[Option[Boolean]] =
+    send(SenMasterInfo(master)).recoverWith({
+      case ReplyErrorException(message) if message.startsWith("ERR No such master with that name") => Future(Some(true))
+    }) map {
+      case response: Map[String, String] => Some(!(response("name") == master && response("flags") == "master"))
       case _ => None
     }
 

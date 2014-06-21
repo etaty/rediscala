@@ -18,11 +18,11 @@ case class SenSlaves(master: String) extends RedisCommandMultiBulk[Seq[Map[Strin
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqMapString(mb)
 }
 
-case class SenIsMasterDown(masterIp: String, port: Int) extends RedisCommandMultiBulk[Seq[String]] {
+case class SenMasterInfo(master: String) extends RedisCommandMultiBulk[Map[String, String]] {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode(s"SENTINEL is-master-down-by-addr $masterIp $port")
+  val encodedRequest: ByteString = encode(s"SENTINEL master $master")
 
-  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqString(mb)
+  def decodeReply(mb: MultiBulk) = MultiBulkConverter.toMapString(mb)
 }
 
 case class SenGetMasterAddr(master: String) extends RedisCommandMultiBulk[Option[Seq[String]]] {

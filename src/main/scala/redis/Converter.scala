@@ -169,3 +169,32 @@ trait ByteStringDeserializerDefault {
 }
 
 trait ByteStringFormatter[T] extends ByteStringSerializer[T] with ByteStringDeserializer[T]
+
+
+
+@implicitNotFound(msg = "No RedisReplyDeserializer deserializer found for type ${T}. Try to implement an implicit RedisReplyDeserializer for this type.")
+trait RedisReplyDeserializer[T] {
+  def deserialize: PartialFunction[RedisReply, T]
+}
+
+object RedisReplyDeserializer extends RedisReplyDeserializerLowPriority
+
+trait RedisReplyDeserializerLowPriority extends RedisReplyDeserializerDefault {
+
+  implicit object RedisReply extends RedisReplyDeserializer[RedisReply] {
+    def deserialize: PartialFunction[RedisReply, RedisReply] = {
+      case reply => reply
+    }
+  }
+
+}
+
+trait RedisReplyDeserializerDefault {
+
+  implicit object String extends RedisReplyDeserializer[String] {
+    def deserialize : PartialFunction[RedisReply, String] = {
+      case Bulk(Some(bs)) => bs.utf8String
+    }
+  }
+
+}
