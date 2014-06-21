@@ -5,14 +5,11 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
 import sbt.LocalProject
 import sbt.Tests.{InProcess, Group}
-//import ScoverageSbtPlugin.instrumentSettings
-//import CoverallsPlugin.coverallsSettings
 
 object Resolvers {
   val typesafe = Seq(
     "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
-    "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/",
-    "scct-github-repository" at "http://mtkopone.github.com/scct/maven-repo"
+    "Typesafe repository releases" at "http://repo.typesafe.com/typesafe/releases/"
   )
   val resolversList = typesafe
 }
@@ -89,6 +86,8 @@ object RediscalaBuild extends Build {
     settings = standardSettings ++ Seq(
       libraryDependencies ++= Dependencies.rediscalaDependencies
     )
+      ++ ScoverageSbtPlugin.instrumentSettings
+      ++ CoverallsPlugin.coverallsSettings
   ).configs(BenchTest)
     //.settings(benchTestSettings: _* )
 
