@@ -43,20 +43,6 @@ case class Evalsha[R, KK, KA](sha1: String, keys: Seq[KK] = Seq(), args: Seq[KA]
   val deserializer: RedisReplyDeserializer[R] = deserializerR
 }
 
-case class EvalForTypeOf[KK, KA, R](script: String, keys: Seq[KK] = Seq(), args: Seq[KA] = Seq())(implicit redisKeys: ByteStringSerializer[KK], redisArgs: ByteStringSerializer[KA], deserializerR: ByteStringDeserializer[R])
-  extends RedisCommandBulkOptionByteString[R]
-  with EvaledScript {
-    val deserializer: ByteStringDeserializer[R] = deserializerR
-    val encodedRequest: ByteString = encodeRequest(encode, "EVAL", script, keys, args, redisKeys, redisArgs)
-}
-
-case class EvalshaForTypeOf[KK, KA, R](sha1: String, keys: Seq[KK] = Seq(), args: Seq[KA] = Seq())(implicit redisKeys: ByteStringSerializer[KK], redisArgs: ByteStringSerializer[KA], deserializerR: ByteStringDeserializer[R])
-  extends RedisCommandBulkOptionByteString[R]
-  with EvaledScript {
-    val deserializer: ByteStringDeserializer[R] = deserializerR
-    val encodedRequest: ByteString = encodeRequest(encode, "EVALSHA", sha1, keys, args, redisKeys, redisArgs)
-}
-
 case object ScriptFlush extends RedisCommandStatusBoolean {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("SCRIPT", Seq(ByteString("FLUSH")))
