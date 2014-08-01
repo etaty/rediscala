@@ -151,8 +151,13 @@ trait ByteStringSerializerLowPriority {
 }
 
 @implicitNotFound(msg = "No ByteString deserializer found for type ${T}. Try to implement an implicit ByteStringDeserializer for this type.")
-trait ByteStringDeserializer[T] {
+trait ByteStringDeserializer[T] { self =>
   def deserialize(bs: ByteString): T
+
+  def map[A](f: T => A): ByteStringDeserializer[A] =
+    new ByteStringDeserializer[A] {
+      def deserialize(bs: ByteString) = f(self.deserialize(bs))
+    }
 }
 
 object ByteStringDeserializer extends ByteStringDeserializerLowPriority
