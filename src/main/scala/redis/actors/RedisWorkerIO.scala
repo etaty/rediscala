@@ -83,9 +83,10 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     }
     case a: InetSocketAddress => onAddressChanged(a)
     case c: ConnectionClosed => {
-      if(sender == tcpWorker)
+      if(sender == tcpWorker) {
         tcpWorker ! ConfirmedClose // close the sending direction of the connection (TCP FIN)
         onConnectionClosed(c)
+      }
       else
         onClosingConnectionClosed()
     }
