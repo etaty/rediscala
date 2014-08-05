@@ -9,7 +9,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.1")
 
 resolvers += Classpaths.sbtPluginReleases
 
-addSbtPlugin("com.sksamuel.scoverage" %% "sbt-scoverage" % "0.95.7")
+addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.7.1")
 
 addSbtPlugin("com.sksamuel.scoverage" %% "sbt-coveralls" % "0.0.5")
 
