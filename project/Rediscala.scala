@@ -5,6 +5,7 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
 import sbt.LocalProject
 import sbt.Tests.{InProcess, Group}
+import scoverage.ScoverageSbtPlugin
 
 object Resolvers {
   val typesafe = Seq(
@@ -46,8 +47,8 @@ object RediscalaBuild extends Build {
       name := "rediscala",
       version := v,
       organization := "com.etaty.rediscala",
-      scalaVersion := "2.10.4",
-      crossScalaVersions := Seq("2.11.0", "2.10.4"),
+      scalaVersion := "2.11.2",
+      crossScalaVersions := Seq("2.11.2", "2.10.4"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       resolvers ++= Resolvers.resolversList,
 
