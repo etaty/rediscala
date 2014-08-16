@@ -78,12 +78,15 @@ abstract class RedisStandaloneServer extends RedisHelper with WithRedisServerLau
 }
 
 
+
+
 abstract class RedisClusterClients(val masterName: String = "mymaster") extends RedisHelper {
 
   import RedisServerHelper._
 
   val masterPort = portNumber.getAndIncrement()
-  val slavePort = portNumber.getAndIncrement()
+  val slavePort1 = portNumber.getAndIncrement()
+  val slavePort2 = portNumber.getAndIncrement()
   val sentinelPorts = Seq(portNumber.getAndIncrement(),portNumber.getAndIncrement())
 
   lazy val redisClient = RedisClient(port = masterPort)
@@ -111,7 +114,8 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
     processes =
         Seq(
           Process(s"$redisServerCmd --port $masterPort $redisServerLogLevel").run(),
-          Process(s"$redisServerCmd --port $slavePort --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+          Process(s"$redisServerCmd --port ${slavePort1} --slaveof $redisHost $masterPort $redisServerLogLevel").run(),
+          Process(s"$redisServerCmd --port ${slavePort2} --slaveof $redisHost $masterPort $redisServerLogLevel").run()
         ) ++
         sentinelPorts.map(p =>
           Process(s"$redisServerCmd $sentinelConfPath --port $p --sentinel $redisServerLogLevel").run()

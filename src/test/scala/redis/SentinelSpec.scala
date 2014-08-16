@@ -21,7 +21,7 @@ class SentinelSpec extends RedisClusterClients {
 
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
       sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
-      sentinelMonitoredRedisClient.redisClient.port mustEqual slavePort
+      sentinelMonitoredRedisClient.redisClient.port must  ( beEqualTo(slavePort1) or beEqualTo(slavePort2)) 
 
     ///*
 

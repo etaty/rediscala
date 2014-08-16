@@ -71,7 +71,7 @@ case class RedisClient(var host: String = "localhost",
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
                        name: String = "RedisClient")
-                      (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
+                      (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions with PipelineBase {
 
 }
 
@@ -127,7 +127,7 @@ case class RedisPubSub(
 
 case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
                                          master: String)
-                                       (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
+                                       (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions  with PipelineBase{
 
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
     new RedisClient(ip, port, name = "SMRedisClient")
