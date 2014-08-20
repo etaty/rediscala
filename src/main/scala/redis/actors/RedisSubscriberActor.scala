@@ -41,18 +41,24 @@ abstract class RedisSubscriberActor(
 
   override def preStart() {
     super.preStart()
-    write(SUBSCRIBE(channelsSubscribed.toSeq: _*).toByteString)
-    write(PSUBSCRIBE(patternsSubscribed.toSeq: _*).toByteString)
+    if(channelsSubscribed.nonEmpty){
+      write(SUBSCRIBE(channelsSubscribed.toSeq: _*).toByteString)
+    }
+    if(patternsSubscribed.nonEmpty){
+      write(PSUBSCRIBE(patternsSubscribed.toSeq: _*).toByteString)
+    }
   }
 
   def writing: Receive = {
     case message: SubscribeMessage => {
-      write(message.toByteString)
-      message match {
-        case s: SUBSCRIBE => channelsSubscribed ++= s.channel
-        case u: UNSUBSCRIBE => channelsSubscribed --= u.channel
-        case ps: PSUBSCRIBE => patternsSubscribed ++= ps.pattern
-        case pu: PUNSUBSCRIBE => patternsSubscribed --= pu.pattern
+      if(message.params.nonEmpty){
+        write(message.toByteString)
+        message match {
+          case s: SUBSCRIBE => channelsSubscribed ++= s.channel
+          case u: UNSUBSCRIBE => channelsSubscribed --= u.channel
+          case ps: PSUBSCRIBE => patternsSubscribed ++= ps.pattern
+          case pu: PUNSUBSCRIBE => patternsSubscribed --= pu.pattern
+        }
       }
     }
   }
