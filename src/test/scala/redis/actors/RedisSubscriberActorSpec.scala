@@ -63,7 +63,7 @@ class SubscriberActor(address: InetSocketAddress,
                       channels: Seq[String],
                       patterns: Seq[String],
                       probeMock: ActorRef
-                       ) extends RedisSubscriberActor(address, channels, patterns) {
+                       ) extends RedisSubscriberActor(address, channels, patterns, None, (status:Boolean) => {()} ) {
 
   override val tcp = probeMock
 

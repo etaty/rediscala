@@ -25,11 +25,14 @@ object Dependencies {
 
   val specs2 = "org.specs2" %% "specs2" % "2.3.11"
 
+  val stm = "org.scala-stm" %% "scala-stm" % "0.7"
+
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
 
   val rediscalaDependencies = Seq(
     akkaActor,
+    stm,
     akkaTestkit % "test",
     //scalameter % "test",
     specs2 % "test"

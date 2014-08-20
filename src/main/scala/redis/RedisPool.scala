@@ -1,5 +1,6 @@
 package redis
 
+import scala.concurrent.stm._
 import akka.actor.{Props, ActorRef, ActorSystem}
 import redis.actors.RedisClientActor
 import java.net.InetSocketAddress
@@ -11,24 +12,45 @@ import redis.commands.Transactions
 case class RedisServer(host: String = "localhost",
                        port: Int = 6379,
                        password: Option[String] = None,
-                       db: Option[Int] = None)
+                       db: Option[Int] = None,
+                       active: Ref[Boolean] = Ref(false))
 
 abstract class RedisClientPoolLike(system: ActorSystem) extends RoundRobinPoolRequest {
   val redisServers: Seq[RedisServer]
   val name: String
   implicit val executionContext = system.dispatcher
 
-  val redisConnectionPool: Seq[ActorRef] = redisServers.map(server => {
+  val redisConnectionPoolAll: Seq[ActorRef] = redisServers.map(server => {
     system.actorOf(
-      Props(classOf[RedisClientActor], new InetSocketAddress(server.host, server.port), getConnectOperations(server))
+      Props(classOf[RedisClientActor], new InetSocketAddress(server.host, server.port), getConnectOperations(server),onConnectStatus(server))
         .withDispatcher(Redis.dispatcher),
       name + '-' + Redis.tempName()
     )
   })
 
+  def getConnectionsActive() = {
+    val redisConnectionZip = redisServers zip redisConnectionPoolAll
+    redisConnectionZip.filter{ s=> 
+        s._1.active.single.get
+    }.map(_._2)
+  }
+
+  val redisConnectionRef:Ref[Seq[ActorRef]] =  Ref(getConnectionsActive())
+
+  def redisConnectionPool(): Seq[ActorRef] = {
+    redisConnectionRef.single.get
+  }
+
+
   def onConnect(redis: RedisCommands, server: RedisServer): Unit = {
     server.password.foreach(redis.auth(_)) // TODO log on auth failure
     server.db.foreach(redis.select(_))
+  }
+
+  def onConnectStatus(server: RedisServer): (Boolean) => Unit = (status: Boolean) => {
+    if ( server.active.single.compareAndSet(!status,status) ){
+      redisConnectionRef.single.swap(getConnectionsActive)
+    }
   }
 
   def getConnectOperations(server: RedisServer): () => Seq[Operation[_, _]] = () => {
@@ -44,7 +66,7 @@ abstract class RedisClientPoolLike(system: ActorSystem) extends RoundRobinPoolRe
    * Disconnect from the server (stop the actor)
    */
   def stop() {
-    redisConnectionPool.foreach(redisConnection => {
+    redisConnectionPoolAll.foreach(redisConnection => {
       system stop redisConnection
     })
   }

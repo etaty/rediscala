@@ -7,7 +7,7 @@ import akka.actor._
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
 
-class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]]) extends RedisWorkerIO(address) {
+class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]], onConnectStatus: Boolean => Unit  ) extends RedisWorkerIO(address,onConnectStatus) {
 
 
   import context._
