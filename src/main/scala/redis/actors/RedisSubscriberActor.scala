@@ -1,7 +1,7 @@
 package redis.actors
 
 import akka.util.ByteString
-import redis.protocol.{MultiBulk, RedisReply}
+import redis.protocol.{Error, MultiBulk, RedisReply}
 import redis.api.pubsub._
 import java.net.InetSocketAddress
 import redis.api.connection.Auth
@@ -95,6 +95,8 @@ abstract class RedisSubscriberActor(
       case MultiBulk(Some(list)) if list.length == 4 && list.head.toByteString.utf8String == "pmessage" => {
         onPMessage(PMessage(list(1).toByteString.utf8String, list(2).toByteString.utf8String, list(3).toByteString.utf8String))
       }
+      case error @ Error(_) =>
+        onErrorReply(error)
       case _ => // subscribe or psubscribe
     }
   }
@@ -102,4 +104,6 @@ abstract class RedisSubscriberActor(
   def onDataReceivedOnClosingConnection(dataByteString: ByteString): Unit = decodeReplies(dataByteString)
 
   def onClosingConnectionClosed(): Unit = {}
+
+  def onErrorReply(error: Error): Unit = {}
 }
