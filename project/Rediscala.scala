@@ -15,7 +15,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.3.2"
+  val akkaVersion = "2.3.5"
 
   import sbt._
 
@@ -47,7 +47,7 @@ object RediscalaBuild extends Build {
       version := v,
       organization := "com.etaty.rediscala",
       scalaVersion := "2.10.4",
-      crossScalaVersions := Seq("2.11.0", "2.10.4"),
+      crossScalaVersions := Seq("2.11.2", "2.10.4"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       resolvers ++= Resolvers.resolversList,
 
