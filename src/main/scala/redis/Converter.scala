@@ -95,8 +95,13 @@ object MultiBulkConverter {
 }
 
 @implicitNotFound(msg = "No ByteString serializer found for type ${K}. Try to implement an implicit ByteStringSerializer for this type.")
-trait ByteStringSerializer[K] {
+trait ByteStringSerializer[K] { self =>
   def serialize(data: K): ByteString
+
+  def contramap[A](f: A => K): ByteStringSerializer[A] =
+    new ByteStringSerializer[A] {
+      def serialize(data: A) = self.serialize(f(data))
+    }
 }
 
 object ByteStringSerializer extends ByteStringSerializerLowPriority
@@ -146,8 +151,13 @@ trait ByteStringSerializerLowPriority {
 }
 
 @implicitNotFound(msg = "No ByteString deserializer found for type ${T}. Try to implement an implicit ByteStringDeserializer for this type.")
-trait ByteStringDeserializer[T] {
+trait ByteStringDeserializer[T] { self =>
   def deserialize(bs: ByteString): T
+
+  def map[A](f: T => A): ByteStringDeserializer[A] =
+    new ByteStringDeserializer[A] {
+      def deserialize(bs: ByteString) = f(self.deserialize(bs))
+    }
 }
 
 object ByteStringDeserializer extends ByteStringDeserializerLowPriority
