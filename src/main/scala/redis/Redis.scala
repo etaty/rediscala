@@ -22,7 +22,7 @@ trait RedisCommands
   with Connection
   with Server
 
-abstract class RedisClientActorLike(system: ActorSystem) extends ActorRequest {
+abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorRequest {
   var host: String
   var port: Int
   val name: String
@@ -71,7 +71,7 @@ case class RedisClient(var host: String = "localhost",
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
                        name: String = "RedisClient")
-                      (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
+                      (implicit _system: ActorRefFactory) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
 
 }
 
@@ -80,7 +80,7 @@ case class RedisBlockingClient(var host: String = "localhost",
                                override val password: Option[String] = None,
                                override val db: Option[Int] = None,
                                name: String = "RedisBlockingClient")
-                              (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with BLists {
+                              (implicit _system: ActorRefFactory) extends RedisClientActorLike(_system) with BLists {
 }
 
 case class RedisPubSub(
@@ -92,7 +92,7 @@ case class RedisPubSub(
                         onPMessage: PMessage => Unit = _ => {},
                         authPassword: Option[String] = None,
                         name: String = "RedisPubSub"
-                        )(implicit system: ActorSystem) {
+                        )(implicit system: ActorRefFactory) {
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
