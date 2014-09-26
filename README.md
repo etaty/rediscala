@@ -1,4 +1,4 @@
-rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://coveralls.io/repos/etaty/rediscala/badge.png?branch=master)](https://coveralls.io/r/etaty/rediscala?branch=master)[ ![Download](https://api.bintray.com/packages/etaty/maven/rediscala/images/download.svg) ](https://bintray.com/etaty/maven/rediscala/_latestVersion)
+rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master)[ ![Download](https://api.bintray.com/packages/etaty/maven/rediscala/images/download.svg) ](https://bintray.com/etaty/maven/rediscala/_latestVersion)
 =========
 
 A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
