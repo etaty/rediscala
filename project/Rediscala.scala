@@ -15,7 +15,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.3.5"
+  val akkaVersion = "2.3.6"
 
   import sbt._
 
@@ -23,7 +23,7 @@ object Dependencies {
 
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-  val specs2 = "org.specs2" %% "specs2" % "2.3.11"
+  val specs2 = "org.specs2" %% "specs2" % "2.3.13"
 
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
@@ -59,12 +59,12 @@ object RediscalaBuild extends Build {
           "-sourcepath", bd.getAbsolutePath
         )
       },
+      autoAPIMappings := true,
+      apiURL := Some(url("http://etaty.github.io/rediscala/")),
       scalacOptions in (Compile, doc) <++= version in LocalProject("rediscala") map { version =>
         val branch = if(version.trim.endsWith("SNAPSHOT")) "master" else version
         Seq[String](
-          "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala",
-          "-doc-title", "Rediscala "+v+" API",
-          "-doc-version", version
+          "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala"
         )
       }
   ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
