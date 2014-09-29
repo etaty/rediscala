@@ -31,6 +31,8 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
       tcpWorker ! Close
     }
     log.info(s"Connect to $currAddress")
+    // Create a new InetSocketAddress to clear the cached IP address.
+    currAddress = new InetSocketAddress(currAddress.getHostName, currAddress.getPort)
     tcp ! Connect(currAddress)
   }
 

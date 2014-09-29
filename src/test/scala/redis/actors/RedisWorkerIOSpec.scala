@@ -36,6 +36,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       within(1 second, 4 seconds) {
         val connectMsg = probeTcp.expectMsgType[Connect]
         connectMsg mustEqual Connect(address)
+        connectMsg.remoteAddress must not beTheSameAs(address)
 
         val probeTcpWorker = TestProbe()
         probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
