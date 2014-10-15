@@ -36,6 +36,8 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
 
   def reconnect() = {
     become(receive)
+    // Re-resolve the DNS name of the Redis server
+    currAddress = new InetSocketAddress(currAddress.getHostString, currAddress.getPort)
     preStart()
   }
 
