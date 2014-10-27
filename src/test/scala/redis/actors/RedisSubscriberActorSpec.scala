@@ -27,7 +27,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
         .withDispatcher(Redis.dispatcher))
 
       val connectMsg = probeMock.expectMsgType[Connect]
-      connectMsg mustEqual Connect(subscriberActor.underlyingActor.address)
+      connectMsg mustEqual Connect(subscriberActor.underlyingActor.address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(subscriberActor, Connected(connectMsg.remoteAddress, connectMsg.remoteAddress))
       probeTcpWorker.expectMsgType[Register] mustEqual Register(subscriberActor)
@@ -46,7 +46,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 
       // Reconnect
       val connectMsg2 = probeMock.expectMsgType[Connect]
-      connectMsg2 mustEqual Connect(subscriberActor.underlyingActor.address)
+      connectMsg2 mustEqual Connect(subscriberActor.underlyingActor.address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker2 = TestProbe()
       probeTcpWorker2.send(subscriberActor, Connected(connectMsg2.remoteAddress, connectMsg2.remoteAddress))
       probeTcpWorker2.expectMsgType[Register] mustEqual Register(subscriberActor)
