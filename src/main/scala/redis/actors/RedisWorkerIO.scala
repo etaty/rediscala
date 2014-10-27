@@ -33,7 +33,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     log.info(s"Connect to $currAddress")
     // Create a new InetSocketAddress to clear the cached IP address.
     currAddress = new InetSocketAddress(currAddress.getHostName, currAddress.getPort)
-    tcp ! Connect(currAddress)
+    tcp ! Connect(currAddress, options = SO.KeepAlive(on = true) :: Nil)
   }
 
   def reconnect() = {
