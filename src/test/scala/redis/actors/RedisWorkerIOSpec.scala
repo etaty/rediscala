@@ -28,14 +28,14 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       val redisWorkerIO = TestActorRef[RedisWorkerIOMock](Props(classOf[RedisWorkerIOMock], probeTcp.ref, address, probeMock.ref, ByteString.empty).withDispatcher(Redis.dispatcher))
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       probeTcp.reply(CommandFailed(connectMsg))
       probeMock.expectMsg(OnConnectionClosed) mustEqual OnConnectionClosed
 
       // should reconnect in 2s
       within(1 second, 4 seconds) {
         val connectMsg = probeTcp.expectMsgType[Connect]
-        connectMsg mustEqual Connect(address)
+        connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
         connectMsg.remoteAddress must not beTheSameAs(address)
 
         val probeTcpWorker = TestProbe()
@@ -54,7 +54,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -85,7 +85,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -107,7 +107,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
 
       // Reconnect
       val connectMsg2 = probeTcp.expectMsgType[Connect]
-      connectMsg2 mustEqual Connect(address)
+      connectMsg2 mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker2 = TestProbe()
       probeTcpWorker2.send(redisWorkerIO, Connected(connectMsg2.remoteAddress, address))
       probeTcpWorker2.expectMsgType[Register] mustEqual Register(redisWorkerIO)
@@ -126,7 +126,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -149,7 +149,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -171,7 +171,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -190,7 +190,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING2"
 
       val connectMsg2 = probeTcp.expectMsgType[Connect]
-      connectMsg2 mustEqual Connect(address2)
+      connectMsg2 mustEqual Connect(address2, options = SO.KeepAlive(on = true) :: Nil)
 
       val probeTcpWorker2 = TestProbe()
       probeTcpWorker2.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
@@ -223,7 +223,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
 
 
       val connectMsg = probeTcp.expectMsgType[Connect]
-      connectMsg mustEqual Connect(address)
+      connectMsg mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker = TestProbe()
       probeTcpWorker.send(redisWorkerIO, Connected(connectMsg.remoteAddress, address))
 
@@ -247,7 +247,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
 
       // Reconnect
       val connectMsg2 = probeTcp.expectMsgType[Connect]
-      connectMsg2 mustEqual Connect(address)
+      connectMsg2 mustEqual Connect(address, options = SO.KeepAlive(on = true) :: Nil)
       val probeTcpWorker2 = TestProbe()
       probeTcpWorker2.send(redisWorkerIO, Connected(connectMsg2.remoteAddress, address))
       probeTcpWorker2.expectMsgType[Register] mustEqual Register(redisWorkerIO)
