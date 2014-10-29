@@ -3,7 +3,7 @@ script: sbt ++$TRAVIS_SCALA_VERSION "test"
 after_script:
   - "sbt coveralls"
 scala:
-  - "2.10.2"
+  - "2.10.4"
 jdk:
   - oraclejdk7
   - openjdk7
