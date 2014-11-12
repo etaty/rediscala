@@ -90,10 +90,10 @@ abstract class RedisSubscriberActor(
   def onDecodedReply(reply: RedisReply) {
     reply match {
       case MultiBulk(Some(list)) if list.length == 3 && list.head.toByteString.utf8String == "message" => {
-        onMessage(Message(list(1).toByteString.utf8String, list(2).toByteString.utf8String))
+        onMessage(Message(list(1).toByteString.utf8String, list(2).toByteString))
       }
       case MultiBulk(Some(list)) if list.length == 4 && list.head.toByteString.utf8String == "pmessage" => {
-        onPMessage(PMessage(list(1).toByteString.utf8String, list(2).toByteString.utf8String, list(3).toByteString.utf8String))
+        onPMessage(PMessage(list(1).toByteString.utf8String, list(2).toByteString.utf8String, list(3).toByteString))
       }
       case error @ Error(_) =>
         onErrorReply(error)
