@@ -3,9 +3,9 @@ package redis.api.pubsub
 import akka.util.ByteString
 import redis.protocol.RedisProtocolRequest
 
-case class Message(channel: String, data: String)
+case class Message(channel: String, data: ByteString)
 
-case class PMessage(patternMatched: String, channel: String, data: String)
+case class PMessage(patternMatched: String, channel: String, data: ByteString)
 
 sealed trait SubscribeMessage {
   def cmd: String

@@ -30,28 +30,28 @@ case class SentinelClient(var host: String = "localhost",
 
     message match {
       case Message("+switch-master", data) => {
-        data.split(" ") match {
+        data.utf8String.split(" ") match {
           case Array(master, oldip, oldport, newip, newport) =>
             onMasterChange(master, newip, newport.toInt)
           case _ => {}
         }
       }
       case Message("+failover-state-send-slaveof-noone", data) => {
-        data.split(" ") match {
+        data.utf8String.split(" ") match {
           case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
             onMasterChange(master, slaveip, slaveport.toInt)
           case _ => {}
         }
       }
       case Message("+sentinel", data) => {
-        data.split(" ") match {
+        data.utf8String.split(" ") match {
           case Array("sentinel", sentName, sentinelip, sentinelport, "@", master, masterip, masterport) =>
             onNewSentinel(master, sentinelip, sentinelport.toInt)
           case _ => {}
         }
       }
       case Message("+sdown", data) => {
-        data.split(" ") match {
+        data.utf8String.split(" ") match {
           case Array("sentinel", sentName, sentinelip, sentinelport, "@", master, masterip, masterport) =>
             onSentinelDown(master, sentinelip, sentinelport.toInt)
           case _ => {}
