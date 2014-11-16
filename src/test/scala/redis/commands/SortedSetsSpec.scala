@@ -107,7 +107,7 @@ class SortedSetsSpec extends RedisSpec {
         _ <- redis.del("zrangebyscoreKey")
         z1 <- redis.zadd("zrangebyscoreKey", 1.0 -> "one", (2, "two"), (3, "three"))
         zr1 <- redis.zrangebyscore("zrangebyscoreKey", Limit(Double.NegativeInfinity), Limit(Double.PositiveInfinity))
-        zr1Limit <- redis.zrangebyscore("zrangebyscoreKey", Limit(Double.NegativeInfinity), Limit(Double.PositiveInfinity), Some(1, 2))
+        zr1Limit <- redis.zrangebyscore("zrangebyscoreKey", Limit(Double.NegativeInfinity), Limit(Double.PositiveInfinity), Some(1L -> 2L))
         zr2 <- redis.zrangebyscore("zrangebyscoreKey", Limit(1), Limit(2))
         zr2WithScores <- redis.zrangebyscoreWithscores("zrangebyscoreKey", Limit(1), Limit(2))
         zr3 <- redis.zrangebyscore("zrangebyscoreKey", Limit(1, inclusive = false), Limit(2))

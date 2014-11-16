@@ -75,10 +75,10 @@ case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply {
 
 
 object RedisProtocolReply {
-  val ERROR = '-'
-  val STATUS = '+'
-  val INTEGER = ':'
-  val BULK = '$'
+  val ERROR     = '-'
+  val STATUS    = '+'
+  val INTEGER   = ':'
+  val BULK      = '$'
   val MULTIBULK = '*'
 
   val LS = "\r\n".getBytes("UTF-8")
@@ -137,7 +137,7 @@ object RedisProtocolReply {
     if (index >= 0 && bs.length >= index + 1) {
       val reply = bs.take(index + 1 - LS.length)
       val tail = bs.drop(index + 1)
-      Some(reply, tail)
+      Some(reply -> tail)
     } else {
       None
     }
@@ -148,12 +148,12 @@ object RedisProtocolReply {
       val i = r._1.toInt
       val tail = r._2
       if (i < 0) {
-        Some(Bulk(None), tail)
+        Some(Bulk(None) -> tail)
       } else if (tail.length < (i + LS.length)) {
         None
       } else {
         val data = tail.take(i)
-        Some(Bulk(Some(data)), tail.drop(i).drop(LS.length))
+        Some(Bulk(Some(data)) -> tail.drop(i).drop(LS.length))
       }
     })
   }
@@ -163,9 +163,9 @@ object RedisProtocolReply {
       val i = r._1.toInt
       val tail = r._2
       if (i < 0) {
-        Some(MultiBulk(None), tail)
+        Some(MultiBulk(None) -> tail)
       } else if (i == 0) {
-        Some(MultiBulk(Some(Nil)), tail)
+        Some(MultiBulk(Some(Nil)) -> tail)
       } else {
         @tailrec
         def bulks(bs: ByteString, i: Int, acc: mutable.Buffer[RedisReply]): Option[(MultiBulk, ByteString)] = {
@@ -178,7 +178,7 @@ object RedisProtocolReply {
               None
             }
           } else {
-            Some(MultiBulk(Some(acc.toSeq)), bs)
+            Some(MultiBulk(Some(acc.toSeq)) -> bs)
           }
         }
         bulks(tail, i, mutable.Buffer())

@@ -54,6 +54,15 @@ object RediscalaBuild extends Build {
       publishMavenStyle := true,
       git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
 
+      scalacOptions ++= Seq(
+        "-encoding", "UTF-8",
+        "-Xlint",
+        "-deprecation",
+        "-Xfatal-warnings",
+        "-feature",
+        "-language:postfixOps",
+        "-unchecked"
+      ),
       scalacOptions in (Compile, doc) <++= baseDirectory in LocalProject("rediscala") map { bd =>
         Seq(
           "-sourcepath", bd.getAbsolutePath

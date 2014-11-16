@@ -47,7 +47,7 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   }
 
   def onWriteSent() {
-    repliesDecoder ! queuePromises
+    repliesDecoder ! QueuePromises(queuePromises)
     queuePromises = mutable.Queue[Operation[_, _]]()
   }
 

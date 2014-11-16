@@ -1,17 +1,18 @@
 package redis.actors
 
-import akka.testkit.{TestActorRef, TestProbe, ImplicitSender, TestKit}
-import akka.actor._
-import org.specs2.mutable.{Tags, SpecificationLike}
-import org.specs2.time.NoTimeConversions
 import java.net.InetSocketAddress
+
+import akka.actor._
+import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
 import akka.util.ByteString
-import scala.concurrent.{Await, Promise}
-import scala.collection.mutable
-import redis.{RedisCommand, Redis, Operation}
+import org.specs2.mutable.{SpecificationLike, Tags}
+import org.specs2.time.NoTimeConversions
 import redis.api.connection.Ping
 import redis.api.strings.Get
-import redis.protocol.Bulk
+import redis.{Operation, Redis}
+
+import scala.collection.mutable
+import scala.concurrent.{Await, Promise}
 
 class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
@@ -58,7 +59,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
       //onWriteSent
       redisClientActor.underlyingActor.onWriteSent()
-      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_, _]]] mustEqual mutable.Queue[Operation[_, _]](opConnectPing, opConnectGet, op1, op2)
+      probeReplyDecoder.expectMsgType[QueuePromises] mustEqual QueuePromises(mutable.Queue(opConnectPing, opConnectGet, op1, op2))
       redisClientActor.underlyingActor.queuePromises must beEmpty
 
       //onDataReceived
@@ -111,7 +112,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
       redisClientActor.onWriteSent()
       redisClientActor.queuePromises must beEmpty
-      probeReplyDecoder.expectMsgType[mutable.Queue[Operation[_, _]]] mustEqual mutable.Queue[Operation[_, _]](operation)
+      probeReplyDecoder.expectMsgType[QueuePromises] mustEqual QueuePromises(mutable.Queue(operation))
 
       redisClientActor.receive(Operation(Ping, promiseNotSent))
       redisClientActor.queuePromises.length mustEqual 1

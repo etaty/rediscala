@@ -82,7 +82,7 @@ object MultiBulkConverter {
 
   def toOptionStringByteString[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Option[(String, R)] = {
     reply.responses.map(r => {
-      Some(r.head.toString, deserializer.deserialize(r.tail.head.toByteString))
+      Some(r.head.toString -> deserializer.deserialize(r.tail.head.toByteString))
     }).getOrElse(None)
   }
 

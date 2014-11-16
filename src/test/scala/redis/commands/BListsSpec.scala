@@ -16,7 +16,7 @@ class BListsSpec extends RedisSpec {
           p <- redis.rpush("blpop1", "a", "b", "c")
           b <- redisB.blpop(Seq("blpop1", "blpop2"))
         } yield {
-          b mustEqual Some("blpop1", ByteString("a"))
+          b mustEqual Some("blpop1" -> ByteString("a"))
         }
         val rr = Await.result(r, timeOut)
         redisB.stop()
@@ -32,7 +32,7 @@ class BListsSpec extends RedisSpec {
             redis.rpush("blpopBlock", "a", "b", "c")
             blpop
           })
-          Await.result(r, timeOut) mustEqual Some("blpopBlock", ByteString("a"))
+          Await.result(r, timeOut) mustEqual Some("blpopBlock" -> ByteString("a"))
         }
         redisB.stop()
         rr
@@ -60,7 +60,7 @@ class BListsSpec extends RedisSpec {
           b <- redisB.brpop(Seq("brpop1", "brpop2"))
         } yield {
           redisB.stop()
-          b mustEqual Some("brpop1", ByteString("c"))
+          b mustEqual Some("brpop1" -> ByteString("c"))
         }
         Await.result(r, timeOut)
       }
@@ -74,7 +74,7 @@ class BListsSpec extends RedisSpec {
             redis.rpush("brpopBlock", "a", "b", "c")
             brpop
           })
-          Await.result(r, timeOut) mustEqual Some("brpopBlock", ByteString("c"))
+          Await.result(r, timeOut) mustEqual Some("brpopBlock" -> ByteString("c"))
         }
         redisB.stop()
         rr

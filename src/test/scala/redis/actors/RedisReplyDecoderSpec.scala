@@ -25,8 +25,8 @@ class RedisReplyDecoderSpec
     "ok" in {
       val promise = Promise[String]()
       val operation = Operation(Ping, promise)
-      val q = mutable.Queue[Operation[_, _]]()
-      q.enqueue(operation)
+      val q = QueuePromises(mutable.Queue[Operation[_, _]]())
+      q.queue.enqueue(operation)
 
       val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 
@@ -45,9 +45,9 @@ class RedisReplyDecoderSpec
       val promise3 = Promise[String]()
       val op2 = Operation(Ping, promise2)
       val op3 = Operation(Ping, promise3)
-      val q2 = mutable.Queue[Operation[_, _]]()
-      q2.enqueue(op2)
-      q2.enqueue(op3)
+      val q2 = QueuePromises(mutable.Queue[Operation[_, _]]())
+      q2.queue.enqueue(op2)
+      q2.queue.enqueue(op3)
 
       redisReplyDecoder ! q2
       awaitCond({
@@ -130,9 +130,9 @@ class RedisReplyDecoderSpec
       val promise2 = Promise[String]()
       val operation1 = Operation(Ping, promise1)
       val operation2 = Operation(Ping, promise2)
-      val q = mutable.Queue[Operation[_, _]]()
-      q.enqueue(operation1)
-      q.enqueue(operation2)
+      val q = QueuePromises(mutable.Queue[Operation[_, _]]())
+      q.queue.enqueue(operation1)
+      q.queue.enqueue(operation2)
 
       val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
 

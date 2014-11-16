@@ -22,8 +22,8 @@ class RedisReplyDecoder() extends Actor {
   }
 
   def receive = {
-    case promises: mutable.Queue[Operation[_,_]] => {
-      queuePromises ++= promises
+    case promises: QueuePromises => {
+      queuePromises ++= promises.queue
     }
     case byteStringInput: ByteString => decodeReplies(byteStringInput)
   }
@@ -95,3 +95,5 @@ trait DecodeReplies {
 
   def onDecodedReply(reply: RedisReply)
 }
+
+case class QueuePromises(queue: mutable.Queue[Operation[_,_]])
