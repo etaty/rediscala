@@ -1,6 +1,6 @@
 package redis.actors
 
-import akka.actor.{ActorLogging, ActorRef, Actor}
+import akka.actor.{ActorRef, Actor}
 import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
@@ -10,8 +10,12 @@ import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
+import org.slf4j.LoggerFactory
 
-abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with ActorLogging {
+
+abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor {
+
+  protected[this] val log = LoggerFactory.getLogger(this.getClass)
 
   private var currAddress = address
 
@@ -101,7 +105,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
   }
 
   def onConnectionClosed(c: ConnectionClosed) = {
-    log.warning(s"ConnectionClosed $c")
+    log.info(s"ConnectionClosed $c")
     scheduleReconnect()
   }
 

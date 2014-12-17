@@ -34,7 +34,7 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
       write(buffer.result())
     }
     case Terminated(actorRef) =>
-      log.warning(s"Terminated($actorRef)")
+      log.info(s"Terminated($actorRef)")
     case KillOldRepliesDecoder => killOldRepliesDecoder()
   }
 

@@ -25,6 +25,10 @@ object Dependencies {
 
   val specs2 = "org.specs2" %% "specs2" % "2.3.13"
 
+  val log4jOverSlf4j = "org.slf4j" %  "log4j-over-slf4j" % "1.7.5"
+
+  val slf4j = "org.slf4j" % "slf4j-simple" % "1.7.5"
+
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
 
@@ -32,7 +36,9 @@ object Dependencies {
     akkaActor,
     akkaTestkit % "test",
     //scalameter % "test",
-    specs2 % "test"
+    specs2 % "test",
+    log4jOverSlf4j,
+    slf4j % "test"
   )
 }
 
