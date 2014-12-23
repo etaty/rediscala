@@ -7,6 +7,7 @@ import redis.api.pubsub.{PMessage, Message}
 import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress
 import scala.concurrent.{Await, Future}
+import org.slf4j.LoggerFactory
 
 trait SentinelCommands
   extends Sentinel
@@ -20,7 +21,7 @@ case class SentinelClient(var host: String = "localhost",
                          (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with SentinelCommands {
   val system: ActorSystem = _system
 
-  val log = Logging.getLogger(system, this)
+  protected[this] val log = LoggerFactory.getLogger(this.getClass)
 
   val channels = Seq("+switch-master", "+sentinel", "+sdown", "+failover-state-send-slaveof-noone")
 
@@ -58,7 +59,8 @@ case class SentinelClient(var host: String = "localhost",
         }
       }
       case _ => {
-        log.warning(s"SentinelClient.onMessage: unexpected message received: $message")
+        if (log.isWarnEnabled)
+          log.warn(s"SentinelClient.onMessage: unexpected message received: $message")
       }
     }
   }

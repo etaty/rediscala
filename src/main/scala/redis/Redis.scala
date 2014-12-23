@@ -8,7 +8,6 @@ import java.net.InetSocketAddress
 import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
-import akka.event.Logging
 
 trait RedisCommands
   extends Keys

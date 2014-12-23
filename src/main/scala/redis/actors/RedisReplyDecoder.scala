@@ -4,16 +4,16 @@ import akka.actor.Actor
 import scala.collection.mutable
 import redis.protocol.{RedisProtocolReply, RedisReply}
 import akka.util.ByteString
-import akka.event.Logging
 import scala.annotation.tailrec
 import redis.Operation
+import org.slf4j.LoggerFactory
 
 class RedisReplyDecoder() extends Actor {
 
+  protected[this] val log = LoggerFactory.getLogger(this.getClass)
 
   val queuePromises = mutable.Queue[Operation[_,_]]()
 
-  val log = Logging(context.system, this)
 
   override def postStop() {
     queuePromises.foreach(op => {
