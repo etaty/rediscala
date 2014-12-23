@@ -91,6 +91,18 @@ private[redis] object Zrangebyscore {
   }
 }
 
+private[redis] object Zrangebylex {
+  def buildArgs[K](key: K, min: String, max: String, limit: Option[(Long, Long)])
+                  (implicit keySeria: ByteStringSerializer[K]): Seq[ByteString] = {
+    val builder = Seq.newBuilder[ByteString]
+    builder ++= Seq(keySeria.serialize(key), ByteString(min), ByteString(max))
+    limit.foreach(l => {
+      builder ++= Seq(ByteString("LIMIT"), ByteString(l._1.toString), ByteString(l._2.toString))
+    })
+    builder.result()
+  }
+}
+
 case class Zrangebyscore[K: ByteStringSerializer, R](key: K, min: Limit, max: Limit, limit: Option[(Long, Long)] = None)(implicit deserializerR: ByteStringDeserializer[R])
   extends RedisCommandMultiBulkSeqByteString[R] {
   val isMasterOnly = false
@@ -173,3 +185,18 @@ case class ZunionstoreWeighted[KD: ByteStringSerializer, K: ByteStringSerializer
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("ZUNIONSTORE", ZstoreWeighted.buildArgs(destination, keys, aggregate))
 }
+
+case class Zrangebylex[K, R](key: K, min: String, max: String, limit: Option[(Long, Long)] = None)(implicit keySeria: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteString[R] {
+  val isMasterOnly = false
+  val encodedRequest: ByteString = encode("ZRANGEBYLEX", Zrangebylex.buildArgs(key, min, max, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
+}
+
+case class Zrevrangebylex[K, R](key: K, max: String, min: String, limit: Option[(Long, Long)] = None)(implicit keySeria: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R])
+  extends RedisCommandMultiBulkSeqByteString[R] {
+  val isMasterOnly = false
+  val encodedRequest: ByteString = encode("ZREVRANGEBYLEX", Zrangebylex.buildArgs(key, max, min, limit))
+  val deserializer: ByteStringDeserializer[R] = deserializerR
+}
+

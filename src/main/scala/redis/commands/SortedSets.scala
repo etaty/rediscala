@@ -76,5 +76,10 @@ trait SortedSets extends Request {
   (destination: String, keys: Map[String, Double], aggregate: Aggregate = SUM): Future[Long] =
     send(ZunionstoreWeighted(destination, keys, aggregate))
 
+  def zrangebylex[R: ByteStringDeserializer](key: String, min: Option[String], max: Option[String], limit: Option[(Long, Long)] = None): Future[Seq[R]] =
+    send(Zrangebylex(key, min.getOrElse("-"), max.getOrElse("+"), limit))
+
+  def zrevrangebylex[R: ByteStringDeserializer](key: String, max: Option[String], min: Option[String], limit: Option[(Long, Long)] = None): Future[Seq[R]] =
+    send(Zrevrangebylex(key, max.getOrElse("+"), max.getOrElse("-"), limit))
 }
 
