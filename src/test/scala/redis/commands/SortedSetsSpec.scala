@@ -267,5 +267,32 @@ class SortedSetsSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "ZRANGEBYLEX" in {
+      val r = for {
+        _ <- redis.del("zrangebylexKey")
+        z1 <- redis.zadd("zrangebylexKey", (0, "lexA"), (0, "lexB"), (0, "lexC"))
+        zr1 <- redis.zrangebylex("zrangebylexKey", Some("[lex"), None, None)
+        zr2 <- redis.zrangebylex("zrangebylexKey", Some("[lex"), None, Some((0L, 1L)))
+      } yield {
+        z1 mustEqual 3
+        zr1 mustEqual Seq(ByteString("lexA"), ByteString("lexB"), ByteString("lexC"))
+        zr2 mustEqual Seq(ByteString("lexA"))
+      }
+      Await.result(r, timeOut)
+    }
+
+    "ZREVRANGEBYLEX" in {
+      val r = for {
+        _ <- redis.del("zrevrangebylexKey")
+        z1 <- redis.zadd("zrevrangebylexKey", (0, "lexA"), (0, "lexB"), (0, "lexC"))
+        zr1 <- redis.zrevrangebylex("zrevrangebylexKey", None, Some("[lex"), None)
+        zr2 <- redis.zrevrangebylex("zrevrangebylexKey", None, Some("[lex"), Some((0L, 1L)))
+      } yield {
+        z1 mustEqual 3
+        zr1 mustEqual Seq(ByteString("lexC"), ByteString("lexB"), ByteString("lexA"))
+        zr2 mustEqual Seq(ByteString("lexC"))
+      }
+      Await.result(r, timeOut)
+    }
   }
 }
