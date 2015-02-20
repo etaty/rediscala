@@ -1,6 +1,5 @@
 package redis.actors
 
-import akka.testkit._
 import akka.actor._
 import org.specs2.mutable.{Tags, SpecificationLike}
 import org.specs2.time.NoTimeConversions
@@ -11,6 +10,7 @@ import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
 import redis.{Redis, Operation}
 import redis.api.connection.Ping
+import akka.testkit._
 
 class RedisReplyDecoderSpec
   extends TestKit(ActorSystem("testsystem", ConfigFactory.parseString( """akka.loggers = ["akka.testkit.TestEventListener"]""")))
@@ -35,7 +35,7 @@ class RedisReplyDecoderSpec
       redisReplyDecoder ! q
       awaitCond({
         redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 1
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       redisReplyDecoder ! ByteString("+PONG\r\n")
       Await.result(promise.future, 10 seconds) mustEqual "PONG"
@@ -52,7 +52,7 @@ class RedisReplyDecoderSpec
       redisReplyDecoder ! q2
       awaitCond({
         redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 2
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       redisReplyDecoder ! ByteString("+PONG\r\n+PONG\r\n")
       Await.result(promise2.future, 10 seconds) mustEqual "PONG"
@@ -70,7 +70,7 @@ class RedisReplyDecoderSpec
         redisClientActor.underlyingActor.queuePromises.length mustEqual 1
         redisClientActor.underlyingActor.onWriteSent()
         redisClientActor.underlyingActor.queuePromises must beEmpty
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       EventFilter[Exception](occurrences = 1, start = "Redis Protocol error: Got 110 as initial reply byte").intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("not valid redis reply"))
@@ -85,7 +85,7 @@ class RedisReplyDecoderSpec
         redisClientActor.underlyingActor.queuePromises.length mustEqual 1
         redisClientActor.underlyingActor.onWriteSent()
         redisClientActor.underlyingActor.queuePromises must beEmpty
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       EventFilter[Exception](occurrences = 1, start = "Redis Protocol error: Got 110 as initial reply byte").intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("not valid redis reply"))
@@ -103,14 +103,14 @@ class RedisReplyDecoderSpec
 
       awaitCond({
         redisClientActor.underlyingActor.queuePromises.length mustEqual 1
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       EventFilter[NoSuchElementException](occurrences = 1).intercept({
         redisClientActor.underlyingActor.onDataReceived(ByteString("+PONG\r\n"))
       })
       awaitCond({
         redisClientActor.underlyingActor.queuePromises.length mustEqual 1
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
@@ -119,7 +119,7 @@ class RedisReplyDecoderSpec
       })
       awaitCond({
         redisClientActor.underlyingActor.queuePromises.length mustEqual 1
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       probeMock.expectMsg("restartConnection") mustEqual "restartConnection"
 
@@ -141,31 +141,31 @@ class RedisReplyDecoderSpec
       redisReplyDecoder ! q
       awaitCond({
         redisReplyDecoder.underlyingActor.queuePromises.size mustEqual 2
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       redisReplyDecoder ! ByteString("+P")
       awaitCond({
         redisReplyDecoder.underlyingActor.bufferRead == ByteString("+P")
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       redisReplyDecoder ! ByteString("ONG\r")
       awaitCond({
         redisReplyDecoder.underlyingActor.bufferRead == ByteString("+PONG\r")
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
       redisReplyDecoder ! ByteString("\n+PONG2")
       awaitCond({
         redisReplyDecoder.underlyingActor.bufferRead == ByteString("+PONG2")
-      }, 5 seconds dilated)
+      }, 5.seconds dilated)
 
-      Await.result(promise1.future, 5 seconds dilated) mustEqual "PONG"
+      Await.result(promise1.future, 5.seconds dilated) mustEqual "PONG"
 
       redisReplyDecoder ! ByteString("\r\n")
       awaitCond({
         redisReplyDecoder.underlyingActor.bufferRead.isEmpty
       }, 3 seconds)
 
-      Await.result(promise2.future, 5 seconds dilated) mustEqual "PONG2"
+      Await.result(promise2.future, 5.seconds dilated) mustEqual "PONG2"
 
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
     }
