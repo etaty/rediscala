@@ -64,7 +64,7 @@ case class RedisClientMasterSlaves(master: RedisServer,
   val slavesClients = RedisClientPool(slaves)
 
   override def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
-    if (redisCommand.isMasterOnly) {
+    if (redisCommand.isMasterOnly || slaves.isEmpty) {
       masterClient.send(redisCommand)
     } else {
       slavesClients.send(redisCommand)
