@@ -1,6 +1,6 @@
 package redis.actors
 
-import akka.testkit.{TestActorRef, TestProbe, ImplicitSender, TestKit}
+import akka.testkit._
 import akka.actor._
 import org.specs2.mutable.{Tags, SpecificationLike}
 import org.specs2.time.NoTimeConversions
@@ -14,6 +14,7 @@ import redis.api.pubsub.PMessage
 
 class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
 
+  import scala.concurrent.duration._
 
   "RedisClientActor" should {
 
@@ -37,7 +38,9 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 
       val newChannels = channels :+ "channel2"
       subscriberActor.underlyingActor.subscribe("channel2")
-      subscriberActor.underlyingActor.channelsSubscribed must containTheSameElementsAs(newChannels)
+      awaitCond({
+        subscriberActor.underlyingActor.channelsSubscribed must containTheSameElementsAs(newChannels)
+      }, 5.seconds dilated)
       probeTcpWorker.expectMsgType[Write] mustEqual Write(RedisProtocolRequest.multiBulk("SUBSCRIBE", Seq(ByteString("channel2"))), WriteAck)
       probeTcpWorker.reply(WriteAck)
 

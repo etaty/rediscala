@@ -50,6 +50,7 @@ trait WithRedisServerLauncher extends RedisHelper {
     val serverPort = RedisServerHelper.portNumber.getAndIncrement()
     val serverProcess = Process(s"$redisServerCmd --port $serverPort $redisServerLogLevel").run()
 
+    Thread.sleep(3000) // wait for server start
     val result = Try(block(serverPort))
 
     serverProcess.destroy()
