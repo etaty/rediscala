@@ -1,6 +1,6 @@
 package redis.actors
 
-import akka.testkit.{TestActorRef, TestProbe, ImplicitSender, TestKit}
+import akka.testkit._
 import akka.actor.{ActorRef, Props, ActorSystem}
 import org.specs2.mutable.{Tags, SpecificationLike}
 import org.specs2.time.NoTimeConversions
@@ -97,13 +97,13 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING 2"
       awaitCond({
         redisWorkerIO.underlyingActor.bufferWrite.result mustEqual ByteString("PING 2")
-      }, 1 seconds)
+      }, 5.seconds dilated)
       // ConnectionClosed
       probeTcpWorker.send(redisWorkerIO, ErrorClosed("test"))
       probeMock.expectMsg(OnConnectionClosed) mustEqual OnConnectionClosed
       awaitCond({
         redisWorkerIO.underlyingActor.bufferWrite.length mustEqual 0
-      }, 1 seconds)
+      }, 5.seconds dilated)
 
       // Reconnect
       val connectMsg2 = probeTcp.expectMsgType[Connect]
@@ -235,7 +235,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       redisWorkerIO ! "PING1"
       awaitCond({
         redisWorkerIO.underlyingActor.bufferWrite.result mustEqual ByteString("PING1")
-      }, 3 seconds)
+      }, 5.seconds dilated)
 
       // ConnectionClosed
       probeTcpWorker.send(redisWorkerIO, ErrorClosed("test"))
@@ -243,7 +243,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
 
       awaitCond({
         redisWorkerIO.underlyingActor.bufferWrite.length mustEqual 0
-      }, 1 seconds)
+      }, 5.seconds dilated)
 
       // Reconnect
       val connectMsg2 = probeTcp.expectMsgType[Connect]
