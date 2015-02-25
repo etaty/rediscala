@@ -149,7 +149,7 @@ case class Sort[K: ByteStringSerializer, R](key: K,
                                             alpha: Boolean)
                                            (implicit deserializerR: ByteStringDeserializer[R])
   extends RedisCommandMultiBulkSeqByteString[R] {
-  val isMasterOnly = false
+  val isMasterOnly = true
   val encodedRequest: ByteString = encode("SORT", Sort.buildArgs(key, byPattern, limit, getPatterns, order, alpha))
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
