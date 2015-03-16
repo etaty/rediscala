@@ -94,9 +94,7 @@ object RediscalaBuild extends Build {
     base = file("."),
     settings = standardSettings ++ Seq(
       libraryDependencies ++= Dependencies.rediscalaDependencies
-    )
-      ++ ScoverageSbtPlugin.instrumentSettings
-      ++ CoverallsPlugin.coverallsSettings
+    ) ++ CoverallsPlugin.coverallsSettings
   ).configs(BenchTest)
     //.settings(benchTestSettings: _* )
 
