@@ -1,5 +1,7 @@
 package redis.commands
 
+import java.io.File
+
 import redis._
 import scala.concurrent.Await
 import akka.util.ByteString
@@ -97,6 +99,16 @@ class ScriptingSpec extends RedisSpec {
       )
       Await.result(scriptsLoaded, timeOut) mustEqual Seq(true, false)
 
+    }
+
+    "fromFile" in {
+      val testScriptFile = new File(getClass.getResource("/lua/test.lua").getPath)
+      RedisScript.fromFile(testScriptFile) mustEqual RedisScript("""return "test"""")
+    }
+
+    "fromResource" in {
+      val testScriptPath = "/lua/test.lua"
+      RedisScript.fromResource(testScriptPath) mustEqual RedisScript("""return "test"""")
     }
 
   }
