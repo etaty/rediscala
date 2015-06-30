@@ -7,10 +7,9 @@ import akka.testkit.TestKit
 import org.specs2.specification.{Step, Fragments}
 import akka.actor.ActorSystem
 import java.util.concurrent.atomic.AtomicInteger
-import scala.sys.process.Process
 import scala.util.Try
 import scala.reflect.io.File
-
+import scala.sys.process._
 
 abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
 
@@ -37,16 +36,19 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   val redisServerCmd = "redis-server"
   val redisServerLogLevel = "--loglevel verbose"
+  //val redisServerLogLevel = ""
   val redisHost = "127.0.0.1"
 }
 
 abstract class RedisSpec extends RedisHelper with WithRedisServerLauncher {
 
-  val redis = RedisClient()
+  lazy val redis = RedisClient()
 }
 
 trait WithRedisServerLauncher extends RedisHelper {
   def withRedisServer[T](block: (Int) => T): T = {
+
+    val buffer = new StringBuffer()
     val serverPort = RedisServerHelper.portNumber.getAndIncrement()
     val serverProcess = Process(s"$redisServerCmd --port $serverPort $redisServerLogLevel").run()
 
@@ -114,12 +116,18 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
       sentinelConfFile.path
     }
 
+  lazy val slave1 = Process(s"$redisServerCmd --port ${slavePort1} --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+  lazy val slave2 = Process(s"$redisServerCmd --port ${slavePort2} --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+
+
   override def setup() = {
+
+
     processes =
         Seq(
           Process(s"$redisServerCmd --port $masterPort $redisServerLogLevel").run(),
-          Process(s"$redisServerCmd --port ${slavePort1} --slaveof $redisHost $masterPort $redisServerLogLevel").run(),
-          Process(s"$redisServerCmd --port ${slavePort2} --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+          slave1,
+          slave2
         ) ++
         sentinelPorts.map(p =>
           Process(s"$redisServerCmd $sentinelConfPath --port $p --sentinel $redisServerLogLevel").run()
@@ -136,6 +144,15 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
     processes = processes :+ sentinelProcess
     sentinelProcess
   }
+
+
+ def newSlaveProcess() = {
+    val port = portNumber.getAndIncrement()
+    val slaveProcess = Process(s"$redisServerCmd --port $port --slaveof $redisHost $masterPort $redisServerLogLevel").run()
+    processes = processes :+ slaveProcess
+    slaveProcess
+  }
+
 
 }
 
