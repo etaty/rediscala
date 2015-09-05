@@ -2,7 +2,7 @@ package redis.api.keys
 
 import redis._
 import akka.util.ByteString
-import redis.protocol.{Bulk, Status, MultiBulk}
+import redis.protocol._
 import scala.concurrent.duration.FiniteDuration
 import redis.api.Order
 import redis.api.LimitOffsetCount
