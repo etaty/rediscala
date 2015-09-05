@@ -1,11 +1,13 @@
 package redis.commands
 
 import akka.util.ByteString
-import redis.RedisSpec
+import redis.RedisStandaloneServer
 
 import scala.concurrent.Await
 
-class HyperLogLogSpec extends RedisSpec {
+class HyperLogLogSpec extends RedisStandaloneServer {
+
+  sequential
 
   "HyperLogLog commands" should {
     "PFADD" in {
