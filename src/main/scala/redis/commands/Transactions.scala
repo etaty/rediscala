@@ -110,7 +110,7 @@ case class Transaction(watcher: Set[String], operations: Queue[Operation[_, _]],
     p
   }
 
-  def dispatchExecReply(multiBulk: MultiBulk) = {
+  def dispatchExecReply(multiBulk: MultiBulk): Any = {
     multiBulk.responses.map(replies => {
       (replies, operations).zipped.map((reply, operation) => {
         reply match {

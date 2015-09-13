@@ -49,7 +49,9 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     readyToWrite = true
   }
 
-  def receive = connecting orElse writing
+  private def receiveWrapper(r: Receive): Receive = r
+
+  def receive: Receive = receiveWrapper { connecting orElse writing }
 
   def connecting: Receive = {
     case a: InetSocketAddress => onAddressChanged(a)
@@ -73,7 +75,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     scheduleReconnect()
   }
 
-  def connected: Receive = writing orElse reading
+  def connected: Receive = receiveWrapper { writing orElse reading }
 
   private def reading: Receive = {
     case WriteAck => tryWrite()
