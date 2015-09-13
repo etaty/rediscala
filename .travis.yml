@@ -1,10 +1,10 @@
 sudo: false
 language: scala
-script: sbt ++$TRAVIS_SCALA_VERSION "test"
+script: "sbt clean coverage test"
 after_script:
   - "sbt coveralls"
 scala:
-  - "2.10.4"
+  - "2.11.7"
 jdk:
   - oraclejdk7
   - openjdk7

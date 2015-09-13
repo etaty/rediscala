@@ -3,7 +3,7 @@ package redis.actors
 import java.net.InetSocketAddress
 
 import akka.actor._
-import akka.testkit.{ImplicitSender, TestActorRef, TestKit, TestProbe}
+import akka.testkit._
 import akka.util.ByteString
 import org.specs2.mutable.{SpecificationLike, Tags}
 import org.specs2.time.NoTimeConversions
@@ -22,9 +22,11 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
     Seq()
   }
 
+  val timeout = 120.seconds dilated
+
   "RedisClientActor" should {
 
-    "ok" in {
+    "ok" in within(timeout){
       val probeReplyDecoder = TestProbe()
       val probeMock = TestProbe()
 
@@ -50,23 +52,23 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       redisClientActor ! op2
 
       probeMock.expectMsg(WriteMock) mustEqual WriteMock
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 2
+      awaitAssert(redisClientActor.underlyingActor.queuePromises.length mustEqual 2)
 
       //onConnectWrite
       redisClientActor.underlyingActor.onConnectWrite()
-      redisClientActor.underlyingActor.queuePromises.result() mustEqual Seq(opConnectPing, opConnectGet, op1, op2)
-      redisClientActor.underlyingActor.queuePromises.length mustEqual 4
+      awaitAssert(redisClientActor.underlyingActor.queuePromises.result() mustEqual Seq(opConnectPing, opConnectGet, op1, op2))
+      awaitAssert(redisClientActor.underlyingActor.queuePromises.length mustEqual 4)
 
       //onWriteSent
       redisClientActor.underlyingActor.onWriteSent()
       probeReplyDecoder.expectMsgType[QueuePromises] mustEqual QueuePromises(mutable.Queue(opConnectPing, opConnectGet, op1, op2))
-      redisClientActor.underlyingActor.queuePromises must beEmpty
+      awaitAssert(redisClientActor.underlyingActor.queuePromises must beEmpty)
 
       //onDataReceived
-      redisClientActor.underlyingActor.onDataReceived(ByteString.empty)
+      awaitAssert(redisClientActor.underlyingActor.onDataReceived(ByteString.empty))
       probeReplyDecoder.expectMsgType[ByteString] mustEqual ByteString.empty
 
-      redisClientActor.underlyingActor.onDataReceived(ByteString("bytestring"))
+      awaitAssert(redisClientActor.underlyingActor.onDataReceived(ByteString("bytestring")))
       probeReplyDecoder.expectMsgType[ByteString] mustEqual ByteString("bytestring")
 
       //onConnectionClosed

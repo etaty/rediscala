@@ -11,7 +11,7 @@ class ServerSpec extends RedisStandaloneServer {
 
   "Server commands" should {
 
-    "BGREWRITEAOF" in {
+    "BGSAVE" in {
       Await.result(redis.bgsave(), timeOut) mustEqual "Background saving started"
     }
 
@@ -107,7 +107,9 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "BGREWRITEAOF" in {
-      Await.result(redis.bgrewriteaof(), timeOut) mustEqual "Background append only file rewriting started"
+      val r = Await.result(redis.bgrewriteaof(), timeOut)
+      (r mustEqual "Background append only file rewriting started") or
+        (r mustEqual "Background append only file rewriting scheduled")
     }
 
     "SHUTDOWN" in {

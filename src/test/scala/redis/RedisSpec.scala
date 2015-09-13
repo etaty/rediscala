@@ -71,6 +71,7 @@ abstract class RedisStandaloneServer extends RedisHelper with WithRedisServerLau
 
   override def setup() = {
     server = Process(s"$redisServerCmd --port $port $redisServerLogLevel").run()
+    Thread.sleep(3000) // wait for server start
   }
 
   override def cleanup() = {
