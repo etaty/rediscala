@@ -176,6 +176,10 @@ trait ByteStringDeserializerDefault {
     def deserialize(bs: ByteString): String = bs.utf8String
   }
 
+  implicit object ByteArray extends ByteStringDeserializer[Array[Byte]] {
+    def deserialize(bs: ByteString): Array[Byte] = bs.toArray
+  }
+
 }
 
 trait ByteStringFormatter[T] extends ByteStringSerializer[T] with ByteStringDeserializer[T]
