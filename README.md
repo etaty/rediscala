@@ -86,7 +86,7 @@ All commands are supported :
 * [Connection](http://redis.io/commands#connection) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Connection))
 * [Scripting](http://redis.io/commands#scripting) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Scripting))
 * [Server](http://redis.io/commands#server) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.Server))
-
+* [HyperLogLog](http://redis.io/commands#hyperloglog) ([scaladoc](http://etaty.github.io/rediscala/latest/api/index.html#redis.commands.HyperLogLog))
 
 ### Blocking commands
 

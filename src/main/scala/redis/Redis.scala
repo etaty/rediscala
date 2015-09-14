@@ -21,6 +21,7 @@ trait RedisCommands
   with Scripting
   with Connection
   with Server
+  with HyperLogLog
 
 abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorRequest {
   var host: String
