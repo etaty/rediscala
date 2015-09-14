@@ -65,7 +65,7 @@ case class SentinelClient(var host: String = "localhost",
 
   val redisPubSubConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None)
+      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None,(status:Boolean) => {})
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )

@@ -12,8 +12,9 @@ class RedisSubscriberActorWithCallback(
                                         patterns: Seq[String],
                                         messageCallback: Message => Unit,
                                         pmessageCallback: PMessage => Unit,
-                                        authPassword: Option[String] = None
-                                        ) extends RedisSubscriberActor(address, channels, patterns, authPassword) {
+                                        authPassword: Option[String] = None,
+                                        onConnectStatus: Boolean => Unit 
+                                        ) extends RedisSubscriberActor(address, channels, patterns, authPassword,onConnectStatus) {
   def onMessage(m: Message) = messageCallback(m)
 
   def onPMessage(pm: PMessage) = pmessageCallback(pm)
@@ -23,8 +24,9 @@ abstract class RedisSubscriberActor(
                                      address: InetSocketAddress,
                                      channels: Seq[String],
                                      patterns: Seq[String],
-                                     authPassword: Option[String] = None
-                                     ) extends RedisWorkerIO(address) with DecodeReplies {
+                                     authPassword: Option[String] = None,
+                                     onConnectStatus: Boolean => Unit 
+                                     ) extends RedisWorkerIO(address,onConnectStatus) with DecodeReplies {
   def onConnectWrite(): ByteString = {
     authPassword.map(Auth(_).encodedRequest).getOrElse(ByteString.empty)
   }

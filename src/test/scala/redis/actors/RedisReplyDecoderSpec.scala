@@ -163,7 +163,7 @@ class RedisReplyDecoderSpec
 }
 
 class RedisClientActorMock2(probeMock: ActorRef)
-  extends RedisClientActor(new InetSocketAddress("localhost", 6379), () => {Seq()}) {
+  extends RedisClientActor(new InetSocketAddress("localhost", 6379), () => {Seq()}, (status:Boolean) => {()} ) {
   override def preStart() {
     // disable preStart of RedisWorkerIO
   }
