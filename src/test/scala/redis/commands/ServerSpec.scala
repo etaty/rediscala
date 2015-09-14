@@ -107,6 +107,8 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "BGREWRITEAOF" in {
+      // depending on the redis version, this string could vary, redis 2.8.21 says 'scheduled'
+      // but redis 2.8.18 says 'started'
       val r = Await.result(redis.bgrewriteaof(), timeOut)
       (r mustEqual "Background append only file rewriting started") or
         (r mustEqual "Background append only file rewriting scheduled")
