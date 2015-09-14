@@ -44,6 +44,9 @@ trait SortedSets extends Request {
   def zrem[V: ByteStringSerializer](key: String, members: V*): Future[Long] =
     send(Zrem(key, members))
 
+  def zremrangebylex(key: String, min: String, max: String): Future[Long] =
+    send(Zremrangebylex(key, min, max))
+
   def zremrangebyrank(key: String, start: Long, stop: Long): Future[Long] =
     send(Zremrangebyrank(key, start, stop))
 
