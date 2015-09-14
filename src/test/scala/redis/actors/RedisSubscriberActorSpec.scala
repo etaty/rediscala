@@ -38,7 +38,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 
       val newChannels = channels :+ "channel2"
       subscriberActor.underlyingActor.subscribe("channel2")
-      awaitCond({
+      awaitAssert({
         subscriberActor.underlyingActor.channelsSubscribed must containTheSameElementsAs(newChannels)
       }, 5.seconds dilated)
       probeTcpWorker.expectMsgType[Write] mustEqual Write(RedisProtocolRequest.multiBulk("SUBSCRIBE", Seq(ByteString("channel2"))), WriteAck)
