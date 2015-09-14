@@ -127,6 +127,11 @@ case class Zrem[K, V](key: K, members: Seq[V])(implicit keySeria: ByteStringSeri
   val encodedRequest: ByteString = encode("ZREM", keySeria.serialize(key) +: members.map(v => convert.serialize(v)))
 }
 
+case class Zremrangebylex[K](key: K, min: String, max: String)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+  val isMasterOnly = true
+  val encodedRequest: ByteString = encode("ZREMRANGEBYLEX", Seq(keySeria.serialize(key), ByteString(min), ByteString(max)))
+}
+
 case class Zremrangebyrank[K](key: K, start: Long, stop: Long)(implicit keySeria: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("ZREMRANGEBYRANK", Seq(keySeria.serialize(key), ByteString(start.toString), ByteString(stop.toString)))

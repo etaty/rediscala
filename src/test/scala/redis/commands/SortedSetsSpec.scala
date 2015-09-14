@@ -152,6 +152,22 @@ class SortedSetsSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "ZREMRANGEBYLEX" in {
+      val r = for {
+        _ <- redis.del("zremrangebylexKey")
+        z1 <- redis.zadd("zremrangebylexKey", 0d -> "a",  0d -> "b", 0d -> "c", 0d -> "d", 0d -> "e", 0d -> "f", 0d -> "g")
+        z2 <- redis.zremrangebylex("zremrangebylexKey", "[z", "[d")
+        z3 <- redis.zremrangebylex("zremrangebylexKey", "[b", "[d")
+        zrange1 <- redis.zrange("zremrangebylexKey", 0, -1)
+      } yield {
+          z1 mustEqual 7
+          z2 mustEqual 0
+          z3 mustEqual 3
+          zrange1 mustEqual Seq(ByteString("a"), ByteString("e"), ByteString("f"), ByteString("g"))
+        }
+      Await.result(r, timeOut)
+    }
+
     "ZREMRANGEBYRANK" in {
       val r = for {
         _ <- redis.del("zremrangebyrankKey")
