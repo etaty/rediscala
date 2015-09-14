@@ -45,7 +45,9 @@ trait RoundRobinPoolRequest {
   val next = new AtomicInteger(0)
 
   def getNextConnection : ActorRef = {
-    redisConnectionPool(next.getAndIncrement % redisConnectionPool.size)
+    val size = redisConnectionPool.size
+    val index = next.getAndIncrement % size
+    redisConnectionPool(if (index < 0) size + index - 1 else index)
   }
 
   private def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
