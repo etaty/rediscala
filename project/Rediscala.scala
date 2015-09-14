@@ -42,7 +42,7 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "1.4.2"
+  val v = "1.5.0"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
@@ -52,6 +52,18 @@ object RediscalaBuild extends Build {
       scalaVersion := "2.11.7",
       crossScalaVersions := Seq("2.11.7", "2.10.4"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
+      homepage := Some(url("https://github.com/non/rediscala")),
+      scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
+      apiURL := Some(url("http://etaty.github.io/rediscala/latest/api/")),
+      pomExtra := (
+        <developers>
+          <developer>
+            <id>etaty</id>
+            <name>Valerian Barbot</name>
+            <url>http://github.com/etaty/</url>
+          </developer>
+        </developers>
+        ),
       resolvers ++= Resolvers.resolversList,
 
       publishMavenStyle := true,
@@ -79,8 +91,7 @@ object RediscalaBuild extends Build {
           "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala"
         )
       }
-  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings ++
-    bintray.Plugin.bintrayPublishSettings
+  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings
 
   lazy val BenchTest = config("bench") extend Test
 
