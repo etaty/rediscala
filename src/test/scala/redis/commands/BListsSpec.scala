@@ -99,7 +99,7 @@ class BListsSpec extends RedisSpec {
         val r = for {
           _ <- redis.del("brpopplush1", "brpopplush2")
           p <- redis.rpush("brpopplush1", "a", "b", "c")
-          b <- redisB.brpopplush("brpopplush1", "brpopplush2")
+          b <- redisB.brpoplpush("brpopplush1", "brpopplush2")
         } yield {
           b mustEqual Some(ByteString("c"))
         }
@@ -112,7 +112,7 @@ class BListsSpec extends RedisSpec {
         val redisB = RedisBlockingClient()
         val rr = within(1.seconds, 10.seconds) {
           val r = redis.del("brpopplushBlock1", "brpopplushBlock2").flatMap(_ => {
-            val brpopplush = redisB.brpopplush("brpopplushBlock1", "brpopplushBlock2")
+            val brpopplush = redisB.brpoplpush("brpopplushBlock1", "brpopplushBlock2")
             Thread.sleep(1000)
             redis.rpush("brpopplushBlock1", "a", "b", "c")
             brpopplush
@@ -127,7 +127,7 @@ class BListsSpec extends RedisSpec {
         val redisB = RedisBlockingClient()
         val rr = within(1.seconds, 10.seconds) {
           val r = redis.del("brpopplushBlockTimeout1", "brpopplushBlockTimeout2").flatMap(_ => {
-            redisB.brpopplush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
+            redisB.brpoplpush("brpopplushBlockTimeout1", "brpopplushBlockTimeout2", 1.seconds)
           })
           Await.result(r, timeOut) must beNone
         }

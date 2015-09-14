@@ -24,7 +24,7 @@ private[redis] abstract class BXpop[KK, R](command: String)(implicit redisKeys: 
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toOptionStringByteString(mb)
 }
 
-case class Brpopplush[KS, KD, R](source: KS, destination: KD, timeout: FiniteDuration = Duration.Zero)
+case class Brpoplpush[KS, KD, R](source: KS, destination: KD, timeout: FiniteDuration = Duration.Zero)
                              (implicit bsSource: ByteStringSerializer[KS], bsDest: ByteStringSerializer[KD], deserializerR: ByteStringDeserializer[R])
   extends RedisCommandRedisReply[Option[R]] {
   val isMasterOnly = true
