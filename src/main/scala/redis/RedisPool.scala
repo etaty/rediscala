@@ -49,7 +49,7 @@ abstract class RedisClientPoolLike(system: ActorRefFactory) extends RoundRobinPo
 
   def onConnectStatus(server: RedisServer): (Boolean) => Unit = (status: Boolean) => {
     if (server.active.single.compareAndSet(!status, status)) {
-      redisConnectionRef.single.swap(getConnectionsActive)
+      redisConnectionRef.single.set(getConnectionsActive)
     }
   }
 
