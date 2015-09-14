@@ -11,7 +11,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
 
-abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with ActorLogging {
+abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Boolean => Unit ) extends Actor with ActorLogging {
 
   private var currAddress = address
 
@@ -66,6 +66,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
     tryInitialWrite() // TODO write something in head buffer
     become(connected)
     log.info("Connected to " + cmd.remoteAddress)
+    onConnectStatus(true)
   }
 
   def onConnectingCommandFailed(cmdFailed: CommandFailed) = {
@@ -121,6 +122,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress) extends Actor with 
   }
 
   def cleanState() {
+    onConnectStatus(false)
     onConnectionClosed()
     readyToWrite = false
     bufferWrite.clear()

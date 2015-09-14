@@ -32,7 +32,7 @@ abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorReques
   implicit val executionContext = system.dispatcher
 
   val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations)
+    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations, onConnectStatus )
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -46,6 +46,10 @@ abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorReques
   def onConnect(redis: RedisCommands): Unit = {
     password.foreach(redis.auth(_)) // TODO log on auth failure
     db.foreach(redis.select(_))
+  }
+
+  def onConnectStatus(): (Boolean) => Unit = (status: Boolean) => {
+    
   }
 
   def getConnectOperations: () => Seq[Operation[_, _]] = () => {
@@ -95,7 +99,7 @@ case class RedisPubSub(
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword)
+      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword,onConnectStatus)
       .withDispatcher(Redis.dispatcher),
     name + '-' + Redis.tempName()
   )
@@ -121,6 +125,10 @@ case class RedisPubSub(
 
   def punsubscribe(patterns: String*) {
     redisConnection ! PUNSUBSCRIBE(patterns: _*)
+  }
+
+  def onConnectStatus(): (Boolean) => Unit = (status: Boolean) => {
+    
   }
 }
 
