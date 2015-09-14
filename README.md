@@ -23,7 +23,7 @@ From version 1.3.1:
 resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
 
 libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.4.0"
+  "com.etaty.rediscala" %% "rediscala" % "1.5.0"
 )
 ```
 
@@ -247,7 +247,9 @@ object DumbClass {
 Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleByteStringFormatter.scala)
 
 ### Scaladoc
-[Rediscala scaladoc API (latest version 1.4)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest version 1.5)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.4)](http://etaty.github.io/rediscala/1.4/api/index.html#package)
 
 [Rediscala scaladoc API (version 1.3)](http://etaty.github.io/rediscala/1.3/api/index.html#package)
 
