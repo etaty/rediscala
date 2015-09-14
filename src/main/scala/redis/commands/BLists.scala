@@ -17,6 +17,6 @@ trait BLists extends Request {
   def brpop[R: ByteStringDeserializer](keys: Seq[String], timeout: FiniteDuration = Duration.Zero): Future[Option[(String, R)]] =
     send(Brpop(keys, timeout))
 
-  def brpopplush[R: ByteStringDeserializer](source: String, destination: String, timeout: FiniteDuration = Duration.Zero): Future[Option[R]] =
-    send(Brpopplush(source, destination, timeout))
+  def brpoplpush[R: ByteStringDeserializer](source: String, destination: String, timeout: FiniteDuration = Duration.Zero): Future[Option[R]] =
+    send(Brpoplpush(source, destination, timeout))
 }
