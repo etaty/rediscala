@@ -235,13 +235,17 @@ class SortedSetsSpec extends RedisSpec {
     "ZSCORE" in {
       val r = for {
         _ <- redis.del("zscoreKey")
-        z1 <- redis.zadd("zscoreKey", 1.1 -> "one", (2, "two"), (3, "three"))
+        z1 <- redis.zadd("zscoreKey", 1.1 -> "one", (2, "two"), (3, "three"), Double.PositiveInfinity -> "positiveinf", Double.NegativeInfinity -> "negativeinf")
         zr1 <- redis.zscore("zscoreKey", "one")
         zr2 <- redis.zscore("zscoreKey", "notexisting")
+        zr3 <- redis.zscore("zscoreKey", "positiveinf")
+        zr4 <- redis.zscore("zscoreKey", "negativeinf")
       } yield {
-        z1 mustEqual 3
+        z1 mustEqual 5
         zr1 mustEqual Some(1.1)
         zr2 mustEqual None
+        zr3 mustEqual Some(Double.PositiveInfinity)
+        zr4 mustEqual Some(Double.NegativeInfinity)
       }
       Await.result(r, timeOut)
     }
