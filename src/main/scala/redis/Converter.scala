@@ -180,6 +180,18 @@ trait ByteStringDeserializerDefault {
     def deserialize(bs: ByteString): Array[Byte] = bs.toArray
   }
 
+  implicit object RedisDouble extends ByteStringDeserializer[Double] {
+    override def deserialize(bs: ByteString): Double = {
+      val s = bs.utf8String
+      if ("-inf".equals(s))
+        Double.NegativeInfinity
+      else if ("inf".equals(s))
+        Double.PositiveInfinity
+      else
+        java.lang.Double.parseDouble(s)
+    }
+  }
+
 }
 
 trait ByteStringFormatter[T] extends ByteStringSerializer[T] with ByteStringDeserializer[T]

@@ -60,11 +60,11 @@ trait RedisCommandBulkOptionByteString[R] extends RedisCommandBulk[Option[R]] {
 }
 
 trait RedisCommandBulkDouble extends RedisCommandBulk[Double] {
-  def decodeReply(bulk: Bulk) = bulk.response.map(v => java.lang.Double.parseDouble(v.utf8String)).get
+  def decodeReply(bulk: Bulk) = bulk.response.map(ByteStringDeserializer.RedisDouble.deserialize).get
 }
 
 trait RedisCommandBulkOptionDouble extends RedisCommandBulk[Option[Double]] {
-  def decodeReply(bulk: Bulk) = bulk.response.map(v => java.lang.Double.parseDouble(v.utf8String))
+  def decodeReply(bulk: Bulk) = bulk.response.map(ByteStringDeserializer.RedisDouble.deserialize)
 }
 
 trait RedisCommandMultiBulkSeqByteString[R] extends RedisCommandMultiBulk[Seq[R]] {
@@ -90,7 +90,7 @@ trait RedisCommandRedisReplyRedisReply[R] extends RedisCommandRedisReply[R] {
   val deserializer: RedisReplyDeserializer[R]
 
   def decodeReply(redisReply: RedisReply): R = {
-    if(deserializer.deserialize.isDefinedAt(redisReply))
+    if (deserializer.deserialize.isDefinedAt(redisReply))
       deserializer.deserialize.apply(redisReply)
     else
       throw new RuntimeException("Could not deserialize") // todo make own type
