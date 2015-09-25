@@ -4,7 +4,7 @@ import redis._
 import akka.util.ByteString
 import scala.collection.mutable
 import scala.annotation.tailrec
-import redis.protocol.MultiBulk
+import redis.protocol.{RedisReply, MultiBulk}
 
 case class Hdel[K, KK](key: K, fields: Seq[KK])(implicit redisKey: ByteStringSerializer[K], redisFields: ByteStringSerializer[KK]) extends RedisCommandIntegerLong {
   val isMasterOnly = true
@@ -99,4 +99,20 @@ case class Hvals[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deser
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("HVALS", Seq(redisKey.serialize(key)))
   val deserializer: ByteStringDeserializer[R] = deserializerR
+}
+
+case class HScan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisKey: ByteStringSerializer[K], deserializer: ByteStringDeserializer[R], cursorConverter: ByteStringSerializer[C]) extends RedisCommandMultiBulkCursor[Map[String, R]] {
+  val isMasterOnly: Boolean = false
+
+  val encodedRequest: ByteString = encode("HSCAN", withOptionalParams(Seq(redisKey.serialize(key), cursorConverter.serialize(cursor))))
+
+  def decodeResponses(responses: Seq[RedisReply]) =
+    responses.grouped(2).map { xs =>
+      val k = xs.head
+      val v = xs(1)
+
+      k.toByteString.utf8String -> deserializer.deserialize(v.toByteString)
+    }.toMap
+
+  val empty: Map[String, R] = Map.empty
 }

@@ -3,6 +3,7 @@ package redis.api.sortedsets
 import redis._
 import akka.util.ByteString
 import redis.api.{SUM, Aggregate, Limit}
+import redis.protocol.RedisReply
 
 case class Zadd[K, V](key: K, scoreMembers: Seq[(Double, V)])(implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V])
   extends RedisCommandIntegerLong {
@@ -205,3 +206,16 @@ case class Zrevrangebylex[K, R](key: K, max: String, min: String, limit: Option[
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
+case class Zscan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisKey: ByteStringSerializer[K], redisCursor: ByteStringSerializer[C], deserializerR: ByteStringDeserializer[R]) extends RedisCommandMultiBulkCursor[Map[Double, R]] {
+  val isMasterOnly: Boolean = false
+  val encodedRequest: ByteString = encode("ZSCAN", withOptionalParams(Seq(redisKey.serialize(key), redisCursor.serialize(cursor))))
+
+  val empty: Map[Double, R] = Map.empty
+
+  def decodeResponses(responses: Seq[RedisReply]) =
+   responses.grouped(2).map { xs =>
+     val data = xs.head
+     val score = xs(1).toByteString.utf8String.toDouble
+     score -> deserializerR.deserialize(data.toByteString)
+   }.toMap
+}

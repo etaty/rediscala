@@ -281,6 +281,37 @@ class KeysSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    // Difficult to test due to how non-deterministic SCAN is. This might fail if the user has ~2M keys in their DB.
+    "SCAN" in {
+      val populateKeys = Future.sequence(Seq(
+        redis.set("scanKey1", "value1"),
+        redis.set("scanKey2", "value2"),
+        redis.set("scanKey3", "value3"),
+        redis.set("scanKey4", "value4"),
+        redis.set("scanKey5", "value5"),
+        redis.set("scanKey6", "value6"),
+        redis.set("scanKey7", "value7")
+      ))
+      val starter: Future[(Option[Int], Set[String])] = Future.successful((None, Set[String]()))
+      val fetched = (0 to 20).foldRight(starter) { case (_, f) =>
+        f.flatMap { case (cursor: Option[Int], results: Set[String]) =>
+          if (cursor.nonEmpty && cursor.get == 0) {
+            Future.successful((cursor, results))
+          } else {
+            redis.scan(cursor = cursor.getOrElse(0), count = Some(10000), matchGlob = Some("scanKey*")).map { case (c, v) => (Option(c), results ++ v) }
+          }
+        }
+      }
+
+      val tested = populateKeys.flatMap(_ => fetched).map { case (cursor: Option[Int], keys: Set[String]) =>
+        cursor.nonEmpty mustEqual true
+        cursor.get mustEqual 0
+        keys.toList.sorted mustEqual List("scanKey1", "scanKey2", "scanKey3", "scanKey4", "scanKey5", "scanKey6", "scanKey7")
+      }
+
+      Await.result(tested, timeOut)
+    }
+
     // @see https://gist.github.com/jacqui/983051
     "SORT" in {
       val init = Future.sequence(Seq(

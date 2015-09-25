@@ -147,6 +147,19 @@ class HashesSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "HSCAN" in {
+      val initialData = (1 to 20).grouped(2).map(x => x.head.toString -> x.tail.head.toString).toMap
+      val r = for {
+        _ <- redis.del("hscan")
+        _ <- redis.hmset("hscan", initialData)
+        (cursor, result) <- redis.hscan[String]("hscan", count = Some(300))
+      } yield {
+        result.values.toList.map(_.toInt).sorted mustEqual (2 to 20 by 2)
+        cursor mustEqual 0
+      }
+      Await.result(r, timeOut)
+    }
+
     "HVALS" in {
       val r = for {
         _ <- redis.hdel("hvalsKey", "field")

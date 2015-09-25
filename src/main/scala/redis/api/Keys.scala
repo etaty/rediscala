@@ -2,11 +2,10 @@ package redis.api.keys
 
 import redis._
 import akka.util.ByteString
-import redis.protocol.{Bulk, Status, MultiBulk}
+import redis.protocol._
 import scala.concurrent.duration.FiniteDuration
 import redis.api.Order
 import redis.api.LimitOffsetCount
-import scala.Some
 
 
 case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
@@ -173,4 +172,15 @@ case class Ttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends Re
 case class Type[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandStatusString {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("TYPE", Seq(redisKey.serialize(key)))
+}
+
+case class Scan[C](cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisCursor: ByteStringSerializer[C], deserializer: ByteStringDeserializer[String]) extends RedisCommandMultiBulkCursor[Seq[String]] {
+  val encodedRequest: ByteString = encode("SCAN", withOptionalParams(Seq(redisCursor.serialize(cursor))))
+
+  val isMasterOnly = false
+
+  def decodeResponses(responses: Seq[RedisReply]) =
+    responses.map(response => deserializer.deserialize(response.toByteString))
+
+  val empty: Seq[String] = Seq.empty
 }

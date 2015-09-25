@@ -84,5 +84,9 @@ trait SortedSets extends Request {
 
   def zrevrangebylex[R: ByteStringDeserializer](key: String, max: Option[String], min: Option[String], limit: Option[(Long, Long)] = None): Future[Seq[R]] =
     send(Zrevrangebylex(key, max.getOrElse("+"), max.getOrElse("-"), limit))
+
+  def zscan[R: ByteStringDeserializer](key: String, cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[(Int, Map[Double, R])] =
+    send(Zscan(key, cursor, count, matchGlob))
+
 }
 

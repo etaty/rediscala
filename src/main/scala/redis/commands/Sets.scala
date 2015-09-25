@@ -51,4 +51,6 @@ trait Sets extends Request {
   def sunionstore(destination: String, key: String, keys: String*): Future[Long] =
     send(Sunionstore(destination, key, keys))
 
+  def sscan[R: ByteStringDeserializer](key: String, cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[(Int, Seq[R])] =
+    send(Sscan(key, cursor, count, matchGlob))
 }
