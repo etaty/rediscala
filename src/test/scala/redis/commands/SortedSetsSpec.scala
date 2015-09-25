@@ -255,7 +255,7 @@ class SortedSetsSpec extends RedisSpec {
         (cursor, result) <- redis.zscan[String]("zscan", count = Some(100))
       } yield {
         cursor mustEqual 0
-        result mustEqual (1 to 20).map(x => x.toDouble -> x.toString).toMap
+        result mustEqual (1 to 20).map(x => x.toDouble -> x.toString)
       }
 
       Await.result(r, timeOut)
