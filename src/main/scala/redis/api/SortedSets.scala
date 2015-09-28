@@ -206,7 +206,7 @@ case class Zrevrangebylex[K, R](key: K, max: String, min: String, limit: Option[
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Zscan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisKey: ByteStringSerializer[K], redisCursor: ByteStringSerializer[C], deserializerR: ByteStringDeserializer[R]) extends RedisCommandMultiBulkCursor[Seq[(Double, R)]] {
+case class Zscan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisKey: ByteStringSerializer[K], redisCursor: ByteStringSerializer[C], deserializerR: ByteStringDeserializer[R], scoreDeserializer: ByteStringDeserializer[Double]) extends RedisCommandMultiBulkCursor[Seq[(Double, R)]] with ByteStringDeserializerDefault {
   val isMasterOnly: Boolean = false
   val encodedRequest: ByteString = encode("ZSCAN", withOptionalParams(Seq(redisKey.serialize(key), redisCursor.serialize(cursor))))
 
@@ -215,7 +215,7 @@ case class Zscan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Opti
   def decodeResponses(responses: Seq[RedisReply]) =
    responses.grouped(2).map { xs =>
      val data = xs.head
-     val score = xs(1).toByteString.utf8String.toDouble
+     val score = scoreDeserializer.deserialize(xs(1).toByteString)
      score -> deserializerR.deserialize(data.toByteString)
    }.toSeq
 }
