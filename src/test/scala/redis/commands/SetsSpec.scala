@@ -182,10 +182,10 @@ class SetsSpec extends RedisSpec {
     "SSCAN" in {
       val r = for {
         _ <- redis.sadd("sscan", (1 to 20).map(_.toString):_*)
-        (cursor, results) <- redis.sscan[String]("sscan", count = Some(100))
+        scanResult <- redis.sscan[String]("sscan", count = Some(100))
       } yield {
-        cursor mustEqual 0
-        results.toList.map(_.toInt).sorted mustEqual (1 to 20)
+        scanResult.index mustEqual 0
+        scanResult.data.map(_.toInt).sorted mustEqual (1 to 20)
       }
 
       Await.result(r, timeOut)

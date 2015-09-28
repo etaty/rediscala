@@ -152,10 +152,10 @@ class HashesSpec extends RedisSpec {
       val r = for {
         _ <- redis.del("hscan")
         _ <- redis.hmset("hscan", initialData)
-        (cursor, result) <- redis.hscan[String]("hscan", count = Some(300))
+        scanResult <- redis.hscan[String]("hscan", count = Some(300))
       } yield {
-        result.values.toList.map(_.toInt).sorted mustEqual (2 to 20 by 2)
-        cursor mustEqual 0
+        scanResult.data.values.toList.map(_.toInt).sorted mustEqual (2 to 20 by 2)
+        scanResult.index mustEqual 0
       }
       Await.result(r, timeOut)
     }

@@ -91,7 +91,7 @@ trait Keys extends Request {
   def `type`(key: String): Future[String] =
     send(Type(key))
 
-  def scan(cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[(Int, Seq[String])] =
+  def scan(cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[Cursor[Seq[String]]] =
     send(Scan(cursor, count, matchGlob))
 
 }

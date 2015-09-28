@@ -298,7 +298,7 @@ class KeysSpec extends RedisSpec {
           if (cursor.nonEmpty && cursor.get == 0) {
             Future.successful((cursor, results))
           } else {
-            redis.scan(cursor = cursor.getOrElse(0), count = Some(10000), matchGlob = Some("scanKey*")).map { case (c, v) => (Option(c), results ++ v) }
+            redis.scan(cursor = cursor.getOrElse(0), count = Some(10000), matchGlob = Some("scanKey*")).map(scanResult => (Option(scanResult.index), results ++ scanResult.data))
           }
         }
       }
