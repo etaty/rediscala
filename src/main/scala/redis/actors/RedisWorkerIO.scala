@@ -96,7 +96,9 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
 
   def onAddressChanged(addr: InetSocketAddress) {
     log.info(s"Address change [old=$address, new=$addr]")
-    tcpWorker ! ConfirmedClose // close the sending direction of the connection (TCP FIN)
+    if (tcpWorker != null ) {
+      tcpWorker ! ConfirmedClose // close the sending direction of the connection (TCP FIN)
+    }
     currAddress = addr
     scheduleReconnect()
   }
