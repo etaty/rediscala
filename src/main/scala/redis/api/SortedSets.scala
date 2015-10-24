@@ -98,8 +98,8 @@ private[redis] object Zrevrangebyscore {
      * Find the actual min/max and reverse them in order to support backwards compatibility and legacy clients.
      * See discussion in [[https://github.com/etaty/rediscala/issues/98 Github Issue]].
      */
-    val minMax = Seq(min, max).sortBy(_.value)
-    Zrangebyscore.buildArgs(key, minMax(1), minMax.head, withscores, limit)
+    val (_min, _max) = if(min.value < max.value) min -> max else max -> min
+    Zrangebyscore.buildArgs(key, _max, _min, withscores, limit)
   }
 }
 
