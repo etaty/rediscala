@@ -20,8 +20,13 @@ From version 1.3.1:
  * use Bintray repo: https://bintray.com/etaty/maven/rediscala/view/general
 
 ```scala
-resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
+// new repo on maven.org
+libraryDependencies ++= Seq(
+  "com.github.etaty" %% "rediscala" % "1.5.0"
+)
 
+// old repo on bintray
+resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
 libraryDependencies ++= Seq(
   "com.etaty.rediscala" %% "rediscala" % "1.5.0"
 )
