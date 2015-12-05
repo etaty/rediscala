@@ -21,15 +21,12 @@ From version 1.3.1:
 
 ```scala
 // new repo on maven.org
-libraryDependencies ++= Seq(
-  "com.github.etaty" %% "rediscala" % "1.5.0"
-)
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.5.0"
+
 
 // old repo on bintray
 resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
-libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.5.0"
-)
+libraryDependencies += "com.etaty.rediscala" %% "rediscala" % "1.5.0"
 ```
 
 For older rediscala versions (<= 1.3):
@@ -39,9 +36,7 @@ For older rediscala versions (<= 1.3):
 ```scala
 resolvers += "rediscala" at "https://raw.github.com/etaty/rediscala-mvn/master/releases/"
 
-libraryDependencies ++= Seq(
-  "com.etaty.rediscala" %% "rediscala" % "1.3"
-)
+libraryDependencies += "com.etaty.rediscala" %% "rediscala" % "1.3"
 ```
 
 ### Connect to the database
