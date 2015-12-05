@@ -179,6 +179,18 @@ class SetsSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "SSCAN" in {
+      val r = for {
+        _ <- redis.sadd("sscan", (1 to 20).map(_.toString):_*)
+        scanResult <- redis.sscan[String]("sscan", count = Some(100))
+      } yield {
+        scanResult.index mustEqual 0
+        scanResult.data.map(_.toInt).sorted mustEqual (1 to 20)
+      }
+
+      Await.result(r, timeOut)
+    }
+
     "SUNION" in {
       val r = for {
         _ <- redis.del("sunionKey1")

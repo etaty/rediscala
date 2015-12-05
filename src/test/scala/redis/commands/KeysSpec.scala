@@ -281,6 +281,24 @@ class KeysSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "SCAN" in {
+
+      withRedisServer(port => {
+        val scanRedis = RedisClient("localhost", port)
+
+        val r = for {
+          _ <- scanRedis.set("scanKey1", "value1")
+          _ <- scanRedis.set("scanKey2", "value2")
+          _ <- scanRedis.set("scanKey3", "value3")
+          result <- scanRedis.scan(count = Some(1000))
+        } yield {
+          result.index mustEqual 0
+          result.data.sorted mustEqual Seq("scanKey1", "scanKey2", "scanKey3")
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
     // @see https://gist.github.com/jacqui/983051
     "SORT" in {
       val init = Future.sequence(Seq(

@@ -2,6 +2,7 @@ package redis.api.sets
 
 import redis._
 import akka.util.ByteString
+import redis.protocol.RedisReply
 
 case class Sadd[K, V](key: K, members: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerLong {
   val isMasterOnly = true
@@ -94,4 +95,14 @@ case class Sunionstore[KD, K, KK](destination: KD, key: K, keys: Seq[KK])
   extends RedisCommandIntegerLong {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("SUNIONSTORE", redisDest.serialize(destination) +: redisKey.serialize(key) +: keys.map(redisKeys.serialize))
+}
+
+case class Sscan[K, C, R](key: K, cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisKey: ByteStringSerializer[K], redisCursor: ByteStringSerializer[C], deserializerR: ByteStringDeserializer[R]) extends RedisCommandMultiBulkCursor[Seq[R]] {
+  val isMasterOnly = false
+  val encodedRequest = encode("SSCAN", withOptionalParams(Seq(redisKey.serialize(key), redisCursor.serialize(cursor))))
+
+  val empty = Seq.empty
+
+  def decodeResponses(responses: Seq[RedisReply]) =
+    responses.map(response => deserializerR.deserialize(response.toByteString))
 }

@@ -248,6 +248,19 @@ class SortedSetsSpec extends RedisSpec {
       Await.result(r, timeOut)
     }
 
+    "ZSCAN" in {
+      val r = for {
+        _ <- redis.del("zscan")
+        _ <- redis.zadd("zscan", (1 to 20).map(x => x.toDouble -> x.toString):_*)
+        scanResult <- redis.zscan[String]("zscan", count = Some(100))
+      } yield {
+        scanResult.index mustEqual 0
+        scanResult.data mustEqual (1 to 20).map(x => x.toDouble -> x.toString)
+      }
+
+      Await.result(r, timeOut)
+    }
+
     "ZSCORE" in {
       val r = for {
         _ <- redis.del("zscoreKey")
