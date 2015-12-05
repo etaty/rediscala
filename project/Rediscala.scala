@@ -42,12 +42,10 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
-  val v = "1.5.0"
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
       name := "rediscala",
-      version := v,
       organization := "com.github.etaty",
       scalaVersion := "2.11.7",
       crossScalaVersions := Seq("2.11.7", "2.10.4"),
@@ -91,7 +89,7 @@ object RediscalaBuild extends Build {
           "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala"
         )
       }
-  ) ++ site.settings ++ site.includeScaladoc(v +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings
+  ) ++ site.settings ++ site.includeScaladoc(version +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings
 
   lazy val BenchTest = config("bench") extend Test
 
