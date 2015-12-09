@@ -124,12 +124,12 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def makeSentinelClientKey(host: String, port: Int) = s"$host:$port"
 
 
-  def onNewSlave3(masterName: String, ip: String, port: Int)  {
-      if (master == masterName)
-        onNewSlave(ip, port)
+  def internalOnNewSlave(masterName: String, ip: String, port: Int)  {
+    if (master == masterName)
+      onNewSlave(ip, port)
   }
 
-  def onSlaveDown3(masterName: String, ip: String, port: Int) {
+  def internalOnSlaveDown(masterName: String, ip: String, port: Int) {
     if (master == masterName)
       onSlaveDown(ip, port)
   }
@@ -141,7 +141,7 @@ abstract class SentinelMonitored(system: ActorSystem) {
   }
 
   def makeSentinelClient(host: String, port: Int): SentinelClient = {
-    new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown,onNewSlave3 ,onSlaveDown3, "SMSentinelClient")(system)
+    new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown,internalOnNewSlave ,internalOnSlaveDown, "SMSentinelClient")(system)
   }
 
   def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) {
@@ -182,18 +182,17 @@ abstract class SentinelMonitored(system: ActorSystem) {
   def withSlavesAddr[T](initFunction: Seq[(String, Int)] => T): T = {
      import scala.concurrent.duration._
 
-     val f = sentinelClients.values.map(_.slaves(master))
-
-     val fList = Future.sequence(f)
-
-     val ipPortSeq = fList.map{
-        lm => lm.flatten.map{ m =>
-         ( m.get("ip").get,m.get("port").get.toInt )
-        }
+    val fslaves = Future.sequence(sentinelClients.values.map(_.slaves(master)))
+      .map { lm =>
+        val ipAndPort = lm.flatten.flatMap { m =>
+          (m.get("ip"), m.get("port")) match {
+            case (Some(ip), Some(port)) => Some((ip, port.toInt))
+            case _ => None
+          }
+        }.toSeq.distinct
+        initFunction(ipAndPort)
       }
-
-      val ff = ipPortSeq.map{ pp => initFunction(pp.toSeq) }
-      Await.result(ff, 15 seconds)
+    Await.result(fslaves, 15 seconds)
   }
 
 }
@@ -203,13 +202,6 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
   val onMasterChange = (ip: String, port: Int) => {
     redisClient.reconnect(ip, port)
   }
-
-  val onNewSlave = (ip: String, port: Int) => {
-  }
-
-  val onSlaveDown = (ip: String, port: Int) => {
-  }
-
 
   def redisConnection = redisClient.redisConnection
 
@@ -226,17 +218,9 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
 abstract class SentinelMonitoredRedisBlockingClientLike(system: ActorSystem) extends SentinelMonitored(system) with ActorRequest {
   val redisClient: RedisClientActorLike
 
-  val onNewSlave = (ip: String, port: Int)  => {
-  }
-
-  val onSlaveDown = (ip: String, port: Int)  => {
-  }
-
   val onMasterChange = (ip: String, port: Int) => {
     redisClient.reconnect(ip, port)
   }
-
-
 
   /**
    * Disconnect from the server (stop the actors)

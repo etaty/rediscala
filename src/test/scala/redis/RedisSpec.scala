@@ -42,7 +42,8 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
 abstract class RedisSpec extends RedisHelper with WithRedisServerLauncher {
 
-  lazy val redis = RedisClient()
+  val redis = RedisClient()
+  redis.flushdb()
 }
 
 trait WithRedisServerLauncher extends RedisHelper {
@@ -136,6 +137,7 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
 
   override def cleanup() = {
     processes.foreach(_.destroy())
+    Thread.sleep(5000)
   }
 
   def newSentinelProcess() = {

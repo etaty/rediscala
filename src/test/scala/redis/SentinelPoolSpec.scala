@@ -23,6 +23,7 @@ class SentinelMutablePoolSpec extends RedisClusterClients {
       val r = redisClient.set(key, "hello")
 
       Await.result(r, timeOut)
+      Thread.sleep(500)
       Await.result(redisPool.get[String](key), timeOut) must beSome("hello")
       Await.result(redisPool.get[String](key), timeOut) must beSome("hello")
       Thread.sleep(1000)
@@ -47,7 +48,7 @@ sequential
 lazy val redisMasterSlavesPool =
       SentinelMonitoredRedisClientMasterSlaves( master = masterName,
                                    sentinels = sentinelPorts.map((redisHost, _)))
- "sentienl slave pool" should {
+ "sentinel slave pool" should {
     "add and remove" in {
       Thread.sleep(5000)
       Await.result(redisMasterSlavesPool.set("test","value"),timeOut)

@@ -21,18 +21,22 @@ class SentinelSpec extends RedisClusterClients {
 
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
       sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
+      val firstFailover = sentinelMonitoredRedisClient.redisClient.port
       (sentinelMonitoredRedisClient.redisClient.port == slavePort1) ||
        (sentinelMonitoredRedisClient.redisClient.port == slavePort2 )  mustEqual true
 
     ///*
 
       Thread.sleep(20000)
+      println("******************************failover****************************")
       Await.result(sentinelClient.failover(masterName), timeOut) mustEqual true
 
       Thread.sleep(20000)
       Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
-        (sentinelMonitoredRedisClient.redisClient.port == slavePort1) ||
-        (sentinelMonitoredRedisClient.redisClient.port == slavePort2 )  mustEqual true
+      sentinelMonitoredRedisClient.redisClient.port mustNotEqual firstFailover
+      (sentinelMonitoredRedisClient.redisClient.port == slavePort1) ||
+        (sentinelMonitoredRedisClient.redisClient.port == slavePort2) ||
+        (sentinelMonitoredRedisClient.redisClient.port == masterPort)    mustEqual true
 
     }
     "sentinel nodes auto discovery" in {
