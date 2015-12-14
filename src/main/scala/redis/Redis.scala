@@ -38,9 +38,11 @@ abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorReques
   )
 
   def reconnect(host: String = host, port: Int = port) = {
-    this.host = host
-    this.port = port
-    redisConnection ! new InetSocketAddress(host, port)
+    if (this.host != host || this.port != port ) {
+      this.host = host
+      this.port = port
+      redisConnection ! new InetSocketAddress(host, port)
+    }
   }
 
   def onConnect(redis: RedisCommands): Unit = {

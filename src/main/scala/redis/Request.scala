@@ -46,6 +46,9 @@ trait RoundRobinPoolRequest {
 
   def getNextConnection : ActorRef = {
     val size = redisConnectionPool.size
+    if (size==0){
+        throw new RuntimeException("pool empty")
+    }
     val index = next.getAndIncrement % size
     redisConnectionPool(if (index < 0) size + index - 1 else index)
   }
