@@ -170,7 +170,7 @@ Full example: [ExamplePubSub](https://github.com/etaty/rediscala-demo/blob/maste
 
 You can fork with : `git clone git@github.com:etaty/rediscala-demo.git` then run it, with `sbt run`
 
-[RedisPubSubSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/RedisPubSubSpec.scala.scala) will reveal even more gems of the API.
+[RedisPubSubSpec](https://github.com/etaty/rediscala/blob/master/src/test/scala/redis/RedisPubSubSpec.scala) will reveal even more gems of the API.
 
 ### Scripting
 
