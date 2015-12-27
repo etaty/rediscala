@@ -35,7 +35,7 @@ case class Error(error: ByteString) extends RedisReply {
 }
 
 case class Integer(i: ByteString) extends RedisReply {
-  def toLong: Long = java.lang.Long.parseLong(i.utf8String)
+  def toLong: Long = ParseNumber.parseLong(i)
 
   def toInt: Int = ParseNumber.parseInt(i)
 

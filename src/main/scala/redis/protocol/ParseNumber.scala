@@ -4,8 +4,6 @@ import akka.util.ByteString
 
 object ParseNumber {
 
-  import java.lang.Integer
-
   /**
    * Fast decoder from ByteString to Int
    * Code from openjdk java.lang.Integer parseInt()
@@ -19,12 +17,11 @@ object ParseNumber {
       throw new NumberFormatException("null")
     }
 
-    val radix = 10
     var result = 0
     var negative = false
     var i = 0
     val len = byteString.length
-    var limit = -Integer.MAX_VALUE
+    var limit = -java.lang.Integer.MAX_VALUE
 
     if (len > 0) {
       val firstChar = byteString(0)
@@ -32,7 +29,7 @@ object ParseNumber {
         // Possible leading "+" or "-"
         if (firstChar == '-') {
           negative = true
-          limit = Integer.MIN_VALUE
+          limit = java.lang.Integer.MIN_VALUE
         } else if (firstChar != '+')
           throw new NumberFormatException(byteString.toString())
 
@@ -40,18 +37,69 @@ object ParseNumber {
           throw new NumberFormatException(byteString.toString())
         i += 1
       }
-      val multmin = limit / radix
+      val multmin = limit / 10
       while (i < len) {
         // Accumulating negatively avoids surprises near MAX_VALUE
-        val digit = Character.digit(byteString(i), radix)
+        val digit = byteString(i) - '0'
         i += 1
-        if (digit < 0) {
+        if (digit < 0 || digit > 9) {
           throw new NumberFormatException(byteString.toString())
         }
         if (result < multmin) {
           throw new NumberFormatException(byteString.toString())
         }
-        result *= radix
+        result *= 10
+        if (result < limit + digit) {
+          throw new NumberFormatException(byteString.toString())
+        }
+        result -= digit
+      }
+    } else {
+      throw new NumberFormatException(byteString.toString())
+    }
+    if (negative)
+      result
+    else
+      -result
+  }
+
+  def parseLong(byteString: ByteString): Long = {
+    if (byteString == null) {
+      throw new NumberFormatException("null")
+    }
+
+    var result = 0L
+    var negative = false
+    var i = 0
+    val len = byteString.length
+    var limit = -java.lang.Long.MAX_VALUE
+
+    if (len > 0) {
+      val firstChar = byteString(0)
+      if (firstChar < '0') {
+        // Possible leading "+" or "-"
+        if (firstChar == '-') {
+          negative = true
+          limit = java.lang.Long.MIN_VALUE
+        } else if (firstChar != '+')
+          throw new NumberFormatException(byteString.toString())
+
+        if (len == 1) // Cannot have lone "+" or "-"
+          throw new NumberFormatException(byteString.toString())
+        i += 1
+      }
+      val multmin = limit / 10
+      while (i < len) {
+        // Accumulating negatively avoids surprises near MAX_VALUE
+        val digit = byteString(i) - '0'
+        i += 1
+        if (digit < 0 || digit > 9) {
+          throw new NumberFormatException(byteString.toString())
+        }
+        if (result < multmin) {
+          throw new NumberFormatException(byteString.toString())
+        }
+        result *= 10
         if (result < limit + digit) {
           throw new NumberFormatException(byteString.toString())
         }
