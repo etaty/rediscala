@@ -27,6 +27,8 @@ object Dependencies {
 
   val stm = "org.scala-stm" %% "scala-stm" % "0.7"
 
+  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.12.5"
+
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
 
@@ -35,7 +37,8 @@ object Dependencies {
     stm,
     akkaTestkit % "test",
     //scalameter % "test",
-    specs2 % "test"
+    specs2 % "test",
+    scalacheck % "test"
   )
 }
 
