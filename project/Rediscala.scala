@@ -110,6 +110,19 @@ object RediscalaBuild extends Build {
   ).configs(BenchTest)
     //.settings(benchTestSettings: _* )
 
+  lazy val benchmark = {
+    import pl.project13.scala.sbt.JmhPlugin
+
+    Project(
+      id = "benchmark",
+      base = file("benchmark")
+    ).settings(Seq(
+      scalaVersion := "2.11.7"
+    ))
+      .enablePlugins(JmhPlugin)
+      .dependsOn(root)
+  }
+
   def partitionTests(tests: Seq[TestDefinition]) = {
     Seq(new Group("inProcess", tests, InProcess))
   }
