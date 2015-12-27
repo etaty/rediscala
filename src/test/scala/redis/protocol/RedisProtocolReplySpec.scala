@@ -55,7 +55,7 @@ class RedisProtocolReplySpec extends Specification {
   "Decode multi bulk" should {
     "decode simple" in {
       val multibulkString = ByteString("4\r\n$3\r\nfoo\r\n$3\r\nbar\r\n$5\r\nHello\r\n$5\r\nWorld\r\n")
-      val multibulk = Some(Seq(Bulk(Some(ByteString("foo"))), Bulk(Some(ByteString("bar"))), Bulk(Some(ByteString("Hello"))), Bulk(Some(ByteString("World")))))
+      val multibulk = Some(Vector(Bulk(Some(ByteString("foo"))), Bulk(Some(ByteString("bar"))), Bulk(Some(ByteString("Hello"))), Bulk(Some(ByteString("World")))))
       RedisProtocolReply.decodeMultiBulk(multibulkString) mustEqual Some(MultiBulk(multibulk) -> ByteString())
     }
     "decode waiting" in {
@@ -64,7 +64,7 @@ class RedisProtocolReplySpec extends Specification {
     }
     "decode Empty Multi Bulk" in {
       val emptyMultiBulk = ByteString("0\r\n")
-      RedisProtocolReply.decodeMultiBulk(emptyMultiBulk) mustEqual Some(MultiBulk(Some(Seq())) -> ByteString())
+      RedisProtocolReply.decodeMultiBulk(emptyMultiBulk) mustEqual Some(MultiBulk(Some(Vector())) -> ByteString())
     }
     "decode Null Multi Bulk" in {
       val nullMultiBulk = ByteString("-1\r\n")
@@ -72,12 +72,12 @@ class RedisProtocolReplySpec extends Specification {
     }
     "decode Null element in Multi Bulk" in {
       val nullElementInMultiBulk = ByteString("3\r\n$3\r\nfoo\r\n$-1\r\n$3\r\nbar\r\n")
-      val multibulk = Some(Seq(Bulk(Some(ByteString("foo"))), Bulk(None), Bulk(Some(ByteString("bar")))))
+      val multibulk = Some(Vector(Bulk(Some(ByteString("foo"))), Bulk(None), Bulk(Some(ByteString("bar")))))
       RedisProtocolReply.decodeMultiBulk(nullElementInMultiBulk) mustEqual Some(MultiBulk(multibulk) -> ByteString())
     }
     "decode different reply type" in {
       val diff = ByteString("5\r\n:1\r\n:2\r\n:3\r\n:4\r\n$6\r\nfoobar\r\n")
-      val multibulk = Some(Seq(Integer(ByteString("1")), Integer(ByteString("2")), Integer(ByteString("3")), Integer(ByteString("4")), Bulk(Some(ByteString("foobar")))))
+      val multibulk = Some(Vector(Integer(ByteString("1")), Integer(ByteString("2")), Integer(ByteString("3")), Integer(ByteString("4")), Bulk(Some(ByteString("foobar")))))
       RedisProtocolReply.decodeMultiBulk(diff) mustEqual Some(MultiBulk(multibulk) -> ByteString())
     }
   }

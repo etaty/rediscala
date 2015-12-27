@@ -31,7 +31,7 @@ class TransactionsSpec extends RedisSpec {
     "function api" in {
       "empty" in {
         val empty = redis.multi().exec()
-        Await.result(empty, timeOut) mustEqual MultiBulk(Some(Seq()))
+        Await.result(empty, timeOut) mustEqual MultiBulk(Some(Vector()))
       }
       val redisTransaction = redis.multi(redis => {
         redis.set("a", "abc")
@@ -39,12 +39,12 @@ class TransactionsSpec extends RedisSpec {
       })
       val exec = redisTransaction.exec()
       "non empty" in {
-        Await.result(exec, timeOut) mustEqual MultiBulk(Some(Seq(Status(ByteString("OK")), Bulk(Some(ByteString("abc"))))))
+        Await.result(exec, timeOut) mustEqual MultiBulk(Some(Vector(Status(ByteString("OK")), Bulk(Some(ByteString("abc"))))))
       }
       "reused" in {
         redisTransaction.get("transactionUndefinedKey")
         val exec = redisTransaction.exec()
-        Await.result(exec, timeOut) mustEqual MultiBulk(Some(Seq(Status(ByteString("OK")), Bulk(Some(ByteString("abc"))), Bulk(None))))
+        Await.result(exec, timeOut) mustEqual MultiBulk(Some(Vector(Status(ByteString("OK")), Bulk(Some(ByteString("abc"))), Bulk(None))))
       }
       "watch" in {
         val transaction = redis.watch("transactionWatchKey")
