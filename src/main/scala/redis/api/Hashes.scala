@@ -28,17 +28,19 @@ case class Hgetall[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], des
   val encodedRequest: ByteString = encode("HGETALL", Seq(redisKey.serialize(key)))
 
   def decodeReply(mb: MultiBulk) = mb.responses.map(r => {
-    val seq = r.map(_.toByteString)
     val builder = Map.newBuilder[String, R]
-    seqToMap(seq, builder)
+    builder.sizeHint(r.length / 2)
+    seqToMap(r, builder)
     builder.result()
   }).get
 
   @tailrec
-  private def seqToMap(seq: Seq[ByteString], builder: mutable.Builder[(String, R), Map[String, R]]): Unit = {
+  private def seqToMap(seq: Vector[RedisReply], builder: mutable.Builder[(String, R), Map[String, R]]): Unit = {
     if (seq.nonEmpty) {
-      builder += (seq.head.utf8String -> deserializerR.deserialize(seq.tail.head))
-      seqToMap(seq.tail.tail, builder)
+      val head = seq.head.toByteString
+      val tail = seq.tail
+      builder += (head.utf8String -> deserializerR.deserialize(tail.head.toByteString))
+      seqToMap(tail.tail, builder)
     }
   }
 }

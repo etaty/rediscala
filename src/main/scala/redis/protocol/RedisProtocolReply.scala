@@ -63,7 +63,7 @@ case class Bulk(response: Option[ByteString]) extends RedisReply {
   def asOptByteString: Option[ByteString] = response
 }
 
-case class MultiBulk(responses: Option[Seq[RedisReply]]) extends RedisReply {
+case class MultiBulk(responses: Option[Vector[RedisReply]]) extends RedisReply {
   def toByteString: ByteString = throw new NoSuchElementException()
 
   def asOptByteString: Option[ByteString] = throw new NoSuchElementException()
@@ -165,7 +165,7 @@ object RedisProtocolReply {
       if (i < 0) {
         Some(MultiBulk(None) -> tail)
       } else if (i == 0) {
-        Some(MultiBulk(Some(Nil)) -> tail)
+        Some(MultiBulk(Some(Vector.empty)) -> tail)
       } else {
         @tailrec
         def bulks(bs: ByteString, i: Int, acc: mutable.Buffer[RedisReply]): Option[(MultiBulk, ByteString)] = {
@@ -178,7 +178,7 @@ object RedisProtocolReply {
               None
             }
           } else {
-            Some(MultiBulk(Some(acc.toSeq)) -> bs)
+            Some(MultiBulk(Some(acc.toVector)) -> bs)
           }
         }
         bulks(tail, i, mutable.Buffer())

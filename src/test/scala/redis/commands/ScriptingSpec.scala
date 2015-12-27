@@ -21,7 +21,7 @@ class ScriptingSpec extends RedisSpec {
     "evalshaOrEval (RedisScript)" in {
       Await.result(redis.scriptFlush(), timeOut) must beTrue
       val r = Await.result(redis.evalshaOrEval(redisScriptKeysArgs, Seq("key"), Seq("arg")), timeOut)
-      r mustEqual MultiBulk(Some(Seq(Bulk(Some(ByteString("key"))), Bulk(Some(ByteString("arg"))))))
+      r mustEqual MultiBulk(Some(Vector(Bulk(Some(ByteString("key"))), Bulk(Some(ByteString("arg"))))))
     }
 
     "EVAL" in {
