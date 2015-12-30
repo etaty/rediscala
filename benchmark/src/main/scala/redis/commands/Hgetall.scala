@@ -30,6 +30,7 @@ class Hgetall extends RedisStateHelper {
     import scala.concurrent.duration._
     implicit val exec = rs.akkaSystem.dispatcher
 
+    Await.result(rs.redis.flushall(), 20 seconds)
     val r = for (i <- 0 to 10000) yield {
       rs.redis.hset(hsetKey, i.toString, i)
     }
@@ -53,15 +54,13 @@ class Hgetall extends RedisStateHelper {
 
   @Benchmark
   @BenchmarkMode(Array(Mode.SingleShotTime))
-  def measureHgetall10000ScalaRedis(): Unit = {
+  def measureHgetall10000ScalaRedis(): Seq[Option[Map[String, String]]] = {
     //import scala.concurrent.duration._
     //implicit def exec = rs.akkaSystem.dispatcher
 
     val r = for (i <- 0 to 100) yield {
       scalaRedis.hgetall(hsetKey)
     }
-
-    //val a = Await.ready(Future.sequence(r), 10 seconds)
-    ()
+    r
   }
 }
