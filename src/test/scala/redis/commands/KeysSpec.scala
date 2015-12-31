@@ -287,6 +287,7 @@ class KeysSpec extends RedisSpec {
         val scanRedis = RedisClient("localhost", port)
 
         val r = for {
+          _ <- scanRedis.flushdb()
           _ <- scanRedis.set("scanKey1", "value1")
           _ <- scanRedis.set("scanKey2", "value2")
           _ <- scanRedis.set("scanKey3", "value3")

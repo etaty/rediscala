@@ -31,7 +31,6 @@ object Dependencies {
 
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
-
   val rediscalaDependencies = Seq(
     akkaActor,
     stm,
