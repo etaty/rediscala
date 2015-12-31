@@ -2,10 +2,9 @@ package redis.protocol
 
 import akka.util.ByteString
 import org.openjdk.jmh.annotations.{Scope, State, Benchmark}
-import redis.protocol.ParseNumber
 
 @State(Scope.Benchmark)
-class ParseNumber {
+class ParseNumberBench {
   val bs = ByteString("123")
 
   @Benchmark

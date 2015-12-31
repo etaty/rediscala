@@ -73,116 +73,173 @@ case class MultiBulk(responses: Option[Vector[RedisReply]]) extends RedisReply {
   def asOpt[A](implicit convert: MultiBulkConverter[A]): Option[A] = asTry(convert).toOption
 }
 
+case class PartialMultiBulk(i: Int, acc: mutable.Buffer[RedisReply]) extends RedisReply {
+  override def toByteString: ByteString = throw new NoSuchElementException()
+
+  override def asOptByteString: Option[ByteString] = throw new NoSuchElementException()
+}
+
+sealed trait DecodeResult[+A] {
+  def rest: ByteString
+
+  def isFullyDecoded: Boolean
+
+  def foreach[B](f: A => Unit): DecodeResult[Unit] = this match {
+    case p: PartiallyDecoded[A] => PartiallyDecoded(ByteString(), bs => p.f(p.rest ++ bs).foreach(f))
+    case fd: FullyDecoded[A] => FullyDecoded(f(fd.result), fd.rest)
+  }
+
+  def map[B](f: A => B): DecodeResult[B] = this match {
+    case p: PartiallyDecoded[A] => PartiallyDecoded(ByteString(), bs => p.f(p.rest ++ bs).map(f))
+    case fd: FullyDecoded[A] => FullyDecoded(f(fd.result), fd.rest)
+  }
+
+  def flatMap[B](f: (A, ByteString) => DecodeResult[B]): DecodeResult[B] = this match {
+    case p: PartiallyDecoded[A] => PartiallyDecoded(ByteString(), bs => p.f(p.rest ++ bs).flatMap(f))
+    case fd: FullyDecoded[A] => f(fd.result, fd.rest)
+  }
+
+  def run(next: ByteString): DecodeResult[A] = this match {
+    case p: PartiallyDecoded[A] => p.f(p.rest ++ next)
+    case fd: FullyDecoded[A] => FullyDecoded(fd.result, fd.rest ++ next)
+  }
+}
+
+case class PartiallyDecoded[A](rest: ByteString, f: ByteString => DecodeResult[A]) extends DecodeResult[A] {
+  override def isFullyDecoded: Boolean = false
+}
+
+case class FullyDecoded[A](result: A, rest: ByteString) extends DecodeResult[A] {
+  override def isFullyDecoded: Boolean = true
+}
+
+object DecodeResult {
+  val unit: DecodeResult[Unit] = FullyDecoded(Unit, ByteString.empty)
+}
+
 
 object RedisProtocolReply {
-  val ERROR     = '-'
-  val STATUS    = '+'
-  val INTEGER   = ':'
-  val BULK      = '$'
+  val ERROR = '-'
+  val STATUS = '+'
+  val INTEGER = ':'
+  val BULK = '$'
   val MULTIBULK = '*'
 
   val LS = "\r\n".getBytes("UTF-8")
 
-  def decodeReply(bs: ByteString): Option[(RedisReply, ByteString)] = {
+  def decodeReply(bs: ByteString): DecodeResult[RedisReply] = {
     if (bs.isEmpty) {
-      None
+      PartiallyDecoded(bs, decodeReply)
     } else {
       bs.head match {
-        case ERROR => decodeString(bs.tail).map(r => (Error(r._1), r._2))
+        case ERROR => decodeString(bs.tail).map(Error(_))
         case INTEGER => decodeInteger(bs.tail)
-        case STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
+        case STATUS => decodeString(bs.tail).map(Status(_))
         case BULK => decodeBulk(bs.tail)
         case MULTIBULK => decodeMultiBulk(bs.tail)
-        case _ => throw new Exception("Redis Protocol error: Got " + bs.head + " as initial reply byte")
+        case _ => throw new Exception("Redis Protocol error: Got " + bs.head + " as initial reply byte >>"+ bs.tail.utf8String)
       }
     }
   }
 
-  val decodeReplyPF: PartialFunction[ByteString, Option[(RedisReply, ByteString)]] = {
+  val decodeReplyPF: PartialFunction[ByteString, DecodeResult[RedisReply]] = {
     case bs if bs.head == INTEGER => decodeInteger(bs.tail)
-    case bs if bs.head == STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
+    case bs if bs.head == STATUS => decodeString(bs.tail).map(Status(_))
     case bs if bs.head == BULK => decodeBulk(bs.tail)
     case bs if bs.head == MULTIBULK => decodeMultiBulk(bs.tail)
   }
 
-  val decodeReplyStatus: PartialFunction[ByteString, Option[(Status, ByteString)]] = {
-    case bs if bs.head == STATUS => decodeString(bs.tail).map(r => (Status(r._1), r._2))
+  val decodeReplyStatus: PartialFunction[ByteString, DecodeResult[Status]] = {
+    case bs if bs.head == STATUS => decodeString(bs.tail).map(Status(_))
   }
 
-  val decodeReplyInteger: PartialFunction[ByteString, Option[(Integer, ByteString)]] = {
+  val decodeReplyInteger: PartialFunction[ByteString, DecodeResult[Integer]] = {
     case bs if bs.head == INTEGER => decodeInteger(bs.tail)
   }
 
-  val decodeReplyBulk: PartialFunction[ByteString, Option[(Bulk, ByteString)]] = {
+  val decodeReplyBulk: PartialFunction[ByteString, DecodeResult[Bulk]] = {
     case bs if bs.head == BULK => decodeBulk(bs.tail)
   }
 
-  val decodeReplyMultiBulk: PartialFunction[ByteString, Option[(MultiBulk, ByteString)]] = {
+  val decodeReplyMultiBulk: PartialFunction[ByteString, DecodeResult[MultiBulk]] = {
     case bs if bs.head == MULTIBULK => decodeMultiBulk(bs.tail)
   }
 
-  val decodeReplyError: PartialFunction[ByteString, Option[(Error, ByteString)]] = {
-    case bs if bs.head == ERROR => decodeString(bs.tail).map(r => (Error(r._1), r._2))
+  val decodeReplyError: PartialFunction[ByteString, DecodeResult[Error]] = {
+    case bs if bs.head == ERROR => decodeString(bs.tail).map(Error(_))
   }
 
-  def decodeInteger(bs: ByteString): Option[(Integer, ByteString)] = {
-    decodeString(bs).map(r => {
-      val i = Integer(r._1)
-      (i, r._2)
-    })
+  def decodeInteger(bs: ByteString): DecodeResult[Integer] = {
+    decodeString(bs).map { (string) => Integer(string) }
   }
 
-  def decodeString(bs: ByteString): Option[(ByteString, ByteString)] = {
+  def decodeString(bs: ByteString): DecodeResult[ByteString] = {
     val index = bs.indexOf('\n')
     if (index >= 0 && bs.length >= index + 1) {
       val reply = bs.take(index + 1 - LS.length)
       val tail = bs.drop(index + 1)
-      Some(reply -> tail)
+      val r = FullyDecoded(reply, tail)
+      r
     } else {
-      None
+      PartiallyDecoded(bs, decodeString)
     }
   }
 
-  def decodeBulk(bs: ByteString): Option[(Bulk, ByteString)] = {
-    decodeInteger(bs).flatMap(r => {
-      val i = r._1.toInt
-      val tail = r._2
+  def decodeBulk(bs: ByteString): DecodeResult[Bulk] = {
+    def decodeBulkBody(integer: Integer, bsRest: ByteString): DecodeResult[Bulk] = {
+      val i = integer.toInt
       if (i < 0) {
-        Some(Bulk(None) -> tail)
-      } else if (tail.length < (i + LS.length)) {
-        None
+        FullyDecoded(Bulk(None), bsRest)
+      } else if (bsRest.length < (i + LS.length)) {
+        PartiallyDecoded(bsRest, decodeBulkBody(integer, _))
       } else {
-        val data = tail.take(i)
-        Some(Bulk(Some(data)) -> tail.drop(i).drop(LS.length))
+        val data = bsRest.take(i)
+        FullyDecoded(Bulk(Some(data)), bsRest.drop(i).drop(LS.length))
       }
-    })
+    }
+    decodeInteger(bs).flatMap(decodeBulkBody)
   }
 
-  def decodeMultiBulk(bs: ByteString): Option[(MultiBulk, ByteString)] = {
-    decodeInteger(bs).flatMap(r => {
-      val i = r._1.toInt
-      val tail = r._2
+  def decodeMultiBulk(bs: ByteString): DecodeResult[MultiBulk] = {
+    decodeInteger(bs).flatMap { (integer, bsRest) =>
+      val i = integer.toInt
       if (i < 0) {
-        Some(MultiBulk(None) -> tail)
+        FullyDecoded(MultiBulk(None), bsRest)
       } else if (i == 0) {
-        Some(MultiBulk(Some(Vector.empty)) -> tail)
+        FullyDecoded(MultiBulk(Some(Vector.empty)), bsRest)
       } else {
-        @tailrec
-        def bulks(bs: ByteString, i: Int, acc: mutable.Buffer[RedisReply]): Option[(MultiBulk, ByteString)] = {
-          if (i > 0) {
-            val reply = decodeReply(bs)
-            if (reply.nonEmpty) {
-              acc.append(reply.get._1)
-              bulks(reply.get._2, i - 1, acc)
-            } else {
-              None
-            }
-          } else {
-            Some(MultiBulk(Some(acc.toVector)) -> bs)
-          }
-        }
-        bulks(tail, i, mutable.Buffer())
+        val builder = Vector.newBuilder[RedisReply]
+        builder.sizeHint(i)
+        bulks(i, builder, bsRest)
       }
-    })
+    }
+  }
+
+  def bulks(i: Int, builder: mutable.Builder[RedisReply, Vector[RedisReply]], byteString: ByteString): DecodeResult[MultiBulk] = {
+
+    @tailrec
+    def helper(i: Int, bs: ByteString): DecodeResult[Int] = {
+      if (i > 0) {
+        val reply = decodeReply(bs)
+          .map { r =>
+            builder += r
+            i - 1
+          }
+        if (reply.isFullyDecoded)
+          helper(i - 1, reply.rest)
+        else
+          reply
+      } else {
+        FullyDecoded(0, bs)
+      }
+    }
+
+    helper(i, byteString).flatMap { (i, bs) =>
+      if (i > 0) {
+        bulks(i, builder, bs)
+      } else {
+        FullyDecoded[MultiBulk](MultiBulk(Some(builder.result())), bs)
+      }
+    }
   }
 }

@@ -3,13 +3,13 @@ package redis
 import akka.util.ByteString
 import redis.protocol._
 
-trait RedisCommand[RedisReplyT <: RedisReply, T] {
+trait RedisCommand[RedisReplyT <: RedisReply, +T] {
   val isMasterOnly: Boolean
   val encodedRequest: ByteString
 
   def decodeReply(r: RedisReplyT): T
 
-  val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReplyT, ByteString)]]
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[RedisReplyT]]
 
   def encode(command: String) = RedisProtocolRequest.inline(command)
 
@@ -18,23 +18,23 @@ trait RedisCommand[RedisReplyT <: RedisReply, T] {
 
 
 trait RedisCommandStatus[T] extends RedisCommand[Status, T] {
-  val decodeRedisReply: PartialFunction[ByteString, Option[(Status, ByteString)]] = RedisProtocolReply.decodeReplyStatus
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Status]] = RedisProtocolReply.decodeReplyStatus
 }
 
 trait RedisCommandInteger[T] extends RedisCommand[Integer, T] {
-  val decodeRedisReply: PartialFunction[ByteString, Option[(Integer, ByteString)]] = RedisProtocolReply.decodeReplyInteger
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Integer]] = RedisProtocolReply.decodeReplyInteger
 }
 
 trait RedisCommandBulk[T] extends RedisCommand[Bulk, T] {
-  val decodeRedisReply: PartialFunction[ByteString, Option[(Bulk, ByteString)]] = RedisProtocolReply.decodeReplyBulk
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Bulk]] = RedisProtocolReply.decodeReplyBulk
 }
 
 trait RedisCommandMultiBulk[T] extends RedisCommand[MultiBulk, T] {
-  val decodeRedisReply: PartialFunction[ByteString, Option[(MultiBulk, ByteString)]] = RedisProtocolReply.decodeReplyMultiBulk
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[MultiBulk]] = RedisProtocolReply.decodeReplyMultiBulk
 }
 
 trait RedisCommandRedisReply[T] extends RedisCommand[RedisReply, T] {
-  val decodeRedisReply: PartialFunction[ByteString, Option[(RedisReply, ByteString)]] = RedisProtocolReply.decodeReplyPF
+  val decodeRedisReply: PartialFunction[ByteString, DecodeResult[RedisReply]] = RedisProtocolReply.decodeReplyPF
 }
 
 trait RedisCommandStatusString extends RedisCommandStatus[String] {

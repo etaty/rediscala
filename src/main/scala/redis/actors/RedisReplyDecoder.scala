@@ -2,7 +2,7 @@ package redis.actors
 
 import akka.actor.Actor
 import scala.collection.mutable
-import redis.protocol.{RedisProtocolReply, RedisReply}
+import redis.protocol.{FullyDecoded, DecodeResult, RedisProtocolReply, RedisReply}
 import akka.util.ByteString
 import akka.event.Logging
 import scala.annotation.tailrec
@@ -28,44 +28,47 @@ class RedisReplyDecoder() extends Actor {
     case byteStringInput: ByteString => decodeReplies(byteStringInput)
   }
 
-  var bufferRead: ByteString = ByteString.empty
+  var partiallyDecoded: DecodeResult[Unit] = DecodeResult.unit
 
   def decodeReplies(dataByteString: ByteString) {
-    bufferRead = decodeRepliesRecur(bufferRead ++ dataByteString).compact
-  }
-
-  @tailrec
-  private def decodeRepliesRecur(bs: ByteString): ByteString = {
-    val op = queuePromises.front
-
-    val result : Option[(Any, ByteString)] = decodeRedisReply(op, bs)
-
-    if(result.nonEmpty) {
-      val tail = result.get._2
-      if (queuePromises.nonEmpty && tail.nonEmpty)
-        decodeRepliesRecur(tail)
-      else
-        tail
+    partiallyDecoded = if (partiallyDecoded.isFullyDecoded) {
+      decodeRepliesRecur(partiallyDecoded.rest ++ dataByteString)
     } else {
-      bs
+      val r = partiallyDecoded.run(dataByteString)
+      if (r.isFullyDecoded) {
+        decodeRepliesRecur(r.rest)
+      } else {
+        r
+      }
     }
   }
 
-  def decodeRedisReply(operation: Operation[_,_], bs: ByteString): Option[(Any, ByteString)] = {
-    if (operation.redisCommand.decodeRedisReply.isDefinedAt(bs)) {
-      val r = operation.decodeRedisReplyThenComplete(bs)
-      if (r.nonEmpty) {
-        queuePromises.dequeue()
+  @tailrec
+  private def decodeRepliesRecur(bs: ByteString): DecodeResult[Unit] = {
+    if (queuePromises.nonEmpty && bs.nonEmpty) {
+      val op = queuePromises.dequeue()
+      val result = decodeRedisReply(op, bs)
+
+      if (result.isFullyDecoded) {
+        decodeRepliesRecur(result.rest)
+      } else {
+        result
       }
-      r
-    } else if (RedisProtocolReply.decodeReplyError.isDefinedAt(bs)) {
-      val r = RedisProtocolReply.decodeReplyError.apply(bs)
-      if (r.nonEmpty) {
-        operation.completeFailed(ReplyErrorException(r.get._1.toString))
-        queuePromises.dequeue()
-      }
-      r
     } else {
+      FullyDecoded(Unit, bs)
+    }
+  }
+
+  def decodeRedisReply(operation: Operation[_, _], bs: ByteString): DecodeResult[Unit] = {
+    if (operation.redisCommand.decodeRedisReply.isDefinedAt(bs)) {
+      operation.decodeRedisReplyThenComplete(bs)
+    } else if (RedisProtocolReply.decodeReplyError.isDefinedAt(bs)) {
+      RedisProtocolReply.decodeReplyError.apply(bs)
+        .foreach { error =>
+          operation.completeFailed(ReplyErrorException(error.toString))
+        }
+    } else {
+      operation.completeFailed(InvalidRedisReply)
       throw new Exception(s"Redis Protocol error: Got ${bs.head} as initial reply byte for Operation: $operation")
     }
   }
@@ -76,24 +79,32 @@ case class ReplyErrorException(message: String) extends Exception(message)
 object InvalidRedisReply extends RuntimeException("Could not decode the redis reply (Connection closed)")
 
 trait DecodeReplies {
-  var bufferRead: ByteString = ByteString.empty
+  var partiallyDecoded: DecodeResult[Unit] = DecodeResult.unit
 
   def decodeReplies(dataByteString: ByteString) {
-    bufferRead = decodeRepliesRecur(bufferRead ++ dataByteString).compact
+    partiallyDecoded = if (partiallyDecoded.isFullyDecoded) {
+      decodeRepliesRecur(dataByteString)
+    } else {
+      val r = partiallyDecoded.run(dataByteString)
+      if (r.isFullyDecoded) {
+        decodeRepliesRecur(r.rest)
+      } else {
+        r
+      }
+    }
   }
 
   @tailrec
-  private def decodeRepliesRecur(bs: ByteString): ByteString = {
-    val r = RedisProtocolReply.decodeReply(bs)
-    if (r.nonEmpty) {
-      onDecodedReply(r.get._1)
-      decodeRepliesRecur(r.get._2)
+  private def decodeRepliesRecur(bs: ByteString): DecodeResult[Unit] = {
+    val r = RedisProtocolReply.decodeReply(bs).map(onDecodedReply)
+    if (r.isFullyDecoded) {
+      decodeRepliesRecur(r.rest)
     } else {
-      bs
+      r
     }
   }
 
   def onDecodedReply(reply: RedisReply)
 }
 
-case class QueuePromises(queue: mutable.Queue[Operation[_,_]])
+case class QueuePromises(queue: mutable.Queue[Operation[_, _]])

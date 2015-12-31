@@ -120,7 +120,8 @@ object RediscalaBuild extends Build {
       id = "benchmark",
       base = file("benchmark")
     ).settings(Seq(
-      scalaVersion := "2.11.7"
+      scalaVersion := "2.11.7",
+      libraryDependencies += "net.debasishg" %% "redisclient" % "3.0"
     ))
       .enablePlugins(JmhPlugin)
       .dependsOn(root)
