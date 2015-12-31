@@ -1,19 +1,18 @@
 package redis
 
 import scala.concurrent.Promise
-import redis.protocol.RedisReply
+import redis.protocol.{DecodeResult, RedisReply}
 import akka.util.ByteString
 
 case class Operation[RedisReplyT <: RedisReply, T](redisCommand: RedisCommand[RedisReplyT, T], promise: Promise[T]) {
-  def decodeRedisReplyThenComplete(bs: ByteString): Option[(RedisReplyT, ByteString)] = {
+  def decodeRedisReplyThenComplete(bs: ByteString): DecodeResult[Unit] = {
     val r = redisCommand.decodeRedisReply.apply(bs)
-    if (r.isDefined) {
-      completeSuccess(r.get._1)
+    r.foreach { reply =>
+      completeSuccess(reply)
     }
-    r
   }
 
-  def completeSuccess(redisReply: RedisReplyT) = {
+  def completeSuccess(redisReply: RedisReplyT): Promise[T] = {
     val v = redisCommand.decodeReply(redisReply)
     promise.success(v)
   }
