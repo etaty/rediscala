@@ -44,13 +44,14 @@ trait RoundRobinPoolRequest {
 
   val next = new AtomicInteger(0)
 
-  def getNextConnection : ActorRef = {
+  def getNextConnection: Option[ActorRef] = {
     val size = redisConnectionPool.size
-    if (size==0){
-        throw new RuntimeException("pool empty")
+    if (size == 0) {
+      None
+    } else {
+      val index = next.getAndIncrement % size
+      Some(redisConnectionPool(if (index < 0) size + index - 1 else index))
     }
-    val index = next.getAndIncrement % size
-    redisConnectionPool(if (index < 0) size + index - 1 else index)
   }
 
   private def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
@@ -60,9 +61,11 @@ trait RoundRobinPoolRequest {
   }
 
   def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
-    // TODO empty Pool ?
-    val redisConnection = getNextConnection
-    send(redisConnection, redisCommand)
+    getNextConnection.fold(
+      Future.failed[T](throw new RuntimeException("redis pool is empty"))
+    ) { redisConnection =>
+      send(redisConnection, redisCommand)
+    }
   }
 
   /**
