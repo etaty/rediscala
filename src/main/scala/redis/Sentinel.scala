@@ -1,11 +1,12 @@
 package redis
 
 import redis.commands.Sentinel
-import akka.actor.{Props, ActorRef, ActorSystem}
+import akka.actor.{ActorSystem, Props, ActorRef}
 import akka.event.Logging
 import redis.api.pubsub.{PMessage, Message}
 import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress
+import scala.collection.Map
 import scala.concurrent.{Await, Future}
 
 trait SentinelCommands
@@ -16,17 +17,20 @@ case class SentinelClient(var host: String = "localhost",
                           onMasterChange: (String, String, Int) => Unit = (masterName: String, ip: String, port: Int) => {},
                           onNewSentinel:  (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
                           onSentinelDown: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
+                          onNewSlave:     (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
+                          onSlaveDown:    (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
                           name: String = "SentinelClient")
                          (implicit _system: ActorSystem) extends RedisClientActorLike(_system) with SentinelCommands {
   val system: ActorSystem = _system
 
   val log = Logging.getLogger(system, this)
 
-  val channels = Seq("+switch-master", "+sentinel", "+sdown", "+failover-state-send-slaveof-noone")
+  val channels = Seq("+switch-master", "+sentinel", "+sdown","-sdown", "+failover-state-send-slaveof-noone","+slave")
 
   val onMessage = (message: Message) => {
-    if (log.isDebugEnabled)
-      log.debug(s"SentinelClient.onMessage: message received: $message")
+
+   if (log.isDebugEnabled)
+      log.debug(s"SentinelClient.onMessage: message received:${message.channel} ${message.data.utf8String}")
 
     message match {
       case Message("+switch-master", data) => {
@@ -54,6 +58,26 @@ case class SentinelClient(var host: String = "localhost",
         data.utf8String.split(" ") match {
           case Array("sentinel", sentName, sentinelip, sentinelport, "@", master, masterip, masterport) =>
             onSentinelDown(master, sentinelip, sentinelport.toInt)
+
+          case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
+            onSlaveDown(master, slaveip, slaveport.toInt)
+
+          case _ => {}
+        }
+      }
+      case Message("-sdown", data)  => {
+        data.utf8String.split(" ") match {
+          case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
+            onNewSlave(master, slaveip, slaveport.toInt)
+
+          case _ => {}
+        }
+      }
+      case Message("+slave", data)  => {
+        data.utf8String.split(" ") match {
+          case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
+            onNewSlave(master, slaveip, slaveport.toInt)
+
           case _ => {}
         }
       }
@@ -84,26 +108,43 @@ abstract class SentinelMonitored(system: ActorSystem) {
   val sentinels: Seq[(String, Int)]
   val master: String
   val onMasterChange: (String, Int) => Unit
+  val onNewSlave: (String, Int) => Unit
+  val onSlaveDown: (String, Int) => Unit
 
   implicit val executionContext = system.dispatcher
 
+  val log = Logging.getLogger(system, this)
+
   val sentinelClients =
     collection.mutable.Map(
-      sentinels.map(hp =>
-        (makeSentinelClientKey(hp._1, hp._2), makeSentinelClient(hp._1, hp._2))
-      ):_*
+      sentinels.map(
+        hp =>
+          (makeSentinelClientKey(hp._1, hp._2), makeSentinelClient(hp._1, hp._2))
+      ): _*
     )
 
   def makeSentinelClientKey(host: String, port: Int) = s"$host:$port"
 
-  def makeSentinelClient(host: String, port: Int): SentinelClient = {
-    new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown, "SMSentinelClient")(system)
+
+  def internalOnNewSlave(masterName: String, ip: String, port: Int) {
+    if (master == masterName)
+      onNewSlave(ip, port)
   }
 
+  def internalOnSlaveDown(masterName: String, ip: String, port: Int) {
+    if (master == masterName)
+      onSlaveDown(ip, port)
+  }
 
   def onSwitchMaster(masterName: String, ip: String, port: Int) {
-    if (master == masterName)
+    if (master == masterName) {
       onMasterChange(ip, port)
+      onSlaveDown(ip, port)
+    }
+  }
+
+  def makeSentinelClient(host: String, port: Int): SentinelClient = {
+    new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown, internalOnNewSlave, internalOnSlaveDown, "SMSentinelClient")(system)
   }
 
   def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) {
@@ -120,8 +161,10 @@ abstract class SentinelMonitored(system: ActorSystem) {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && sentinelClients.contains(k)) {
       sentinelClients.synchronized {
-        if (sentinelClients.contains(k))
+        if (sentinelClients.contains(k)) {
+          sentinelClients(k).stop
           sentinelClients -= k
+        }
       }
     }
   }
@@ -132,17 +175,38 @@ abstract class SentinelMonitored(system: ActorSystem) {
     val f = sentinelClients.values.map(_.getMasterAddr(master))
     val ff = Future.find(f) { case Some((_: String, _: Int)) => true case _ => false }
       .map {
-      case Some(Some((ip: String, port: Int))) => initFunction(ip, port)
-      case _ => throw new Exception(s"No such master '$master'")
-    }
+        case Some(Some((ip: String, port: Int))) => initFunction(ip, port)
+        case _ => throw new Exception(s"No such master '$master'")
+      }
 
     Await.result(ff, 15 seconds)
+  }
+
+  def withSlavesAddr[T](initFunction: Seq[(String, Int)] => T): T = {
+    import scala.concurrent.duration._
+
+    val fslaves = Future.sequence(sentinelClients.values.map(_.slaves(master)))
+      .map { lm =>
+        val ipPortBuilder = Set.newBuilder[(String, Int)]
+        for {
+          slaves <- lm
+          slave <- slaves
+          ip <- slave.get("ip")
+          port <- slave.get("port")
+        } yield {
+          ipPortBuilder += ip -> port.toInt
+        }
+        initFunction(ipPortBuilder.result().toSeq)
+      }
+
+    Await.result(fslaves, 15 seconds)
   }
 }
 
 abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends SentinelMonitored(system) with ActorRequest {
   val redisClient: RedisClientActorLike
   val onMasterChange = (ip: String, port: Int) => {
+    log.info(s"onMasterChange: $ip:$port")
     redisClient.reconnect(ip, port)
   }
 
@@ -157,3 +221,22 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem) extends Sen
   }
 
 }
+
+abstract class SentinelMonitoredRedisBlockingClientLike(system: ActorSystem) extends SentinelMonitored(system) with ActorRequest {
+  val redisClient: RedisClientActorLike
+
+  val onMasterChange = (ip: String, port: Int) => {
+    log.info(s"onMasterChange: $ip:$port")
+    redisClient.reconnect(ip, port)
+  }
+
+  /**
+   * Disconnect from the server (stop the actors)
+   */
+  def stop() = {
+    redisClient.stop()
+    sentinelClients.values.foreach(_.stop())
+  }
+
+}
+

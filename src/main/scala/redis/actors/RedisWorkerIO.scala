@@ -88,8 +88,10 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
     case c: ConnectionClosed => {
       if(sender == tcpWorker)
         onConnectionClosed(c)
-      else
+      else {
+        onConnectStatus(false)
         onClosingConnectionClosed()
+      }
     }
     case c: CommandFailed => onConnectedCommandFailed(c)
   }

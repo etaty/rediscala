@@ -38,9 +38,11 @@ abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorReques
   )
 
   def reconnect(host: String = host, port: Int = port) = {
-    this.host = host
-    this.port = port
-    redisConnection ! new InetSocketAddress(host, port)
+    if (this.host != host || this.port != port ) {
+      this.host = host
+      this.port = port
+      redisConnection ! new InetSocketAddress(host, port)
+    }
   }
 
   def onConnect(redis: RedisCommands): Unit = {
@@ -139,7 +141,8 @@ case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("l
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
     new RedisClient(ip, port, name = "SMRedisClient")
   })
-
+  override val onNewSlave  =  (ip: String, port: Int) => {}
+  override val onSlaveDown =  (ip: String, port: Int) => {}
 }
 
 
@@ -149,6 +152,8 @@ case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] =
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
     new RedisBlockingClient(ip, port, name = "SMRedisBlockingClient")
   })
+  override val onNewSlave =  (ip: String, port: Int) => {}
+  override val onSlaveDown =  (ip: String, port: Int) => {}
 }
 
 private[redis] object Redis {
