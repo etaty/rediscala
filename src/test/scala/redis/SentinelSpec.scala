@@ -2,8 +2,9 @@ package redis
 
 import scala.concurrent._
 import scala.concurrent.duration._
+import akka.testkit._
 
-class SentinelSpec extends RedisClusterClients {
+class SentinelSpec extends RedisClusterClients("SentinelSpec") {
 
   sequential
 
@@ -14,29 +15,25 @@ class SentinelSpec extends RedisClusterClients {
       val port = sentinelMonitoredRedisClient.redisClient.port
 
       awaitAssert({
-        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
-      }, 10 seconds)
-      sentinelClient.failover(masterName) must beTrue.await
+        Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
+        sentinelClient.failover(masterName) must beTrue.await
+      }, 30.seconds.dilated)
 
       awaitAssert({
-        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
-        sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
-        sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2)
-      }, 10 seconds)
+        Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
+        sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, port)
+      }, 30.seconds.dilated)
 
       val firstFailover = sentinelMonitoredRedisClient.redisClient.port
 
-      sentinelClient.failover(masterName) must beTrue.await
       awaitAssert({
-        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await.not
-      }, 5 seconds)
+        Await.result(sentinelClient.failover(masterName), timeOut) must beTrue
+      }, 30.seconds.dilated)
 
       awaitAssert({
-        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
-        sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
-        sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, masterPort)
-      }, 10 seconds)
-      sentinelMonitoredRedisClient.redisClient.port mustNotEqual firstFailover
+        Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
+      }, 30.seconds.dilated)
+      sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, masterPort, port)
     }
 
     "ping" in {
