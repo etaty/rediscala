@@ -3,7 +3,7 @@ package redis
 import scala.concurrent.duration._
 import scala.concurrent._
 import scala.util.Try
-class SentinelMutablePoolSpec extends RedisClusterClients {
+class SentinelMutablePoolSpec extends RedisClusterClients("SentinelMutablePoolSpec") {
 
   sequential
 
@@ -49,7 +49,7 @@ class SentinelMutablePoolSpec extends RedisClusterClients {
 
 }
 
-class SentinelMonitoredRedisClientMasterSlavesSpec extends RedisClusterClients {
+class SentinelMonitoredRedisClientMasterSlavesSpec extends RedisClusterClients("SentinelMonitoredRedisClientMasterSlavesSpec") {
 
 sequential
 lazy val redisMasterSlavesPool =
