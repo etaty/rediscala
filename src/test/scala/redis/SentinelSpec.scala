@@ -2,6 +2,7 @@ package redis
 
 import scala.concurrent._
 import scala.concurrent.duration._
+
 class SentinelSpec extends RedisClusterClients {
 
   sequential
@@ -12,29 +13,30 @@ class SentinelSpec extends RedisClusterClients {
     "master auto failover" in {
       val port = sentinelMonitoredRedisClient.redisClient.port
 
-      Thread.sleep(10000)
-      Await.result(sentinelMonitoredRedisClient.ping(), timeOut) mustEqual "PONG"
-      Await.result(sentinelClient.failover(masterName),timeOut) mustEqual true
+      awaitAssert({
+        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
+      }, 10 seconds)
+      sentinelClient.failover(masterName) must beTrue.await
 
-      Thread.sleep(10000)
+      awaitAssert({
+        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
+        sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
+        sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2)
+      }, 10 seconds)
 
-       Await.result(sentinelMonitoredRedisClient.ping(),timeOut) mustEqual "PONG"
-      sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
       val firstFailover = sentinelMonitoredRedisClient.redisClient.port
-      (sentinelMonitoredRedisClient.redisClient.port == slavePort1) ||
-       (sentinelMonitoredRedisClient.redisClient.port == slavePort2 )  mustEqual true
 
-    ///*
+      sentinelClient.failover(masterName) must beTrue.await
+      awaitAssert({
+        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await.not
+      }, 5 seconds)
 
-      Await.result(sentinelClient.failover(masterName),timeOut) mustEqual true
-      Thread.sleep(10000)
-      Await.result(sentinelMonitoredRedisClient.ping(),timeOut) mustEqual "PONG"
-
-      (sentinelMonitoredRedisClient.redisClient.port == slavePort1) ||
-        (sentinelMonitoredRedisClient.redisClient.port == slavePort2) ||
-        (sentinelMonitoredRedisClient.redisClient.port == masterPort)    mustEqual true
+      awaitAssert({
+        sentinelMonitoredRedisClient.ping() must beEqualTo("PONG").await
+        sentinelMonitoredRedisClient.redisClient.port mustNotEqual port
+        sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, masterPort)
+      }, 10 seconds)
       sentinelMonitoredRedisClient.redisClient.port mustNotEqual firstFailover
-
     }
 
     "ping" in {
@@ -42,16 +44,17 @@ class SentinelSpec extends RedisClusterClients {
       Await.result(redisClient.ping(), timeOut) mustEqual "PONG"
     }
 
-   "sentinel nodes auto discovery" in {
+    "sentinel nodes auto discovery" in {
       val sentinelCount = sentinelMonitoredRedisClient.sentinelClients.size
       val sentinel = newSentinelProcess()
 
-      awaitAssert(sentinelMonitoredRedisClient.sentinelClients.size  mustEqual sentinelCount + 1,10 second)
+      awaitAssert(sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount + 1, 10 second)
 
       sentinel.destroy()
-      Thread.sleep(10000)
-      sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount
-
+      awaitAssert({
+        sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount
+      }, 10 seconds)
+      success
     }
   }
 

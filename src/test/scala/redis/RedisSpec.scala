@@ -107,7 +107,7 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
   lazy val sentinelMonitoredRedisClient =
       SentinelMonitoredRedisClient(master = masterName,
                                    sentinels = sentinelPorts.map((redisHost, _)))
-  var processes: Seq[Process] = null
+  var processes: Seq[Process] = Seq.empty
 
   lazy val sentinelConfPath = {
       val sentinelConf =
@@ -139,6 +139,7 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
         sentinelPorts.map(p =>
           Process(s"$redisServerCmd $sentinelConfPath --port $p --sentinel $redisServerLogLevel").run(processLogger)
         )
+    Thread.sleep(10000)
   }
 
   override def cleanup() = {
