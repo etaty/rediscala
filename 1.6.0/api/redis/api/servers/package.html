@@ -1,0 +1,461 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>servers - redis.api.servers</title>
+          <meta name="description" content="servers - redis.api.servers" />
+          <meta name="keywords" content="servers redis.api.servers" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'redis.api.servers.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
+        <h1>servers</h1><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">servers</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.api.servers.ClientKill" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ClientKillextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="ClientKill:ClientKill"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ClientKill.html"><span class="name">ClientKill</span></a><span class="params">(<span name="ip">ip: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="port">port: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ClientKillextendsRedisCommandStatusBooleanwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ClientSetname" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ClientSetnameextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="ClientSetname:ClientSetname"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ClientSetname.html"><span class="name">ClientSetname</span></a><span class="params">(<span name="connectionName">connectionName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ClientSetnameextendsRedisCommandStatusBooleanwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ConfigGet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigGetextendsRedisCommandMultiBulk[Map[String,String]]withProductwithSerializable"></a>
+      <a id="ConfigGet:ConfigGet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfigGet.html"><span class="name">ConfigGet</span></a><span class="params">(<span name="parameter">parameter: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandMultiBulk.html" class="extype" name="redis.RedisCommandMultiBulk">RedisCommandMultiBulk</a>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ConfigGetextendsRedisCommandMultiBulk[Map[String,String]]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ConfigSet" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigSetextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="ConfigSet:ConfigSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfigSet.html"><span class="name">ConfigSet</span></a><span class="params">(<span name="parameter">parameter: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ConfigSetextendsRedisCommandStatusBooleanwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.DebugObject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DebugObject[K]extendsRedisCommandStatusStringwithProductwithSerializable"></a>
+      <a id="DebugObject[K]:DebugObject[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DebugObject.html"><span class="name">DebugObject</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="redis.api.servers.DebugObject.K">K</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="redisKey">redisKey: <a href="../../ByteStringSerializer.html" class="extype" name="redis.ByteStringSerializer">ByteStringSerializer</a>[<span class="extype" name="redis.api.servers.DebugObject.K">K</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandStatusString.html" class="extype" name="redis.RedisCommandStatusString">RedisCommandStatusString</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@DebugObject[K]extendsRedisCommandStatusStringwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Info" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InfoextendsRedisCommandBulk[String]withProductwithSerializable"></a>
+      <a id="Info:Info"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Info.html"><span class="name">Info</span></a><span class="params">(<span name="section">section: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandBulk.html" class="extype" name="redis.RedisCommandBulk">RedisCommandBulk</a>[<span class="extype" name="scala.Predef.String">String</span>] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@InfoextendsRedisCommandBulk[String]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Shutdown" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ShutdownextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="Shutdown:Shutdown"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Shutdown.html"><span class="name">Shutdown</span></a><span class="params">(<span name="modifier">modifier: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="../ShutdownModifier.html" class="extype" name="redis.api.ShutdownModifier">ShutdownModifier</a>] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ShutdownextendsRedisCommandStatusBooleanwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Slaveof" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SlaveofextendsRedisCommandStatusBooleanwithProductwithSerializable"></a>
+      <a id="Slaveof:Slaveof"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Slaveof.html"><span class="name">Slaveof</span></a><span class="params">(<span name="ip">ip: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="port">port: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@SlaveofextendsRedisCommandStatusBooleanwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="redis.api.servers.Bgrewriteaof" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Bgrewriteaof"></a>
+      <a id="Bgrewriteaof:Bgrewriteaof"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Bgrewriteaof$.html"><span class="name">Bgrewriteaof</span></a><span class="result"> extends <a href="../../RedisCommandStatusString.html" class="extype" name="redis.RedisCommandStatusString">RedisCommandStatusString</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Bgrewriteaof" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Bgsave" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Bgsave"></a>
+      <a id="Bgsave:Bgsave"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Bgsave$.html"><span class="name">Bgsave</span></a><span class="result"> extends <a href="../../RedisCommandStatusString.html" class="extype" name="redis.RedisCommandStatusString">RedisCommandStatusString</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Bgsave" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ClientGetname" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ClientGetname"></a>
+      <a id="ClientGetname:ClientGetname"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ClientGetname$.html"><span class="name">ClientGetname</span></a><span class="result"> extends <a href="../../RedisCommandBulkOptionByteString.html" class="extype" name="redis.RedisCommandBulkOptionByteString">RedisCommandBulkOptionByteString</a>[<span class="extype" name="scala.Predef.String">String</span>] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ClientGetname" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ClientList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ClientList"></a>
+      <a id="ClientList:ClientList"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ClientList$.html"><span class="name">ClientList</span></a><span class="result"> extends <a href="../../RedisCommandBulk.html" class="extype" name="redis.RedisCommandBulk">RedisCommandBulk</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]]] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ClientList" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.ConfigResetstat" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigResetstat"></a>
+      <a id="ConfigResetstat:ConfigResetstat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ConfigResetstat$.html"><span class="name">ConfigResetstat</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@ConfigResetstat" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Dbsize" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Dbsize"></a>
+      <a id="Dbsize:Dbsize"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Dbsize$.html"><span class="name">Dbsize</span></a><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Dbsize" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.DebugSegfault" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DebugSegfault"></a>
+      <a id="DebugSegfault:DebugSegfault"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DebugSegfault$.html"><span class="name">DebugSegfault</span></a><span class="result"> extends <a href="../../RedisCommandStatusString.html" class="extype" name="redis.RedisCommandStatusString">RedisCommandStatusString</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@DebugSegfault" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Flushall" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Flushall"></a>
+      <a id="Flushall:Flushall"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Flushall$.html"><span class="name">Flushall</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Flushall" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Flushdb" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Flushdb"></a>
+      <a id="Flushdb:Flushdb"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Flushdb$.html"><span class="name">Flushdb</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Flushdb" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Lastsave" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Lastsave"></a>
+      <a id="Lastsave:Lastsave"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Lastsave$.html"><span class="name">Lastsave</span></a><span class="result"> extends <a href="../../RedisCommandIntegerLong.html" class="extype" name="redis.RedisCommandIntegerLong">RedisCommandIntegerLong</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Lastsave" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Save" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Save"></a>
+      <a id="Save:Save"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Save$.html"><span class="name">Save</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Save" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.SlaveofNoOne" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SlaveofNoOne"></a>
+      <a id="SlaveofNoOne:SlaveofNoOne"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SlaveofNoOne$.html"><span class="name">SlaveofNoOne</span></a><span class="result"> extends <a href="../../RedisCommandStatusBoolean.html" class="extype" name="redis.RedisCommandStatusBoolean">RedisCommandStatusBoolean</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@SlaveofNoOne" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.servers.Time" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Time"></a>
+      <a id="Time:Time"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Time$.html"><span class="name">Time</span></a><span class="result"> extends <a href="../../RedisCommandMultiBulk.html" class="extype" name="redis.RedisCommandMultiBulk">RedisCommandMultiBulk</a>[(<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a>, <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Long" class="extype" target="_top">Long</a>)] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.servers.package@Time" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

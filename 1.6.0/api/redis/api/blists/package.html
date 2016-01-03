@@ -1,0 +1,152 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>blists - redis.api.blists</title>
+          <meta name="description" content="blists - redis.api.blists" />
+          <meta name="keywords" content="blists redis.api.blists" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'redis.api.blists.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="redis">redis</a>.<a href="../package.html" class="extype" name="redis.api">api</a></p>
+        <h1>blists</h1><span class="permalink">
+      <a href="../../../index.html#redis.api.blists.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">blists</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="redis.api.blists.Blpop" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Blpop[KK,R]extendsBXpop[KK,R]withProductwithSerializable"></a>
+      <a id="Blpop[KK,R]:Blpop[KK,R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Blpop.html"><span class="name">Blpop</span></a><span class="tparams">[<span name="KK">KK</span>, <span name="R">R</span>]</span><span class="params">(<span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="redis.api.blists.Blpop.KK">KK</span>]</span>, <span name="timeout">timeout: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.concurrent.duration.FiniteDuration" class="extype" target="_top">FiniteDuration</a> = <span class="symbol">Duration.Zero</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <a href="../../ByteStringSerializer.html" class="extype" name="redis.ByteStringSerializer">ByteStringSerializer</a>[<span class="extype" name="redis.api.blists.Blpop.KK">KK</span>]</span>, <span name="evidence$2">evidence$2: <a href="../../ByteStringDeserializer.html" class="extype" name="redis.ByteStringDeserializer">ByteStringDeserializer</a>[<span class="extype" name="redis.api.blists.Blpop.R">R</span>]</span>)</span><span class="result"> extends <span class="extype" name="redis.api.blists.BXpop">BXpop</span>[<span class="extype" name="redis.api.blists.Blpop.KK">KK</span>, <span class="extype" name="redis.api.blists.Blpop.R">R</span>] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.blists.package@Blpop[KK,R]extendsBXpop[KK,R]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.blists.Brpop" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Brpop[KK,R]extendsBXpop[KK,R]withProductwithSerializable"></a>
+      <a id="Brpop[KK,R]:Brpop[KK,R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Brpop.html"><span class="name">Brpop</span></a><span class="tparams">[<span name="KK">KK</span>, <span name="R">R</span>]</span><span class="params">(<span name="keys">keys: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="redis.api.blists.Brpop.KK">KK</span>]</span>, <span name="timeout">timeout: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.concurrent.duration.FiniteDuration" class="extype" target="_top">FiniteDuration</a> = <span class="symbol">Duration.Zero</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$3">evidence$3: <a href="../../ByteStringSerializer.html" class="extype" name="redis.ByteStringSerializer">ByteStringSerializer</a>[<span class="extype" name="redis.api.blists.Brpop.KK">KK</span>]</span>, <span name="evidence$4">evidence$4: <a href="../../ByteStringDeserializer.html" class="extype" name="redis.ByteStringDeserializer">ByteStringDeserializer</a>[<span class="extype" name="redis.api.blists.Brpop.R">R</span>]</span>)</span><span class="result"> extends <span class="extype" name="redis.api.blists.BXpop">BXpop</span>[<span class="extype" name="redis.api.blists.Brpop.KK">KK</span>, <span class="extype" name="redis.api.blists.Brpop.R">R</span>] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.blists.package@Brpop[KK,R]extendsBXpop[KK,R]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="redis.api.blists.Brpoplpush" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Brpoplpush[KS,KD,R]extendsRedisCommandRedisReply[Option[R]]withProductwithSerializable"></a>
+      <a id="Brpoplpush[KS,KD,R]:Brpoplpush[KS,KD,R]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Brpoplpush.html"><span class="name">Brpoplpush</span></a><span class="tparams">[<span name="KS">KS</span>, <span name="KD">KD</span>, <span name="R">R</span>]</span><span class="params">(<span name="source">source: <span class="extype" name="redis.api.blists.Brpoplpush.KS">KS</span></span>, <span name="destination">destination: <span class="extype" name="redis.api.blists.Brpoplpush.KD">KD</span></span>, <span name="timeout">timeout: <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.concurrent.duration.FiniteDuration" class="extype" target="_top">FiniteDuration</a> = <span class="symbol">Duration.Zero</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="bsSource">bsSource: <a href="../../ByteStringSerializer.html" class="extype" name="redis.ByteStringSerializer">ByteStringSerializer</a>[<span class="extype" name="redis.api.blists.Brpoplpush.KS">KS</span>]</span>, <span name="bsDest">bsDest: <a href="../../ByteStringSerializer.html" class="extype" name="redis.ByteStringSerializer">ByteStringSerializer</a>[<span class="extype" name="redis.api.blists.Brpoplpush.KD">KD</span>]</span>, <span name="deserializerR">deserializerR: <a href="../../ByteStringDeserializer.html" class="extype" name="redis.ByteStringDeserializer">ByteStringDeserializer</a>[<span class="extype" name="redis.api.blists.Brpoplpush.R">R</span>]</span>)</span><span class="result"> extends <a href="../../RedisCommandRedisReply.html" class="extype" name="redis.RedisCommandRedisReply">RedisCommandRedisReply</a>[<a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="redis.api.blists.Brpoplpush.R">R</span>]] with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.11.7/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#redis.api.blists.package@Brpoplpush[KS,KD,R]extendsRedisCommandRedisReply[Option[R]]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
