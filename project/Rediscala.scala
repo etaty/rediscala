@@ -1,8 +1,10 @@
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtGhPages._
+import com.typesafe.sbt.SbtGhPages.GhPagesKeys._
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import com.typesafe.sbt.SbtSite._
+import com.typesafe.sbt.SbtSite.SiteKeys.siteMappings
 import sbt.LocalProject
 import sbt.Tests.{InProcess, Group}
 
@@ -91,7 +93,32 @@ object RediscalaBuild extends Build {
           "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala"
         )
       }
-  ) ++ site.settings ++ site.includeScaladoc(version +"/api") ++ site.includeScaladoc("latest/api") ++ ghpages.settings
+  ) ++ site.settings ++ ghpages.settings ++ Seq(
+      siteMappings <++= (mappings in packageDoc in Compile, version in LocalProject("rediscala")) { (mm, version) =>
+        mm.map{ m =>
+          for((f, d) <- m) yield (f, version + "/api/" + d)
+        }
+      },
+      cleanSite <<= (updatedRepository, git.gitRunner, streams, version in LocalProject("rediscala")) map { (dir, git, s, v) =>
+        val toClean = IO.listFiles(dir).filter{ f =>
+          val p = f.getName
+          p.startsWith("latest") || p.startsWith(v)
+        }.map(_.getAbsolutePath).toList
+        if(toClean.nonEmpty)
+          git(("rm" :: "-r" :: "-f" :: "--ignore-unmatch" :: toClean) :_*)(dir, s.log)
+        ()
+      },
+      synchLocal <<= (cleanSite, privateMappings, updatedRepository, ghpagesNoJekyll, git.gitRunner, streams) map { (clean, mappings, repo, noJekyll, git, s) =>
+        // TODO - an sbt.Synch with cache of previous mappings to make this more efficient. */
+        val betterMappings = mappings map { case (file, target) => (file, repo / target) }
+        // First, remove 'stale' files.
+        //cleanSite.
+        // Now copy files.
+        IO.copy(betterMappings)
+        if(noJekyll) IO.touch(repo / ".nojekyll")
+        repo
+      }
+  ) ++ site.includeScaladoc("latest/api")
 
   lazy val BenchTest = config("bench") extend Test
 
