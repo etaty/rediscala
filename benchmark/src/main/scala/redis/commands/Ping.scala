@@ -1,12 +1,18 @@
-package redis
+package redis.commands
 
 import java.util.concurrent.TimeUnit
+
 import org.openjdk.jmh.annotations._
+import redis.RedisStateHelper
+
 import scala.concurrent.{Future, Await}
 
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-class RedisBench extends RedisStateHelper {
+class Ping extends RedisStateHelper {
+
+  @Param(Array("10000", "100000", "300000", "500000"))
+  var iteration: Int = _
 
   @Benchmark
   @BenchmarkMode(Array(Mode.SingleShotTime))
@@ -14,7 +20,7 @@ class RedisBench extends RedisStateHelper {
     import scala.concurrent.duration._
     implicit def exec = rs.akkaSystem.dispatcher
 
-    val r = for (i <- (0 to 500000).toVector) yield {
+    val r = for (i <- (0 to iteration).toVector) yield {
       rs.redis.ping()
     }
 
