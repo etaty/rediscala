@@ -1,4 +1,4 @@
-rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master)[ ![Download](https://api.bintray.com/packages/etaty/maven/rediscala/images/download.svg) ](https://bintray.com/etaty/maven/rediscala/_latestVersion)[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11)
+rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.png)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master)[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11)
 =========
 
 A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
@@ -17,14 +17,12 @@ If you use SBT, you just have to edit `build.sbt` and add the following:
 From version 1.3.1: 
  * use akka 2.3
  * released for scala 2.10 & 2.11
- * use Bintray repo: https://bintray.com/etaty/maven/rediscala/view/general
-
 ```scala
 // new repo on maven.org
-libraryDependencies += "com.github.etaty" %% "rediscala" % "1.5.0"
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.6.0"
 
 
-// old repo on bintray
+// old repo on bintray (1.5.0 and inferior version)
 resolvers += "rediscala" at "http://dl.bintray.com/etaty/maven"
 libraryDependencies += "com.etaty.rediscala" %% "rediscala" % "1.5.0"
 ```
@@ -247,9 +245,11 @@ object DumbClass {
 Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleByteStringFormatter.scala)
 
 ### Scaladoc
-[Rediscala scaladoc API (latest version 1.5)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (latest version 1.6)](http://etaty.github.io/rediscala/latest/api/index.html#package)
 
-[Rediscala scaladoc API (version 1.4)](http://etaty.github.io/rediscala/1.4/api/index.html#package)
+[Rediscala scaladoc API (version 1.5)](http://etaty.github.io/rediscala/1.5.0/api/index.html#package)
+
+[Rediscala scaladoc API (version 1.4)](http://etaty.github.io/rediscala/1.4.0/api/index.html#package)
 
 [Rediscala scaladoc API (version 1.3)](http://etaty.github.io/rediscala/1.3/api/index.html#package)
 
