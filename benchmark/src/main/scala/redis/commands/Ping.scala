@@ -3,7 +3,7 @@ package redis.commands
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
-import redis.RedisStateHelper
+import redis.{Redis, RedisStateHelper}
 
 import scala.concurrent.{Future, Await}
 
@@ -18,7 +18,7 @@ class Ping extends RedisStateHelper {
   @BenchmarkMode(Array(Mode.SingleShotTime))
   def measurePing(): Unit = {
     import scala.concurrent.duration._
-    implicit def exec = rs.akkaSystem.dispatcher
+    implicit def exec = rs.akkaSystem.dispatchers.lookup(Redis.dispatcher.name)
 
     val r = for (i <- (0 to iteration).toVector) yield {
       rs.redis.ping()

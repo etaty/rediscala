@@ -205,6 +205,14 @@ Redis commands are dispatched to redis connection in a round robin way.
 [RedisClientMasterSlaves](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisClientMasterSlaves) connect to a master and a pool of slaves.
 The `write` commands are sent to the master, while the read commands are sent to the slaves in the [RedisClientPool](http://etaty.github.io/rediscala/latest/api/index.html#redis.RedisClientPool)
 
+### Config Which Dispatcher to Use
+
+By default, the actors in this project will use the dispatcher `rediscala.rediscala-client-worker-dispatcher`. If you want to use another dispatcher, just config the implicit value of `redisDispatcher`:
+
+```scala
+implicit val redisDispatcher = RedisDispatcher("akka.actor.default-dispatcher")
+```
+
 ### ByteStringSerializer ByteStringDeserializer ByteStringFormatter
 
 [ByteStringSerializer](http://etaty.github.io/rediscala/latest/api/index.html#redis.ByteStringSerializer)

@@ -25,7 +25,7 @@ class RedisSubscriberActorSpec extends TestKit(ActorSystem()) with Specification
 
       val subscriberActor = TestActorRef[SubscriberActor](Props(classOf[SubscriberActor],
         new InetSocketAddress("localhost", 6379), channels, patterns, probeMock.ref)
-        .withDispatcher(Redis.dispatcher))
+        .withDispatcher(Redis.dispatcher.name))
 
       val connectMsg = probeMock.expectMsgType[Connect]
       connectMsg mustEqual Connect(subscriberActor.underlyingActor.address, options = SO.KeepAlive(on = true) :: Nil)

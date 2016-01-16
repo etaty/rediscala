@@ -31,7 +31,8 @@ class RedisReplyDecoderSpec
       val q = QueuePromises(mutable.Queue[Operation[_, _]]())
       q.queue.enqueue(operation)
 
-      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
+      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder])
+          .withDispatcher(Redis.dispatcher.name))
 
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
 
@@ -63,7 +64,8 @@ class RedisReplyDecoderSpec
     "can't decode" in within(timeout){
       val probeMock = TestProbe()
 
-      val redisClientActor = TestActorRef[RedisClientActorMock2](Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher(Redis.dispatcher))
+      val redisClientActor = TestActorRef[RedisClientActorMock2](
+        Props(classOf[RedisClientActorMock2], probeMock.ref).withDispatcher(Redis.dispatcher.name))
       val promise = Promise[String]()
       redisClientActor ! Operation(Ping, promise)
       awaitAssert({
@@ -106,7 +108,8 @@ class RedisReplyDecoderSpec
       q.queue.enqueue(operation2)
       q.queue.enqueue(operation3)
 
-      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
+      val redisReplyDecoder = TestActorRef[RedisReplyDecoder](Props(classOf[RedisReplyDecoder])
+          .withDispatcher(Redis.dispatcher.name))
 
       redisReplyDecoder.underlyingActor.queuePromises must beEmpty
 

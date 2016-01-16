@@ -23,17 +23,17 @@ trait RedisCommands
   with Server
   with HyperLogLog
 
-abstract class RedisClientActorLike(system: ActorRefFactory) extends ActorRequest {
+abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher) extends ActorRequest {
   var host: String
   var port: Int
   val name: String
   val password: Option[String] = None
   val db: Option[Int] = None
-  implicit val executionContext = system.dispatcher
+  implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations, onConnectStatus )
-      .withDispatcher(Redis.dispatcher),
+      .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
 
@@ -76,7 +76,9 @@ case class RedisClient(var host: String = "localhost",
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
                        name: String = "RedisClient")
-                      (implicit _system: ActorRefFactory) extends RedisClientActorLike(_system) with RedisCommands with Transactions {
+                      (implicit _system: ActorSystem,
+                       redisDispatcher: RedisDispatcher = Redis.dispatcher
+                      ) extends RedisClientActorLike(_system, redisDispatcher) with RedisCommands with Transactions {
 
 }
 
@@ -85,7 +87,9 @@ case class RedisBlockingClient(var host: String = "localhost",
                                override val password: Option[String] = None,
                                override val db: Option[Int] = None,
                                name: String = "RedisBlockingClient")
-                              (implicit _system: ActorRefFactory) extends RedisClientActorLike(_system) with BLists {
+                              (implicit _system: ActorSystem,
+                               redisDispatcher: RedisDispatcher = Redis.dispatcher
+                              ) extends RedisClientActorLike(_system, redisDispatcher) with BLists {
 }
 
 case class RedisPubSub(
@@ -97,12 +101,13 @@ case class RedisPubSub(
                         onPMessage: PMessage => Unit = _ => {},
                         authPassword: Option[String] = None,
                         name: String = "RedisPubSub"
-                        )(implicit system: ActorRefFactory) {
+                        )(implicit system: ActorRefFactory,
+                          redisDispatcher: RedisDispatcher = Redis.dispatcher) {
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
       new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword,onConnectStatus)
-      .withDispatcher(Redis.dispatcher),
+      .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
 
@@ -136,7 +141,9 @@ case class RedisPubSub(
 
 case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
                                          master: String)
-                                       (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with RedisCommands with Transactions {
+                                       (implicit system: ActorSystem,
+                                        redisDispatcher: RedisDispatcher = Redis.dispatcher
+                                        ) extends SentinelMonitoredRedisClientLike(system, redisDispatcher) with RedisCommands with Transactions {
 
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
     new RedisClient(ip, port, name = "SMRedisClient")
@@ -148,7 +155,9 @@ case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("l
 
 case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
                                                  master: String)
-                                               (implicit system: ActorSystem) extends SentinelMonitoredRedisClientLike(system) with BLists {
+                                               (implicit system: ActorSystem,
+                                                redisDispatcher: RedisDispatcher = Redis.dispatcher
+                                                ) extends SentinelMonitoredRedisClientLike(system, redisDispatcher) with BLists {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
     new RedisBlockingClient(ip, port, name = "SMRedisBlockingClient")
   })
@@ -156,9 +165,10 @@ case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] =
   override val onSlaveDown =  (ip: String, port: Int) => {}
 }
 
-private[redis] object Redis {
+case class RedisDispatcher(name: String)
 
-  val dispatcher = "rediscala.rediscala-client-worker-dispatcher"
+private[redis] object Redis {
+  val dispatcher =RedisDispatcher("rediscala.rediscala-client-worker-dispatcher")
 
   val tempNumber = new AtomicLong
 

@@ -8,7 +8,7 @@ case class RedisState(initF: () => Unit = () => ()) {
   val akkaSystem = akka.actor.ActorSystem()
   val redis = RedisClient()(akkaSystem)
 
-  implicit val exec = akkaSystem.dispatcher
+  implicit val exec = akkaSystem.dispatchers.lookup(Redis.dispatcher.name)
 
   import scala.concurrent.duration._
 
