@@ -7,7 +7,8 @@ import akka.actor._
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
 
-class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]], onConnectStatus: Boolean => Unit  ) extends RedisWorkerIO(address,onConnectStatus) {
+class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () =>
+    Seq[Operation[_, _]], onConnectStatus: Boolean => Unit, dispatcherName: String) extends RedisWorkerIO(address,onConnectStatus) {
 
 
   import context._
@@ -17,8 +18,8 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   // connection closed on the sending direction
   var oldRepliesDecoder: Option[ActorRef] = None
 
-  def initRepliesDecoder(implicit redisDispatcher: RedisDispatcher = Redis.dispatcher) =
-    context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(redisDispatcher.name))
+  def initRepliesDecoder() =
+    context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(dispatcherName))
 
   var queuePromises = mutable.Queue[Operation[_, _]]()
 
