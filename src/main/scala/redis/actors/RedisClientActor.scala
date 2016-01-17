@@ -2,7 +2,7 @@ package redis.actors
 
 import akka.util.{ByteString, ByteStringBuilder}
 import java.net.InetSocketAddress
-import redis.{Redis, Operation, Transaction}
+import redis.{RedisDispatcher, Redis, Operation, Transaction}
 import akka.actor._
 import scala.collection.mutable
 import akka.actor.SupervisorStrategy.Stop
@@ -17,7 +17,8 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   // connection closed on the sending direction
   var oldRepliesDecoder: Option[ActorRef] = None
 
-  def initRepliesDecoder() = context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(Redis.dispatcher))
+  def initRepliesDecoder(implicit redisDispatcher: RedisDispatcher = Redis.dispatcher) =
+    context.actorOf(Props(classOf[RedisReplyDecoder]).withDispatcher(redisDispatcher.name))
 
   var queuePromises = mutable.Queue[Operation[_, _]]()
 

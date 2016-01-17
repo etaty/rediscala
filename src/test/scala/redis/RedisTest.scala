@@ -1,5 +1,7 @@
 package redis
 
+import akka.ConfigurationException
+
 import scala.concurrent._
 import akka.util.ByteString
 
@@ -39,6 +41,13 @@ class RedisTest extends RedisSpec {
         }
         Await.result(r, timeOut)
       })
+    }
+    "use custom dispatcher" in {
+      def test() = withRedisServer(port => {
+        implicit val redisDispatcher = RedisDispatcher("no-this-dispatcher")
+        RedisClient(port = port)
+      })
+      test must throwA[ConfigurationException]
     }
   }
 

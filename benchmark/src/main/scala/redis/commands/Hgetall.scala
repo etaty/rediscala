@@ -3,7 +3,7 @@ package redis.commands
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
-import redis.RedisStateHelper
+import redis.{Redis, RedisStateHelper}
 
 import scala.concurrent.{Future, Await}
 
@@ -31,7 +31,7 @@ class Hgetall extends RedisStateHelper {
 
   override def initRedisState(): Unit = {
     import scala.concurrent.duration._
-    implicit val exec = rs.akkaSystem.dispatcher
+    implicit val exec = rs.akkaSystem.dispatchers.lookup(Redis.dispatcher.name)
 
     Await.result(rs.redis.flushall(), 20 seconds)
     val r = for (i <- 0 to hashSize) yield {
@@ -45,7 +45,7 @@ class Hgetall extends RedisStateHelper {
   @BenchmarkMode(Array(Mode.SingleShotTime))
   def measureHgetall(): Seq[Map[String, String]] = {
     import scala.concurrent.duration._
-    implicit def exec = rs.akkaSystem.dispatcher
+    implicit def exec = rs.akkaSystem.dispatchers.lookup(Redis.dispatcher.name)
 
     val r = for (i <- 0 to 100) yield {
       rs.redis.hgetall[String](hsetKey)

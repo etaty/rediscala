@@ -9,7 +9,7 @@ import org.specs2.mutable.{SpecificationLike, Tags}
 import org.specs2.time.NoTimeConversions
 import redis.api.connection.Ping
 import redis.api.strings.Get
-import redis.{Operation, Redis}
+import redis.{RedisDispatcher, Operation, Redis}
 
 import scala.collection.mutable
 import scala.concurrent.{Await, Promise}
@@ -45,7 +45,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
     
       val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref, getConnectOperations, onConnectStatus)
-        .withDispatcher(Redis.dispatcher))
+        .withDispatcher(Redis.dispatcher.name))
 
       val promise = Promise[String]()
       val op1 = Operation(Ping, promise)
@@ -86,7 +86,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeMock = TestProbe()
 
       val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref, getConnectOperations, onConnectStatus)
-        .withDispatcher(Redis.dispatcher))
+        .withDispatcher(Redis.dispatcher.name))
         .underlyingActor
 
       val promise3 = Promise[String]()
@@ -106,7 +106,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
       val probeMock = TestProbe()
 
       val redisClientActorRef = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref, getConnectOperations, onConnectStatus)
-        .withDispatcher(Redis.dispatcher))
+        .withDispatcher(Redis.dispatcher.name))
       val redisClientActor = redisClientActorRef.underlyingActor
 
       val promiseSent = Promise[String]()
@@ -135,7 +135,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 
 class RedisClientActorMock(probeReplyDecoder: ActorRef, probeMock: ActorRef, getConnectOperations: () => Seq[Operation[_, _]], onConnectStatus: Boolean => Unit )
   extends RedisClientActor(new InetSocketAddress("localhost", 6379), getConnectOperations, onConnectStatus) {
-  override def initRepliesDecoder() = probeReplyDecoder
+  override def initRepliesDecoder(implicit redisDispatcher: RedisDispatcher) = probeReplyDecoder
 
   override def preStart() {
     // disable preStart of RedisWorkerIO

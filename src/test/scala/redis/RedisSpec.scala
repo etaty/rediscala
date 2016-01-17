@@ -15,7 +15,7 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   import scala.concurrent.duration._
 
-  implicit val executionContext = system.dispatcher
+  implicit val executionContext = system.dispatchers.lookup(Redis.dispatcher.name)
 
   implicit val timeout = Timeout(10 seconds)
   val timeOut = 10 seconds
