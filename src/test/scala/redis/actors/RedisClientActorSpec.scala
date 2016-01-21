@@ -43,7 +43,7 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
         Seq(opConnectPing, opConnectGet)
       }
 
-    
+
       val redisClientActor = TestActorRef[RedisClientActorMock](Props(classOf[RedisClientActorMock], probeReplyDecoder.ref, probeMock.ref, getConnectOperations, onConnectStatus)
         .withDispatcher(Redis.dispatcher.name))
 
@@ -134,8 +134,8 @@ class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike
 }
 
 class RedisClientActorMock(probeReplyDecoder: ActorRef, probeMock: ActorRef, getConnectOperations: () => Seq[Operation[_, _]], onConnectStatus: Boolean => Unit )
-  extends RedisClientActor(new InetSocketAddress("localhost", 6379), getConnectOperations, onConnectStatus) {
-  override def initRepliesDecoder(implicit redisDispatcher: RedisDispatcher) = probeReplyDecoder
+  extends RedisClientActor(new InetSocketAddress("localhost", 6379), getConnectOperations, onConnectStatus, Redis.dispatcher.name) {
+  override def initRepliesDecoder() = probeReplyDecoder
 
   override def preStart() {
     // disable preStart of RedisWorkerIO

@@ -32,7 +32,8 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
   val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations, onConnectStatus )
+    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations,
+      onConnectStatus, redisDispatcher.name)
       .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
@@ -51,7 +52,7 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   }
 
   def onConnectStatus(): (Boolean) => Unit = (status: Boolean) => {
-    
+
   }
 
   def getConnectOperations: () => Seq[Operation[_, _]] = () => {
@@ -135,7 +136,7 @@ case class RedisPubSub(
   }
 
   def onConnectStatus(): (Boolean) => Unit = (status: Boolean) => {
-    
+
   }
 }
 
