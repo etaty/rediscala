@@ -141,13 +141,14 @@ case class RedisPubSub(
 }
 
 case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
-                                         master: String)
+                                         master: String,
+                                         db: Option[Int] = None)
                                        (implicit system: ActorSystem,
                                         redisDispatcher: RedisDispatcher = Redis.dispatcher
                                         ) extends SentinelMonitoredRedisClientLike(system, redisDispatcher) with RedisCommands with Transactions {
 
   val redisClient: RedisClient = withMasterAddr((ip, port) => {
-    new RedisClient(ip, port, name = "SMRedisClient")
+    new RedisClient(ip, port, name = "SMRedisClient", db = db)
   })
   override val onNewSlave  =  (ip: String, port: Int) => {}
   override val onSlaveDown =  (ip: String, port: Int) => {}
@@ -155,12 +156,13 @@ case class SentinelMonitoredRedisClient( sentinels: Seq[(String, Int)] = Seq(("l
 
 
 case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)),
-                                                 master: String)
+                                                 master: String,
+                                                 db: Option[Int] = None)
                                                (implicit system: ActorSystem,
                                                 redisDispatcher: RedisDispatcher = Redis.dispatcher
                                                 ) extends SentinelMonitoredRedisClientLike(system, redisDispatcher) with BLists {
   val redisClient: RedisBlockingClient = withMasterAddr((ip, port) => {
-    new RedisBlockingClient(ip, port, name = "SMRedisBlockingClient")
+    new RedisBlockingClient(ip, port, name = "SMRedisBlockingClient", db = db)
   })
   override val onNewSlave =  (ip: String, port: Int) => {}
   override val onSlaveDown =  (ip: String, port: Int) => {}
@@ -169,7 +171,7 @@ case class SentinelMonitoredRedisBlockingClient( sentinels: Seq[(String, Int)] =
 case class RedisDispatcher(name: String)
 
 private[redis] object Redis {
-  val dispatcher =RedisDispatcher("rediscala.rediscala-client-worker-dispatcher")
+  val dispatcher = RedisDispatcher("rediscala.rediscala-client-worker-dispatcher")
 
   val tempNumber = new AtomicLong
 
