@@ -1,14 +1,18 @@
 package redis.commands
 
-import redis.{Cursor, ByteStringDeserializer, ByteStringSerializer, Request}
-import scala.concurrent.Future
 import redis.api._
 import redis.api.sortedsets._
+import redis.{ByteStringDeserializer, ByteStringSerializer, Cursor, Request}
+
+import scala.concurrent.Future
 
 trait SortedSets extends Request {
 
   def zadd[V: ByteStringSerializer](key: String, scoreMembers: (Double, V)*): Future[Long] =
-    send(Zadd(key, scoreMembers))
+    send(Zadd(key, Seq.empty, scoreMembers))
+
+  def zaddWithOptions[V: ByteStringSerializer](key: String, options: Seq[ZaddOption], scoreMembers: (Double, V)*): Future[Long] =
+    send(Zadd(key, options, scoreMembers))
 
   def zcard(key: String): Future[Long] =
     send(Zcard(key))

@@ -49,3 +49,28 @@ sealed trait ShutdownModifier
 case object SAVE extends ShutdownModifier
 
 case object NOSAVE extends ShutdownModifier
+
+
+sealed trait ZaddOption {
+  def serialize: ByteString
+}
+
+object ZaddOption {
+
+  case object XX extends ZaddOption {
+    override def serialize: ByteString = ByteString("XX")
+  }
+
+  case object NX extends ZaddOption {
+    override def serialize: ByteString = ByteString("NX")
+  }
+
+  case object CH extends ZaddOption {
+    override def serialize: ByteString = ByteString("CH")
+  }
+
+  case object INCR extends ZaddOption {
+    override def serialize: ByteString = ByteString("INCR")
+  }
+
+}

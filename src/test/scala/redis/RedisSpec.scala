@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.util.Try
 import scala.reflect.io.File
 import scala.sys.process._
+import scala.concurrent.Future
 
 abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
 
@@ -50,6 +51,21 @@ abstract class RedisSpec extends RedisHelper with WithRedisServerLauncher {
 
   val redis = RedisClient()
   redis.flushdb()
+
+  def redisVersion(): Future[Option[RedisVersion]] = redis.info("Server").map { info =>
+    info.split("\r\n").drop(1).map(_.split(":") match {
+      case Array(key, value) => key -> value
+    }).find(_._1 == "redis_version")
+      .map(_._2.split("\\.") match {
+        case Array(major, minor, patch) => RedisVersion(major.toInt, minor.toInt, patch.toInt)
+      })
+  }
+
+  case class RedisVersion(major: Int, minor: Int, patch: Int) extends Ordered[RedisVersion] {
+    import scala.math.Ordered.orderingToOrdered
+    override def compare(that: RedisVersion): Int = (this.major, this.minor, this.patch).compare((that.major, that.minor, that.patch))
+  }
+
 }
 
 trait WithRedisServerLauncher extends RedisHelper {
