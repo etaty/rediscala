@@ -62,7 +62,7 @@ trait RoundRobinPoolRequest {
 
   def send[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
     getNextConnection.fold(
-      Future.failed[T](throw new RuntimeException("redis pool is empty"))
+      Future.failed[T](new RuntimeException("redis pool is empty"))
     ) { redisConnection =>
       send(redisConnection, redisCommand)
     }
