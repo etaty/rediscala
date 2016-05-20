@@ -43,6 +43,20 @@ object MultiBulkConverter {
     }.getOrElse(Seq.empty)
   }
 
+
+  def toClusterSlots(reply: MultiBulk) = {
+    reply.responses.map{
+      slot => {
+        val elementSeq = slot.toSeq
+        val begin = elementSeq(0).toByteString
+        val end = elementSeq(1).toByteString
+        (begin,end)
+      }
+    }
+  }
+
+
+
   def toMapString(reply: MultiBulk): Map[String, String] = {
     reply.responses.map(bs => {
       val builder = Map.newBuilder[String, String]
@@ -63,7 +77,7 @@ object MultiBulkConverter {
     reply.responses.map {
       s =>
         s.map({
-          case m: MultiBulk => {
+          case m: MultiBulk =>
             m.responses.map {
               s =>
                 val builder = Seq.newBuilder[(String, String)]
@@ -72,7 +86,7 @@ object MultiBulkConverter {
                 }
                 builder.result()
             }.getOrElse(Seq())
-          }
+
           case _ => Seq()
         }).map {
           _.toMap

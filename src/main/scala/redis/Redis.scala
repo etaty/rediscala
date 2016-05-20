@@ -22,6 +22,7 @@ trait RedisCommands
   with Connection
   with Server
   with HyperLogLog
+  with Clusters
 
 abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher) extends ActorRequest {
   var host: String
