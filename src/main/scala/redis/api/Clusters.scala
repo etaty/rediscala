@@ -9,8 +9,8 @@ import scala.math.Ordering
 
 
 
-case class ClusterServer(ip:String,port:Int,id:String)
-case class ClusterSlot(begin:Int,end:Int,master:ClusterServer,slaves:Seq[ClusterServer])  extends Comparable[ClusterSlot] {
+case class ClusterNode(host:String, port:Int, id:String)
+case class ClusterSlot(begin:Int, end:Int, master:ClusterNode, slaves:Seq[ClusterNode])  extends Comparable[ClusterSlot] {
   override def compareTo(x: ClusterSlot): Int = {
     this.begin.compare(x.begin)
   }
@@ -21,32 +21,38 @@ case class ClusterSlots() extends RedisCommand[MultiBulk,Seq[ClusterSlot]] {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("CLUSTER SLOTS")
 
-  def buildClusterServer(vect:Seq[RedisReply]) = {
-    ClusterServer(vect(0).toByteString.utf8String,vect(1).toByteString.utf8String.toInt,vect(2).toByteString.utf8String  )
+  def buildClusterNode(vect:Seq[RedisReply]) = {
+    ClusterNode(vect(0).toByteString.utf8String,vect(1).toByteString.utf8String.toInt,vect(2).toByteString.utf8String  )
   }
 
   def decodeReply(mb: MultiBulk) = {
     val clusterSlots: Option[Seq[Option[ClusterSlot]]] = mb.responses.map{ vector =>
       val seq: Seq[RedisReply] = vector.toSeq
-      seq.collect { case slot:MultiBulk =>
-        slot.responses.map { slot1 =>
-          val begin = slot1.toSeq(0).toByteString.utf8String.toInt
-          val end = slot1.toSeq(1).toByteString.utf8String.toInt
+      seq.collect { case multiBulk:MultiBulk =>
+        //
+        // redis response:
+        // MultiBulk(begin,end,MultiBulk(masterId,masterPort,masterId),MultiBulk(slave1Id,slave1Port,slave1Id),MultiBulk(slave2Id,slave2Port,slave2Id))...,
+        // MultiBulk(begin,end,MultiBulk(masterId,masterPort,masterId),MultiBulk(slave1Id,slave1Port,slave1Id),MultiBulk(slave2Id,slave2Port,slave2Id))
+        //
+        multiBulk.responses.map { groupSlot =>
 
-          val masterMB = slot1.toSeq(2).asInstanceOf[MultiBulk]
-          val slavesMB = slot1.toSeq(3).asInstanceOf[MultiBulk]
+          val begin = groupSlot(0).toByteString.utf8String.toInt
+          val end = groupSlot(1).toByteString.utf8String.toInt
+          val masterMB = groupSlot(2).asInstanceOf[MultiBulk]
 
-         val masterClusterServer = masterMB.responses.map(
-            vect =>  buildClusterServer(vect.toSeq)
-          ).getOrElse(throw new RuntimeException("no master"))
+         val masterNode = masterMB.responses.map(
+            vect =>  buildClusterNode(vect.toSeq)
+          ).getOrElse(throw new RuntimeException("no master found"))
 
-          val slavesClusterServer: Seq[ClusterServer] = slavesMB.responses.map{
-            _.grouped(3).map{ vect =>
-              buildClusterServer(vect.toSeq)
-            }.toSeq
+          val slavesNode: Seq[ClusterNode] = groupSlot.lift(3).flatMap { slavesMBTmp =>
+            slavesMBTmp.asInstanceOf[MultiBulk]
+                .responses.map {
+                _.grouped(3).map { vect =>
+                  buildClusterNode(vect.toSeq)
+                }.toSeq
+              }
           }.getOrElse(Seq.empty)
-
-          ClusterSlot(begin,end,masterClusterServer,slavesClusterServer)
+          ClusterSlot(begin,end,masterNode,slavesNode)
         }
       }
     }

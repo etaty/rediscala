@@ -18,14 +18,27 @@ case class RedisServer(host: String = "localhost",
 
 case class RedisConnection(actor: ActorRef, active: Ref[Boolean] = Ref(false))
 
-abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDispatcher) extends RoundRobinPoolRequest {
+abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDispatcher)  {
 
   def redisServerConnections: scala.collection.Map[RedisServer, RedisConnection]
 
   val name: String
   implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
-  val redisConnectionRef: Ref[Seq[ActorRef]] = Ref(Seq.empty)
+  private val redisConnectionRef: Ref[Seq[ActorRef]] = Ref(Seq.empty)
+  /**
+    *
+    * @param redisCommand
+    * @tparam T
+    * @return behave nicely with Future helpers like firstCompletedOf or sequence
+    */
+  def broadcast[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Seq[Future[T]] = {
+    redisConnectionPool.map(redisConnection => {
+      send(redisConnection, redisCommand)
+    })
+  }
+
+  protected def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T]
 
   def getConnectionsActive: Seq[ActorRef] = {
     redisServerConnections.collect {
@@ -42,13 +55,17 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
     server.db.foreach(redis.select)
   }
 
-  def onConnectStatus(server: RedisServer, active: Ref[Boolean]): (Boolean) => Unit = (status: Boolean) => {
-    if (active.single.compareAndSet(!status, status)) {
-      refreshConnections()
-    }
+  def onConnectStatus(server: RedisServer, active: Ref[Boolean]): (Boolean) => Unit = {
+    (status: Boolean) => {
+        println("***** onConnectStatus:" + server.toString + "status: " + status + " active:" + active.single.get)
+        if (active.single.compareAndSet(!status, status)) {
+          refreshConnections()
+        }
+      }
   }
 
   def refreshConnections() = {
+    println("*******RedisClientPoolLike.refreshConnections")
     val actives = getConnectionsActive
     redisConnectionRef.single.set(actives)
   }
@@ -87,12 +104,11 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
 
 }
 
-
 case class RedisClientMutablePool(redisServers: Seq[RedisServer],
                                   name: String = "RedisClientPool")
                                  (implicit system: ActorSystem,
                                   redisDispatcher: RedisDispatcher = Redis.dispatcher
-                                  ) extends RedisClientPoolLike (system, redisDispatcher) with RedisCommands {
+                                  ) extends RedisClientPoolLike (system, redisDispatcher) with RoundRobinPoolRequest with RedisCommands {
 
   override val redisServerConnections = {
     val m = redisServers map { server => makeRedisConnection(server) }
@@ -128,7 +144,7 @@ case class RedisClientPool(redisServers: Seq[RedisServer],
                            name: String = "RedisClientPool")
                           (implicit _system: ActorSystem,
                            redisDispatcher: RedisDispatcher = Redis.dispatcher
-                          ) extends RedisClientPoolLike(_system, redisDispatcher) with RedisCommands {
+                          ) extends RedisClientPoolLike(_system, redisDispatcher) with RoundRobinPoolRequest with RedisCommands {
 
   override val redisServerConnections = {
     redisServers.map { server =>
