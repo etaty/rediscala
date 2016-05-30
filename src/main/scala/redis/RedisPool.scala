@@ -57,7 +57,6 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
 
   def onConnectStatus(server: RedisServer, active: Ref[Boolean]): (Boolean) => Unit = {
     (status: Boolean) => {
-        println("***** onConnectStatus:" + server.toString + "status: " + status + " active:" + active.single.get)
         if (active.single.compareAndSet(!status, status)) {
           refreshConnections()
         }
@@ -65,7 +64,6 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
   }
 
   def refreshConnections() = {
-    println("*******RedisClientPoolLike.refreshConnections")
     val actives = getConnectionsActive
     redisConnectionRef.single.set(actives)
   }

@@ -12,7 +12,7 @@ import scala.concurrent.Await
 /**
   * Created by npeters on 20/05/16.
   */
-class RedisClusterTest extends  RedisHelper {
+class RedisClusterTest extends RedisHelper {
 
   sequential
 
@@ -43,9 +43,9 @@ class RedisClusterTest extends  RedisHelper {
           case _ => failure
       })
 
-      decodeValue mustEqual "Vector(ClusterSlot(0,5460,ClusterServer(127.0.0.1,7000,e43599dff6e3a7b9ed53b1ca0db4bd009a850ba5),Stream(ClusterServer(127.0.0.1,7003,c0f6f39b648815a19e49dc4536d2a13b147a9f50), ?)), " +
-        "ClusterSlot(10923,16383,ClusterServer(127.0.0.1,7002,48d37120f213578cb1eac38e5f2bf589dcda4a0b),Stream(ClusterServer(127.0.0.1,7005,14f769ee6e5af62fb17966ed4eedf1219ccb1592), ?)), " +
-        "ClusterSlot(5461,10922,ClusterServer(127.0.0.1,7001,c8ec392c22694d589a64a20999b4dd5cb40e4201),Stream(ClusterServer(127.0.0.1,7004,efa8fd74041a3a8d7af25f70903b9e1f4c064a21), ?)))"
+      decodeValue mustEqual "Vector(ClusterSlot(0,5460,ClusterNode(127.0.0.1,7000,e43599dff6e3a7b9ed53b1ca0db4bd009a850ba5),Stream(ClusterNode(127.0.0.1,7003,c0f6f39b648815a19e49dc4536d2a13b147a9f50), ?)), " +
+        "ClusterSlot(10923,16383,ClusterNode(127.0.0.1,7002,48d37120f213578cb1eac38e5f2bf589dcda4a0b),Stream(ClusterNode(127.0.0.1,7005,14f769ee6e5af62fb17966ed4eedf1219ccb1592), ?)), " +
+        "ClusterSlot(5461,10922,ClusterNode(127.0.0.1,7001,c8ec392c22694d589a64a20999b4dd5cb40e4201),Stream(ClusterNode(127.0.0.1,7004,efa8fd74041a3a8d7af25f70903b9e1f4c064a21), ?)))"
     }
 
   }
@@ -100,7 +100,7 @@ class RedisClusterTest extends  RedisHelper {
       Await.result(redisCluster.set[String]("foo1","FOO"), timeOut)
       Await.result(redisCluster.get[String]("foo1"), timeOut)
       println("wait...")
-      Thread.sleep(15000)
+     // Thread.sleep(15000)
       println("get")
       Await.result(redisCluster.get[String]("foo1"), timeOut) mustEqual Some("FOO")
 
