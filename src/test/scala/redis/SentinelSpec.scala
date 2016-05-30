@@ -4,7 +4,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import akka.testkit._
 
-class SentinelSpec extends RedisClusterClients("SentinelSpec") {
+class SentinelSpec extends RedisSentinelClients("SentinelSpec") {
 
   sequential
 

@@ -12,13 +12,16 @@ import scala.concurrent.Await
 /**
   * Created by npeters on 20/05/16.
   */
-class RedisClusterTest extends RedisHelper {
+class RedisClusterTest extends RedisClusterClients {
 
   sequential
+  var redisCluster:RedisCluster = null
+  override def setup(): Unit = {
+    println("setup")
+    super.setup()
+    redisCluster = RedisCluster(nodePorts.map(p=>RedisServer("127.0.0.1",p)))
+  }
 
-  val redis = RedisClient("127.0.0.1",7000)
-
-  val redisCluster = RedisCluster(Seq(RedisServer("127.0.0.1",7000),RedisServer("127.0.0.1",7001),RedisServer("127.0.0.1",7002),RedisServer("127.0.0.1",7003),RedisServer("127.0.0.1",7004),RedisServer("127.0.0.1",7005)))
 
   "RedisComputeSlot" should {
     "simple" in {

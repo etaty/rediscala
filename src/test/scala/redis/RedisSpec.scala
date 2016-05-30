@@ -1,15 +1,23 @@
 package redis
 
+import java.io.{InputStream, OutputStream}
+import java.nio.file.{Files, Path}
+import java.time.LocalDateTime
+import java.util.concurrent.ThreadLocalRandom
+
 import org.specs2.mutable.{SpecificationLike, Tags}
 import akka.util.Timeout
 import org.specs2.time.NoTimeConversions
 import akka.testkit.TestKit
-import org.specs2.specification.{Step, Fragments}
+import org.specs2.specification.{Fragments, Step}
 import akka.actor.ActorSystem
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.Consumer
+
+import scala.io.Source
 import scala.util.Try
 import scala.reflect.io.File
-import scala.sys.process._
+import scala.sys.process.{ProcessIO, _}
 
 abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
 
@@ -24,7 +32,7 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
 
   // remove stacktrace when we stop the process
-  val processLogger = ProcessLogger(line => println(line),line => ())
+  val processLogger = ProcessLogger(line => println(line),line => Console.err.println(line))
 
 
   override def map(fs: => Fragments) = {
@@ -40,8 +48,12 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   def cleanup() = {}
 
-  val redisServerCmd = "redis-server"
-  //val redisServerLogLevel = "--loglevel verbose"
+  val redisServerPath= if (System.getenv("REDIS_HOME")=="")
+                          "/usr/local/bin"
+                      else
+                          System.getenv("REDIS_HOME")
+
+  val redisServerCmd = s"$redisServerPath/redis-server"
   val redisServerLogLevel = ""
   val redisHost = "127.0.0.1"
 }
@@ -93,7 +105,7 @@ abstract class RedisStandaloneServer extends RedisHelper with WithRedisServerLau
 
 
 
-abstract class RedisClusterClients(val masterName: String = "mymaster") extends RedisHelper {
+abstract class RedisSentinelClients(val masterName: String = "mymaster") extends RedisHelper {
 
   import RedisServerHelper._
 
@@ -164,6 +176,71 @@ abstract class RedisClusterClients(val masterName: String = "mymaster") extends 
 
 
 }
+
+abstract class RedisClusterClients() extends RedisHelper {
+
+  import RedisServerHelper._
+
+
+  var processes: Seq[Process] = Seq.empty
+  val fileDir = new java.io.File("/tmp/redis"+System.currentTimeMillis())
+
+  def newNode(port:Int) =
+    s"$redisServerCmd --port $port --cluster-enabled yes --cluster-config-file nodes-${port}.conf --cluster-node-timeout 30000 --appendonly yes --appendfilename appendonly-${port}.aof --dbfilename dump-${port}.rdb --logfile ${port}.log --daemonize yes"
+
+  val nodePorts = ((0 to 5).map(_ => portNumber.getAndIncrement()))
+  override def setup() = {
+    println("setup")
+    fileDir.mkdirs()
+
+    processes = nodePorts.map(s => Process(newNode(s),fileDir).run(processLogger))
+    Thread.sleep(5000)
+    val nodes = nodePorts.map(s=>redisHost+":"+s).mkString(" ")
+
+    println(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}")
+    val redisTrib = Process(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}").run(
+    
+      new ProcessIO(
+      (writeInput: OutputStream) => {
+        //
+        Thread.sleep(2000)
+        println ("yes")
+        writeInput.write("yes\n".getBytes)
+        writeInput.flush
+      },
+    (processOutput: InputStream) =>{
+      Source.fromInputStream(processOutput).getLines().foreach{l => println(l)}
+    },
+    (processError: InputStream) => {
+      Source.fromInputStream(processError).getLines().foreach{l => println(l)}
+    },
+    daemonizeThreads=false
+    )
+
+    ).exitValue()
+
+
+
+  }
+
+  override def cleanup() = {
+    println("Stop")
+    processes.foreach(_.destroy())
+    Thread.sleep(5000)
+    deleteDirectory()
+  }
+
+  def deleteDirectory(): Unit = {
+    Files.newDirectoryStream(fileDir.toPath).forEach {
+      new Consumer[Path]() {
+        override def accept(t: Path): Unit = Files.delete(t)
+      }
+    }
+    Files.delete(fileDir.toPath)
+  }
+}
+
+
 
 object RedisServerHelper {
   val portNumber = new AtomicInteger(10500)
