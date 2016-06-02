@@ -1,9 +1,9 @@
 package redis
 
 import java.io.{InputStream, OutputStream}
+import java.net.Socket
 import java.nio.file.{Files, Path}
-import java.time.LocalDateTime
-import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.TimeUnit
 
 import org.specs2.mutable.{SpecificationLike, Tags}
 import akka.util.Timeout
@@ -12,9 +12,9 @@ import akka.testkit.TestKit
 import org.specs2.specification.{Fragments, Step}
 import akka.actor.ActorSystem
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 
 import scala.io.Source
+import scala.collection.JavaConversions._
 import scala.util.Try
 import scala.reflect.io.File
 import scala.sys.process.{ProcessIO, _}
@@ -48,7 +48,7 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   def cleanup() = {}
 
-  val redisServerPath= if (System.getenv("REDIS_HOME")=="")
+  val redisServerPath= if ( Option(System.getenv("REDIS_HOME")).isDefined || System.getenv("REDIS_HOME") =="")
                           "/usr/local/bin"
                       else
                           System.getenv("REDIS_HOME")
@@ -190,11 +190,11 @@ abstract class RedisClusterClients() extends RedisHelper {
 
   val nodePorts = ((0 to 5).map(_ => portNumber.getAndIncrement()))
   override def setup() = {
-    println("setup")
+    println("Setup")
     fileDir.mkdirs()
 
     processes = nodePorts.map(s => Process(newNode(s),fileDir).run(processLogger))
-    Thread.sleep(5000)
+    Thread.sleep(2000)
     val nodes = nodePorts.map(s=>redisHost+":"+s).mkString(" ")
 
     println(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}")
@@ -218,24 +218,31 @@ abstract class RedisClusterClients() extends RedisHelper {
     )
 
     ).exitValue()
-
+    Thread.sleep(5000)
 
 
   }
 
   override def cleanup() = {
-    println("Stop")
+    println("Stop begin")
+    //cluster shutdown
+    nodePorts.map { port =>
+      val out = new Socket(redisHost, port).getOutputStream
+      out.write("SHUTDOWN NOSAVE\n".getBytes)
+      out.flush
+    }
+    Thread.sleep(6000)
+      //Await.ready(RedisClient(port = port).shutdown(redis.api.NOSAVE),timeOut) }
     processes.foreach(_.destroy())
-    Thread.sleep(5000)
-    deleteDirectory()
+
+    //deleteDirectory()
+
+    println("Stop end")
   }
 
   def deleteDirectory(): Unit = {
-    Files.newDirectoryStream(fileDir.toPath).forEach {
-      new Consumer[Path]() {
-        override def accept(t: Path): Unit = Files.delete(t)
-      }
-    }
+    val fileStream = Files.newDirectoryStream(fileDir.toPath)
+    fileStream.iterator().toSeq.foreach(Files.delete)
     Files.delete(fileDir.toPath)
   }
 }
