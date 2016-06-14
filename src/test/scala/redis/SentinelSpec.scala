@@ -47,7 +47,7 @@ class SentinelSpec extends RedisSentinelClients("SentinelSpec") {
 
       awaitAssert(sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount + 1, 10 second)
 
-      sentinel.destroy()
+      sentinel.stop()
       awaitAssert({
         sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount
       }, 10 seconds)

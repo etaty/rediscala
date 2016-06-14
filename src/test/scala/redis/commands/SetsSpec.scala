@@ -5,7 +5,7 @@ import scala.concurrent.Await
 import akka.util.ByteString
 import scala.util.Success
 
-class SetsSpec extends RedisSpec {
+class SetsSpec extends RedisStandaloneServer {
 
   "Sets commands" should {
     "SADD" in {

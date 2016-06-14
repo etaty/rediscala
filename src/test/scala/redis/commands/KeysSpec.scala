@@ -7,7 +7,7 @@ import scala.util.Success
 import scala.sys.process.Process
 import redis.api._
 
-class KeysSpec extends RedisSpec {
+class KeysSpec extends RedisStandaloneServer {
 
   "Keys commands" should {
     "DEL" in {
@@ -26,7 +26,7 @@ class KeysSpec extends RedisSpec {
         d <- redis.dump("dumpKey")
       } yield {
         s mustEqual true
-        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 6, 0, 23, 27, -87, -72, 52, -1, -89, -3))
+        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
       }
       Await.result(r, timeOut)
     }
@@ -109,7 +109,7 @@ class KeysSpec extends RedisSpec {
     }
 
     "MOVE" in {
-      val redisMove = RedisClient()
+      val redisMove = RedisClient(port=port)
       val r = for {
         _ <- redis.set("moveKey", "value")
         _ <- redisMove.select(1)
@@ -275,7 +275,7 @@ class KeysSpec extends RedisSpec {
         restore <- redis.restore("restoreKey", serializedValue = dump.get)
       } yield {
         s mustEqual true
-        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 6, 0, 23, 27, -87, -72, 52, -1, -89, -3))
+        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
         restore mustEqual true
       }
       Await.result(r, timeOut)
