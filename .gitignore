@@ -15,3 +15,5 @@ Session.vim
 .DS_Store
 *.rdb
 *.aof
+redis-3.2.0/
+redis-3.2.0.tar.gz
