@@ -17,7 +17,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.3.6"
+  val akkaVersion = "2.4.8"
 
   import sbt._
 
@@ -25,11 +25,11 @@ object Dependencies {
 
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-  val specs2 = "org.specs2" %% "specs2" % "2.3.13"
+  val specs2 = "org.specs2" %% "specs2-core" % "3.8.4" % "test"
 
   val stm = "org.scala-stm" %% "scala-stm" % "0.7"
 
-  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.12.5"
+  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.13.2"
 
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
@@ -51,8 +51,8 @@ object RediscalaBuild extends Build {
     Seq(
       name := "rediscala",
       organization := "com.github.etaty",
-      scalaVersion := "2.11.7",
-      crossScalaVersions := Seq("2.11.7", "2.10.4"),
+      scalaVersion := "2.11.8",
+      crossScalaVersions := Seq("2.11.8", "2.10.4"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       homepage := Some(url("https://github.com/non/rediscala")),
       scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
