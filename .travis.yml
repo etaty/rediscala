@@ -4,10 +4,9 @@ script: "sbt clean coverage test"
 after_script:
   - "sbt coveralls"
 scala:
-  - "2.11.7"
+  - "2.11.8"
 jdk:
-  - oraclejdk7
-  - openjdk7
+  - oraclejdk8
 services:
   - redis
 env:
