@@ -31,7 +31,7 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
     Step(setup()) ^
       fs ^
       Step({
-        system.shutdown()
+        system.terminate()
         cleanup()
       })
   }
