@@ -10,8 +10,9 @@ import akka.io.Tcp.Register
 import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import akka.io.Tcp.Received
+import scala.concurrent.duration.FiniteDuration
 
-abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Boolean => Unit ) extends Actor with ActorLogging {
+abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Boolean => Unit, connectTimeout: Option[FiniteDuration] = None) extends Actor with ActorLogging {
 
   private var currAddress = address
 
@@ -33,7 +34,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
     log.info(s"Connect to $currAddress")
     // Create a new InetSocketAddress to clear the cached IP address.
     currAddress = new InetSocketAddress(currAddress.getHostName, currAddress.getPort)
-    tcp ! Connect(currAddress, options = SO.KeepAlive(on = true) :: Nil)
+    tcp ! Connect(remoteAddress = currAddress, options = SO.KeepAlive(on = true) :: Nil, timeout = connectTimeout)
   }
 
   def reconnect() = {
