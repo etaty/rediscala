@@ -2,7 +2,9 @@ package redis.commands
 
 import redis._
 import redis.api._
-import scala.concurrent.Await
+import redis.api.ZaddOption.{CH, NX, XX}
+
+import scala.concurrent.{Await, Future}
 import akka.util.ByteString
 
 class SortedSetsSpec extends RedisStandaloneServer {
@@ -10,14 +12,21 @@ class SortedSetsSpec extends RedisStandaloneServer {
   "Sorted Sets commands" should {
     "ZADD" in {
       val r = for {
+        version <- redisVersion()
+        ge_3_0_2 = version.exists(_ >= RedisVersion(3, 0, 2))
         _ <- redis.del("zaddKey")
         z1 <- redis.zadd("zaddKey", 1.0 -> "one", (1, "uno"), (2, "two"))
         z2 <- redis.zadd("zaddKey", (3, "two"))
+        z3 <- if (ge_3_0_2) redis.zaddWithOptions("zaddKey", Seq(XX, CH), 0.9 -> "one", (3, "three")) else Future.successful(1)
+        z4 <- if (ge_3_0_2) redis.zaddWithOptions("zaddKey", Seq(NX), 0.8 -> "one", (4, "three")) else Future.successful(1)
+        _ <- redis.zadd("zaddKey", 1.0 -> "one", (4, "three"))
         zr <- redis.zrangeWithscores("zaddKey", 0, -1)
       } yield {
         z1 mustEqual 3
         z2 mustEqual 0
-        zr mustEqual Seq((ByteString("one"), 1), (ByteString("uno"), 1), (ByteString("two"), 3))
+        z3 mustEqual 1
+        z4 mustEqual 1
+        zr mustEqual Seq((ByteString("one"), 1.0), (ByteString("uno"), 1), (ByteString("two"), 3), (ByteString("three"), 4))
       }
       Await.result(r, timeOut)
     }
@@ -155,16 +164,16 @@ class SortedSetsSpec extends RedisStandaloneServer {
     "ZREMRANGEBYLEX" in {
       val r = for {
         _ <- redis.del("zremrangebylexKey")
-        z1 <- redis.zadd("zremrangebylexKey", 0d -> "a",  0d -> "b", 0d -> "c", 0d -> "d", 0d -> "e", 0d -> "f", 0d -> "g")
+        z1 <- redis.zadd("zremrangebylexKey", 0d -> "a", 0d -> "b", 0d -> "c", 0d -> "d", 0d -> "e", 0d -> "f", 0d -> "g")
         z2 <- redis.zremrangebylex("zremrangebylexKey", "[z", "[d")
         z3 <- redis.zremrangebylex("zremrangebylexKey", "[b", "[d")
         zrange1 <- redis.zrange("zremrangebylexKey", 0, -1)
       } yield {
-          z1 mustEqual 7
-          z2 mustEqual 0
-          z3 mustEqual 3
-          zrange1 mustEqual Seq(ByteString("a"), ByteString("e"), ByteString("f"), ByteString("g"))
-        }
+        z1 mustEqual 7
+        z2 mustEqual 0
+        z3 mustEqual 3
+        zrange1 mustEqual Seq(ByteString("a"), ByteString("e"), ByteString("f"), ByteString("g"))
+      }
       Await.result(r, timeOut)
     }
 
