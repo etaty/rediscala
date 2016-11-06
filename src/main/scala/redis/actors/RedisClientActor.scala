@@ -1,14 +1,26 @@
 package redis.actors
 
-import akka.util.{ByteString, ByteStringBuilder}
 import java.net.InetSocketAddress
-import redis.{RedisDispatcher, Redis, Operation, Transaction}
-import akka.actor._
-import scala.collection.mutable
+
 import akka.actor.SupervisorStrategy.Stop
+import akka.actor._
+import akka.util.{ByteString, ByteStringBuilder}
+import redis.{Operation, Transaction}
+
+import scala.collection.mutable
+import scala.concurrent.duration.FiniteDuration
+
+object RedisClientActor {
+
+  def props( address: InetSocketAddress, getConnectOperations: () => Seq[Operation[_, _]],
+             onConnectStatus: Boolean => Unit,
+             dispatcherName: String,
+             connectTimeout: Option[FiniteDuration] = None) =
+    Props(new RedisClientActor(address, getConnectOperations, onConnectStatus, dispatcherName, connectTimeout))
+}
 
 class RedisClientActor(override val address: InetSocketAddress, getConnectOperations: () =>
-    Seq[Operation[_, _]], onConnectStatus: Boolean => Unit, dispatcherName: String) extends RedisWorkerIO(address,onConnectStatus) {
+  Seq[Operation[_, _]], onConnectStatus: Boolean => Unit, dispatcherName: String, connectTimeout: Option[FiniteDuration] = None) extends RedisWorkerIO(address, onConnectStatus, connectTimeout) {
 
 
   import context._
@@ -24,7 +36,7 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   var queuePromises = mutable.Queue[Operation[_, _]]()
 
   def writing: Receive = {
-    case op : Operation[_,_] =>
+    case op: Operation[_, _] =>
       queuePromises enqueue op
       write(op.redisCommand.encodedRequest)
     case Transaction(commands) => {

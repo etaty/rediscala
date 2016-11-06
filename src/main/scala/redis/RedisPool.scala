@@ -92,10 +92,9 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
   }
 
   def makeRedisClientActor(server: RedisServer, active: Ref[Boolean]): ActorRef = {
-    system.actorOf(
-      Props(classOf[RedisClientActor], new InetSocketAddress(server.host, server.port),
-        getConnectOperations(server), onConnectStatus(server, active), redisDispatcher.name)
-        .withDispatcher(redisDispatcher.name),
+    system.actorOf(RedisClientActor.props(new InetSocketAddress(server.host, server.port),
+      getConnectOperations(server), onConnectStatus(server, active), redisDispatcher.name)
+      .withDispatcher(redisDispatcher.name),
       name + '-' + Redis.tempName()
     )
   }

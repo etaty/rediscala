@@ -10,6 +10,8 @@ import redis.api.pubsub._
 import java.util.concurrent.atomic.AtomicLong
 import akka.event.Logging
 
+import scala.concurrent.duration.FiniteDuration
+
 trait RedisCommands
   extends Keys
   with Strings
@@ -24,7 +26,7 @@ trait RedisCommands
   with HyperLogLog
   with Clusters
 
-abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher) extends ActorRequest {
+abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher, connectTimeout: Option[FiniteDuration] = None) extends ActorRequest {
   var host: String
   var port: Int
   val name: String
@@ -32,9 +34,8 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   val db: Option[Int] = None
   implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
-  val redisConnection: ActorRef = system.actorOf(
-    Props(classOf[RedisClientActor], new InetSocketAddress(host, port), getConnectOperations,
-      onConnectStatus, redisDispatcher.name)
+  val redisConnection: ActorRef = system.actorOf(RedisClientActor.props(new InetSocketAddress(host, port),
+    getConnectOperations, onConnectStatus, redisDispatcher.name, connectTimeout)
       .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
@@ -52,7 +53,7 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
     db.foreach(redis.select(_))
   }
 
-  def onConnectStatus(): (Boolean) => Unit = (status: Boolean) => {
+  def onConnectStatus: (Boolean) => Unit = (status: Boolean) => {
 
   }
 
@@ -77,10 +78,11 @@ case class RedisClient(var host: String = "localhost",
                        var port: Int = 6379,
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
-                       name: String = "RedisClient")
+                       name: String = "RedisClient",
+                       connectTimeout: Option[FiniteDuration] = None)
                       (implicit _system: ActorSystem,
                        redisDispatcher: RedisDispatcher = Redis.dispatcher
-                      ) extends RedisClientActorLike(_system, redisDispatcher) with RedisCommands with Transactions {
+                      ) extends RedisClientActorLike(_system, redisDispatcher, connectTimeout) with RedisCommands with Transactions {
 
 }
 
@@ -88,10 +90,11 @@ case class RedisBlockingClient(var host: String = "localhost",
                                var port: Int = 6379,
                                override val password: Option[String] = None,
                                override val db: Option[Int] = None,
-                               name: String = "RedisBlockingClient")
+                               name: String = "RedisBlockingClient",
+                               connectTimeout: Option[FiniteDuration] = None)
                               (implicit _system: ActorSystem,
                                redisDispatcher: RedisDispatcher = Redis.dispatcher
-                              ) extends RedisClientActorLike(_system, redisDispatcher) with BLists {
+                              ) extends RedisClientActorLike(_system, redisDispatcher, connectTimeout) with BLists {
 }
 
 case class RedisPubSub(
