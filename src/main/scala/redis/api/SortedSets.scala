@@ -1,16 +1,18 @@
 package redis.api.sortedsets
 
-import redis._
 import akka.util.ByteString
-import redis.api.{SUM, Aggregate, Limit}
+import redis._
+import redis.api.{Aggregate, Limit, SUM, ZaddOption}
 import redis.protocol.RedisReply
 
-case class Zadd[K, V](key: K, scoreMembers: Seq[(Double, V)])(implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V])
-  extends SimpleClusterKey[K] with RedisCommandIntegerLong {
+case class Zadd[K, V](key: K, options: Seq[ZaddOption], scoreMembers: Seq[(Double, V)])
+                     (implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V])
+  extends RedisCommandIntegerLong {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("ZADD", keyAsString +: scoreMembers.foldLeft(Seq.empty[ByteString])({
-    case (acc, e) => ByteString(e._1.toString) +: convert.serialize(e._2) +: acc
-  }))
+  val encodedRequest: ByteString = encode("ZADD", keySeria.serialize(key) +: (options.map(_.serialize) ++
+    scoreMembers.foldLeft(Seq.empty[ByteString])({
+      case (acc, e) => ByteString(e._1.toString) +: convert.serialize(e._2) +: acc
+    })))
 }
 
 case class Zcard[K](key: K)(implicit keySeria: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {

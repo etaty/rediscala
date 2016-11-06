@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import scala.io.Source
 import scala.collection.JavaConversions._
+import scala.concurrent.Future
 import scala.reflect.io.File
 import scala.util.Try
 import scala.sys.process.{ProcessIO, _}
@@ -27,12 +28,12 @@ object RedisServerHelper {
   // remove stacktrace when we stop the process
   val processLogger = ProcessLogger(line => println(line), line => Console.err.println(line))
   val redisServerPath = {
-  val tmp =  if (Option(System.getenv("REDIS_HOME")).isEmpty || System.getenv("REDIS_HOME") == "")
+    val tmp = if (Option(System.getenv("REDIS_HOME")).isEmpty || System.getenv("REDIS_HOME") == "")
       "/usr/local/bin"
     else
       System.getenv("REDIS_HOME")
     val absolutePath = File(tmp).toAbsolute.path
-    println("redisServerPath: "+absolutePath)
+    println("redisServerPath: " + absolutePath)
     absolutePath
   }
 
@@ -72,9 +73,14 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
 }
 
+case class RedisVersion(major: Int, minor: Int, patch: Int) extends Ordered[RedisVersion] {
 
+  import scala.math.Ordered.orderingToOrdered
 
-abstract class RedisStandaloneServer extends RedisHelper  {
+  override def compare(that: RedisVersion): Int = (this.major, this.minor, this.patch).compare((that.major, that.minor, that.patch))
+}
+
+abstract class RedisStandaloneServer extends RedisHelper {
 
   val redisManager = new RedisManager()
 
@@ -82,6 +88,15 @@ abstract class RedisStandaloneServer extends RedisHelper  {
 
   val port = server.port
   lazy val redis = RedisClient(port = port)
+
+  def redisVersion(): Future[Option[RedisVersion]] = redis.info("Server").map { info =>
+    info.split("\r\n").drop(1).map(_.split(":") match {
+      case Array(key, value) => key -> value
+    }).find(_._1 == "redis_version")
+      .map(_._2.split("\\.") match {
+        case Array(major, minor, patch) => RedisVersion(major.toInt, minor.toInt, patch.toInt)
+      })
+  }
 
   def withRedisServer[T](block: (Int) => T): T = {
     val serverProcess = redisManager.newRedisProcess()
@@ -119,7 +134,7 @@ abstract class RedisSentinelClients(val masterName: String = "mymaster") extends
   lazy val sentinelClient = SentinelClient(port = sentinelPort1)
   lazy val sentinelMonitoredRedisClient =
     SentinelMonitoredRedisClient(master = masterName,
-      sentinels = Seq((redisHost, sentinelPort1),(redisHost, sentinelPort2)))
+      sentinels = Seq((redisHost, sentinelPort1), (redisHost, sentinelPort2)))
 
 
   val redisManager = new RedisManager()
@@ -135,9 +150,11 @@ abstract class RedisSentinelClients(val masterName: String = "mymaster") extends
   def newSlaveProcess() = {
     redisManager.newSlaveProcess(masterPort)
   }
+
   def newSentinelProcess() = {
     redisManager.newSentinelProcess(masterName, masterPort)
   }
+
   override def setup() = {
     Thread.sleep(10000)
   }
@@ -182,8 +199,6 @@ class RedisManager {
     processes.foreach(_.stop())
     Thread.sleep(5000)
   }
-
-
 
 
 }
@@ -283,9 +298,9 @@ class RedisProcess(val port: Int) {
 
         Thread.sleep(500)
 
-      }catch{
+      } catch {
         case NonFatal(e) => e.printStackTrace()
-      }finally {
+      } finally {
         server.destroy()
         server = null
       }
