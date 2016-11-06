@@ -90,9 +90,12 @@ abstract class RedisStandaloneServer extends RedisHelper {
   lazy val redis = RedisClient(port = port)
 
   def redisVersion(): Future[Option[RedisVersion]] = redis.info("Server").map { info =>
-    info.split("\r\n").drop(1).map(_.split(":") match {
-      case Array(key, value) => key -> value
-    }).find(_._1 == "redis_version")
+    info.split("\r\n").drop(1).flatMap { line =>
+      line.split(":") match {
+        case Array(key, value) => List(key -> value)
+        case _ => List.empty
+      }
+    }.find(_._1 == "redis_version")
       .map(_._2.split("\\.") match {
         case Array(major, minor, patch) => RedisVersion(major.toInt, minor.toInt, patch.toInt)
       })
