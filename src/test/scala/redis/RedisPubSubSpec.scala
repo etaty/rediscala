@@ -8,7 +8,7 @@ import akka.actor.{Props, ActorRef}
 import akka.testkit.{TestActorRef, TestProbe}
 import akka.util.ByteString
 
-class RedisPubSubSpec extends RedisSpec {
+class RedisPubSubSpec extends RedisStandaloneServer {
 
   sequential
 
@@ -18,6 +18,7 @@ class RedisPubSubSpec extends RedisSpec {
       var redisPubSub: RedisPubSub = null
 
       redisPubSub = RedisPubSub(
+        port = port,
         channels = Seq("chan1", "secondChannel"),
         patterns = Seq("chan*"),
         onMessage = (m: Message) => {
@@ -48,7 +49,7 @@ class RedisPubSubSpec extends RedisSpec {
       val patterns = Seq("pattern.*")
 
       val subscriberActor = TestActorRef[SubscriberActor](
-        Props(classOf[SubscriberActor], new InetSocketAddress("localhost", 6379),
+        Props(classOf[SubscriberActor], new InetSocketAddress("localhost", port),
           channels, patterns, probeMock.ref)
           .withDispatcher(Redis.dispatcher.name),
         "SubscriberActor"

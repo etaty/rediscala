@@ -5,7 +5,7 @@ import redis.api._
 import scala.concurrent.Await
 import akka.util.ByteString
 
-class SortedSetsSpec extends RedisSpec {
+class SortedSetsSpec extends RedisStandaloneServer {
 
   "Sorted Sets commands" should {
     "ZADD" in {

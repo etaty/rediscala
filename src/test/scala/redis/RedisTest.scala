@@ -5,7 +5,7 @@ import akka.ConfigurationException
 import scala.concurrent._
 import akka.util.ByteString
 
-class RedisTest extends RedisSpec {
+class RedisTest extends RedisStandaloneServer {
 
   sequential
 

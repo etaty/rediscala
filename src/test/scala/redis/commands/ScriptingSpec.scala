@@ -9,7 +9,7 @@ import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException
 import redis.api.scripting.RedisScript
 
-class ScriptingSpec extends RedisSpec {
+class ScriptingSpec extends RedisStandaloneServer {
 
   sequential
 

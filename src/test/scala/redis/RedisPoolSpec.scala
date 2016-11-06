@@ -4,13 +4,13 @@ import scala.concurrent._
 import scala.concurrent.stm._
 import redis.api.connection.Select
 import scala.concurrent.duration._
-class RedisPoolSpec extends RedisHelper {
+class RedisPoolSpec extends RedisStandaloneServer {
 
   sequential
 
   "basic pool test" should {
     "ok" in {
-      val redisPool = RedisClientPool(Seq(RedisServer(db = Some(0)), RedisServer(db = Some(1)), RedisServer(db = Some(3))))
+      val redisPool = RedisClientPool(Seq(RedisServer(  port = port,db = Some(0)), RedisServer(  port = port,db = Some(1)), RedisServer(  port = port,db = Some(3))))
       val key = "keyPoolDb0"
       redisPool.set(key, 0)
       val r = for {
@@ -34,7 +34,7 @@ class RedisPoolSpec extends RedisHelper {
     }
     
     "check status" in {
-      val redisPool = RedisClientPool(Seq(RedisServer(db = Some(0)), RedisServer(db = Some(1)), RedisServer(port = 3333,db = Some(3))))
+      val redisPool = RedisClientPool(Seq(RedisServer(  port = port,db = Some(0)), RedisServer(  port = port,db = Some(1)), RedisServer(port = 3333,db = Some(3))))
       val key = "keyPoolDb0"
 
       awaitAssert(redisPool.redisConnectionPool.size mustEqual 2,20 second)

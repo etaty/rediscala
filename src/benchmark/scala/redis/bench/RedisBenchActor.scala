@@ -3,7 +3,7 @@ package redis.benchold
 import scala.compat.Platform
 import scala.concurrent._
 import scala.concurrent.duration._
-import redis.{RedisSpec}
+import redis.{RedisStandaloneServer}
 import akka.actor.{Props, ActorRef}
 import java.net.InetSocketAddress
 import akka.io.Tcp._
@@ -16,7 +16,7 @@ import akka.pattern.ask
 import redis.actors.{WriteAck, RedisClientActor}
 
 /*
-class RedisBenchActor extends RedisSpec {
+class RedisBenchActor extends RedisStandaloneServer {
 
 
   "Rediscala stupid benchmark" should {

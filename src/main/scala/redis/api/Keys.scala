@@ -8,30 +8,30 @@ import redis.api.Order
 import redis.api.LimitOffsetCount
 
 
-case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey with RedisCommandIntegerLong {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("DEL", keys.map(redisKey.serialize))
 }
 
-case class Dump[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
+case class Dump[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R]) extends SimpleClusterKey[K] with RedisCommandBulkOptionByteString[R] {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("DUMP", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("DUMP", Seq(keyAsString))
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Exists[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Exists[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("EXISTS", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("EXISTS", Seq(keyAsString))
 }
 
-case class Expire[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Expire[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("EXPIRE", Seq(redisKey.serialize(key), ByteString(seconds.toString)))
+  val encodedRequest: ByteString = encode("EXPIRE", Seq(keyAsString, ByteString(seconds.toString)))
 }
 
-case class Expireat[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Expireat[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("EXPIREAT", Seq(redisKey.serialize(key), ByteString(seconds.toString)))
+  val encodedRequest: ByteString = encode("EXPIREAT", Seq(keyAsString, ByteString(seconds.toString)))
 }
 
 case class Keys(pattern: String) extends RedisCommandMultiBulk[Seq[String]] {
@@ -54,47 +54,47 @@ case class Migrate[K](host: String, port: Int, key: K, destinationDB: Int, timeo
       ))
 }
 
-case class Move[K](key: K, db: Int)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Move[K](key: K, db: Int)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("MOVE", Seq(redisKey.serialize(key), ByteString(db.toString)))
+  val encodedRequest: ByteString = encode("MOVE", Seq(keyAsString, ByteString(db.toString)))
 }
 
-case class ObjectRefcount[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandRedisReplyOptionLong {
+case class ObjectRefcount[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandRedisReplyOptionLong {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("REFCOUNT"), redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("REFCOUNT"), keyAsString))
 }
 
-case class ObjectIdletime[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandRedisReplyOptionLong {
+case class ObjectIdletime[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandRedisReplyOptionLong {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("IDLETIME"), redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("IDLETIME"), keyAsString))
 }
 
 
-case class ObjectEncoding[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandBulk[Option[String]] {
+case class ObjectEncoding[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandBulk[Option[String]] {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("ENCODING"), redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("OBJECT", Seq(ByteString("ENCODING"), keyAsString))
 
   def decodeReply(bulk: Bulk) = bulk.toOptString
 }
 
-case class Persist[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Persist[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("PERSIST", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("PERSIST", Seq(keyAsString))
 }
 
-case class Pexpire[K](key: K, milliseconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Pexpire[K](key: K, milliseconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("PEXPIRE", Seq(redisKey.serialize(key), ByteString(milliseconds.toString)))
+  val encodedRequest: ByteString = encode("PEXPIRE", Seq(keyAsString, ByteString(milliseconds.toString)))
 }
 
-case class Pexpireat[K](key: K, millisecondsTimestamp: Long)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerBoolean {
+case class Pexpireat[K](key: K, millisecondsTimestamp: Long)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("PEXPIREAT", Seq(redisKey.serialize(key), ByteString(millisecondsTimestamp.toString)))
+  val encodedRequest: ByteString = encode("PEXPIREAT", Seq(keyAsString, ByteString(millisecondsTimestamp.toString)))
 }
 
-case class Pttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+case class Pttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("PTTL", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("PTTL", Seq(keyAsString))
 }
 
 case class Randomkey[R](implicit deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
@@ -103,20 +103,20 @@ case class Randomkey[R](implicit deserializerR: ByteStringDeserializer[R]) exten
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
 
-case class Rename[K, NK](key: K, newkey: NK)(implicit redisKey: ByteStringSerializer[K], newKeySer: ByteStringSerializer[NK]) extends RedisCommandStatusBoolean {
+case class Rename[K, NK](key: K, newkey: NK)(implicit redisKey: ByteStringSerializer[K], newKeySer: ByteStringSerializer[NK]) extends SimpleClusterKey[K] with RedisCommandStatusBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("RENAME", Seq(redisKey.serialize(key), newKeySer.serialize(newkey)))
+  val encodedRequest: ByteString = encode("RENAME", Seq(keyAsString, newKeySer.serialize(newkey)))
 }
 
-case class Renamex[K, NK](key: K, newkey: NK)(implicit redisKey: ByteStringSerializer[K], newKeySer: ByteStringSerializer[NK]) extends RedisCommandIntegerBoolean {
+case class Renamex[K, NK](key: K, newkey: NK)(implicit redisKey: ByteStringSerializer[K], newKeySer: ByteStringSerializer[NK]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("RENAMENX", Seq(redisKey.serialize(key), newKeySer.serialize(newkey)))
+  val encodedRequest: ByteString = encode("RENAMENX", Seq(keyAsString, newKeySer.serialize(newkey)))
 }
 
 case class Restore[K, V](key: K, ttl: Long = 0, serializedValue: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V])
-  extends RedisCommandStatusBoolean {
+  extends SimpleClusterKey[K] with RedisCommandStatusBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("RESTORE", Seq(redisKey.serialize(key), ByteString(ttl.toString), convert.serialize(serializedValue)))
+  val encodedRequest: ByteString = encode("RESTORE", Seq(keyAsString, ByteString(ttl.toString), convert.serialize(serializedValue)))
 }
 
 private[redis] object Sort {
@@ -164,14 +164,14 @@ case class SortStore[K: ByteStringSerializer, KS: ByteStringSerializer](key: K,
   val encodedRequest: ByteString = encode("SORT", Sort.buildArgs(key, byPattern, limit, getPatterns, order, alpha, Some(store)))
 }
 
-case class Ttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandIntegerLong {
+case class Ttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("TTL", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("TTL", Seq(keyAsString))
 }
 
-case class Type[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends RedisCommandStatusString {
+case class Type[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandStatusString {
   val isMasterOnly = false
-  val encodedRequest: ByteString = encode("TYPE", Seq(redisKey.serialize(key)))
+  val encodedRequest: ByteString = encode("TYPE", Seq(keyAsString))
 }
 
 case class Scan[C](cursor: C, count: Option[Int], matchGlob: Option[String])(implicit redisCursor: ByteStringSerializer[C], deserializer: ByteStringDeserializer[String]) extends RedisCommandMultiBulkCursor[Seq[String]] {

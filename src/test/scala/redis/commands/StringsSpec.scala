@@ -6,8 +6,9 @@ import akka.util.ByteString
 import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException
 
-class StringsSpec extends RedisSpec {
+class StringsSpec extends RedisStandaloneServer {
 
+  sequential
   "Strings commands" should {
     "APPEND" in {
       val r = redis.set("appendKey", "Hello").flatMap(_ => {

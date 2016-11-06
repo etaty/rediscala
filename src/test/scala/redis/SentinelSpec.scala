@@ -4,7 +4,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import akka.testkit._
 
-class SentinelSpec extends RedisClusterClients("SentinelSpec") {
+class SentinelSpec extends RedisSentinelClients("SentinelSpec") {
 
   sequential
 
@@ -47,7 +47,7 @@ class SentinelSpec extends RedisClusterClients("SentinelSpec") {
 
       awaitAssert(sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount + 1, 10 second)
 
-      sentinel.destroy()
+      sentinel.stop()
       awaitAssert({
         sentinelMonitoredRedisClient.sentinelClients.size mustEqual sentinelCount
       }, 10 seconds)

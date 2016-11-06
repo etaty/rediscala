@@ -6,7 +6,7 @@ import akka.util.ByteString
 import redis.actors.ReplyErrorException
 import redis.protocol.{Bulk, Status, MultiBulk}
 
-class TransactionsSpec extends RedisSpec {
+class TransactionsSpec extends RedisStandaloneServer {
 
   "Transactions commands" should {
     "basic" in {

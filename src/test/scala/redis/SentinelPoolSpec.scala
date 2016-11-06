@@ -1,9 +1,10 @@
 package redis
 
-import scala.concurrent.duration._
+import redis.RedisServerHelper.redisHost
+
 import scala.concurrent._
-import scala.util.Try
-class SentinelMutablePoolSpec extends RedisClusterClients("SentinelMutablePoolSpec") {
+import scala.concurrent.duration._
+class SentinelMutablePoolSpec extends RedisSentinelClients("SentinelMutablePoolSpec") {
 
   sequential
 
@@ -49,7 +50,7 @@ class SentinelMutablePoolSpec extends RedisClusterClients("SentinelMutablePoolSp
 
 }
 
-class SentinelMonitoredRedisClientMasterSlavesSpec extends RedisClusterClients("SentinelMonitoredRedisClientMasterSlavesSpec") {
+class SentinelMonitoredRedisClientMasterSlavesSpec extends RedisSentinelClients("SentinelMonitoredRedisClientMasterSlavesSpec") {
 
 sequential
 lazy val redisMasterSlavesPool =
@@ -64,11 +65,11 @@ lazy val redisMasterSlavesPool =
       val newSlave =  newSlaveProcess()
 
       awaitAssert(redisMasterSlavesPool.slavesClients.redisConnectionPool.size mustEqual 3,20 second)
-      newSlave.destroy()
+      newSlave.stop()
 
       Await.result(redisMasterSlavesPool.get[String]("test"),timeOut) mustEqual Some("value")
-      slave1.destroy()
-      slave2.destroy()
+      slave1.stop()
+      slave2.stop()
 
       awaitAssert(  redisMasterSlavesPool.slavesClients.redisConnectionPool.size mustEqual 0,20 second)
       Await.result(redisMasterSlavesPool.get[String]("test"), timeOut) mustEqual Some("value")

@@ -5,7 +5,7 @@ import scala.concurrent.Await
 import akka.util.ByteString
 import scala.util.Success
 
-class ListsSpec extends RedisSpec {
+class ListsSpec extends RedisStandaloneServer {
 
   "Lists commands" should {
 

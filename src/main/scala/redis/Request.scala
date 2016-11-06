@@ -37,6 +37,7 @@ trait BufferedRequest {
   }
 }
 
+
 trait RoundRobinPoolRequest {
   implicit val executionContext: ExecutionContext
 
@@ -54,7 +55,7 @@ trait RoundRobinPoolRequest {
     }
   }
 
-  private def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
+  protected def send[T](redisConnection: ActorRef, redisCommand: RedisCommand[_ <: RedisReply, T]): Future[T] = {
     val promise = Promise[T]()
     redisConnection ! Operation(redisCommand, promise)
     promise.future
@@ -68,15 +69,4 @@ trait RoundRobinPoolRequest {
     }
   }
 
-  /**
-   *
-   * @param redisCommand
-   * @tparam T
-   * @return behave nicely with Future helpers like firstCompletedOf or sequence
-   */
-  def broadcast[T](redisCommand: RedisCommand[_ <: RedisReply, T]): Seq[Future[T]] = {
-    redisConnectionPool.map(redisConnection => {
-      send(redisConnection, redisCommand)
-    })
-  }
 }
