@@ -7,9 +7,9 @@ import redis.protocol.RedisReply
 
 case class Zadd[K, V](key: K, options: Seq[ZaddOption], scoreMembers: Seq[(Double, V)])
                      (implicit keySeria: ByteStringSerializer[K], convert: ByteStringSerializer[V])
-  extends RedisCommandIntegerLong {
+  extends SimpleClusterKey[K] with RedisCommandIntegerLong  {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("ZADD", keySeria.serialize(key) +: (options.map(_.serialize) ++
+  val encodedRequest: ByteString = encode("ZADD", keyAsString +: (options.map(_.serialize) ++
     scoreMembers.foldLeft(Seq.empty[ByteString])({
       case (acc, e) => ByteString(e._1.toString) +: convert.serialize(e._2) +: acc
     })))
