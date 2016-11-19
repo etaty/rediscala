@@ -60,7 +60,7 @@ lazy val redisMasterSlavesPool =
     "add and remove" in {
       Thread.sleep(10000)
       Await.result(redisMasterSlavesPool.set("test", "value"), timeOut)
-      awaitAssert(redisMasterSlavesPool.slavesClients.redisConnectionPool.size mustEqual 2,5 second)
+      awaitAssert(redisMasterSlavesPool.slavesClients.redisConnectionPool.size mustEqual 2,20 second)
 
       val newSlave =  newSlaveProcess()
 
