@@ -77,7 +77,7 @@ case class Incrbyfloat[K](key: K, increment: Double)(implicit redisKey: ByteStri
 }
 
 case class Mget[K, R](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R])
-  extends MultiClusterKey with RedisCommandMultiBulk[Seq[Option[R]]] {
+  extends MultiClusterKey[K] with RedisCommandMultiBulk[Seq[Option[R]]] {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("MGET", keys.map(redisKey.serialize))
 
