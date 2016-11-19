@@ -8,7 +8,7 @@ import redis.api.Order
 import redis.api.LimitOffsetCount
 
 
-case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey with RedisCommandIntegerLong {
+case class Del[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey[K] with RedisCommandIntegerLong {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("DEL", keys.map(redisKey.serialize))
 }
