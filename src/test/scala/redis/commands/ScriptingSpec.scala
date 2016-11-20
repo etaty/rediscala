@@ -3,13 +3,15 @@ package redis.commands
 import java.io.File
 
 import redis._
+
 import scala.concurrent.Await
 import akka.util.ByteString
+import org.specs2.concurrent.ExecutionEnv
 import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException
 import redis.api.scripting.RedisScript
 
-class ScriptingSpec extends RedisStandaloneServer {
+class ScriptingSpec(implicit ee: ExecutionEnv) extends RedisStandaloneServer {
 
   sequential
 
