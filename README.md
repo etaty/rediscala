@@ -14,12 +14,19 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
+From version 1.8.0: 
+ * use akka 2.4.12 (java 1.8)
+ * released for scala 2.11 & 2.12
+```scala
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.8.0-SNAPSHOT"
+```
+
 From version 1.3.1: 
  * use akka 2.3
  * released for scala 2.10 & 2.11
 ```scala
 // new repo on maven.org
-libraryDependencies += "com.github.etaty" %% "rediscala" % "1.6.0"
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.7.0"
 
 
 // old repo on bintray (1.5.0 and inferior version)
