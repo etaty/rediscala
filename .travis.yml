@@ -1,13 +1,13 @@
 sudo: false
 language: scala
 script: "sbt clean coverage test"
-after_script:
+after_success:
+  - "sbt coverageReport coverageAggregate"
   - "sbt coveralls"
 scala:
-  - "2.11.7"
+  - "2.11.8"
 jdk:
-  - oraclejdk7
-  - openjdk7
+  - oraclejdk8
 
 before_install:
   - ./install-redis.sh

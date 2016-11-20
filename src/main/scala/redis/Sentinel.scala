@@ -15,10 +15,10 @@ trait SentinelCommands
 case class SentinelClient(var host: String = "localhost",
                           var port: Int = 26379,
                           onMasterChange: (String, String, Int) => Unit = (masterName: String, ip: String, port: Int) => {},
-                          onNewSentinel:  (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
+                          onNewSentinel: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
                           onSentinelDown: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
-                          onNewSlave:     (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
-                          onSlaveDown:    (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
+                          onNewSlave: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
+                          onSlaveDown: (String, String, Int) => Unit = (masterName: String, sentinelip: String, sentinelport: Int) => {},
                           name: String = "SentinelClient")
                          (implicit _system: ActorSystem,
                           redisDispatcher: RedisDispatcher = Redis.dispatcher
@@ -27,11 +27,11 @@ case class SentinelClient(var host: String = "localhost",
 
   val log = Logging.getLogger(system, this)
 
-  val channels = Seq("+switch-master", "+sentinel", "+sdown","-sdown", "+failover-state-send-slaveof-noone","+slave")
+  val channels = Seq("+switch-master", "+sentinel", "+sdown", "-sdown", "+failover-state-send-slaveof-noone", "+slave")
 
   val onMessage = (message: Message) => {
 
-   if (log.isDebugEnabled)
+    if (log.isDebugEnabled)
       log.debug(s"SentinelClient.onMessage: message received:${message.channel} ${message.data.utf8String}")
 
     message match {
@@ -67,7 +67,7 @@ case class SentinelClient(var host: String = "localhost",
           case _ => {}
         }
       }
-      case Message("-sdown", data)  => {
+      case Message("-sdown", data) => {
         data.utf8String.split(" ") match {
           case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
             onNewSlave(master, slaveip, slaveport.toInt)
@@ -75,7 +75,7 @@ case class SentinelClient(var host: String = "localhost",
           case _ => {}
         }
       }
-      case Message("+slave", data)  => {
+      case Message("+slave", data) => {
         data.utf8String.split(" ") match {
           case Array("slave", slaveName, slaveip, slaveport, "@", master, masterip, masterport) =>
             onNewSlave(master, slaveip, slaveport.toInt)
@@ -91,14 +91,14 @@ case class SentinelClient(var host: String = "localhost",
 
   val redisPubSubConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None,(status:Boolean) => {})
+      new InetSocketAddress(host, port), channels, Seq(), onMessage, (pmessage: PMessage) => {}, None, (status: Boolean) => {})
       .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
 
   /**
-   * Disconnect from the server (stop the actors)
-   */
+    * Disconnect from the server (stop the actors)
+    */
   override def stop() {
     system stop redisConnection
     system stop redisPubSubConnection
@@ -175,11 +175,13 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
     import scala.concurrent.duration._
 
     val f = sentinelClients.values.map(_.getMasterAddr(master))
-    val ff = Future.find(f) { case Some((_: String, _: Int)) => true case _ => false }
-      .map {
-        case Some(Some((ip: String, port: Int))) => initFunction(ip, port)
-        case _ => throw new Exception(s"No such master '$master'")
-      }
+    val ff = Future.sequence(f).map { listAddr =>
+      listAddr.flatten
+        .headOption
+        .map {
+          case (ip: String, port: Int) => initFunction(ip, port)
+        }.getOrElse(throw new Exception(s"No such master '$master'"))
+    }
 
     Await.result(ff, 15 seconds)
   }
@@ -206,7 +208,7 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
 }
 
 abstract class SentinelMonitoredRedisClientLike(system: ActorSystem, redisDispatcher: RedisDispatcher
-    ) extends SentinelMonitored(system, redisDispatcher) with ActorRequest {
+                                               ) extends SentinelMonitored(system, redisDispatcher) with ActorRequest {
   val redisClient: RedisClientActorLike
   val onMasterChange = (ip: String, port: Int) => {
     log.info(s"onMasterChange: $ip:$port")
@@ -216,8 +218,8 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem, redisDispat
   def redisConnection = redisClient.redisConnection
 
   /**
-   * Disconnect from the server (stop the actors)
-   */
+    * Disconnect from the server (stop the actors)
+    */
   def stop() = {
     redisClient.stop()
     sentinelClients.values.foreach(_.stop())
@@ -226,7 +228,7 @@ abstract class SentinelMonitoredRedisClientLike(system: ActorSystem, redisDispat
 }
 
 abstract class SentinelMonitoredRedisBlockingClientLike(system: ActorSystem, redisDispatcher: RedisDispatcher
-    ) extends SentinelMonitored(system, redisDispatcher) with ActorRequest {
+                                                       ) extends SentinelMonitored(system, redisDispatcher) with ActorRequest {
   val redisClient: RedisClientActorLike
 
   val onMasterChange = (ip: String, port: Int) => {
@@ -235,8 +237,8 @@ abstract class SentinelMonitoredRedisBlockingClientLike(system: ActorSystem, red
   }
 
   /**
-   * Disconnect from the server (stop the actors)
-   */
+    * Disconnect from the server (stop the actors)
+    */
   def stop() = {
     redisClient.stop()
     sentinelClients.values.foreach(_.stop())

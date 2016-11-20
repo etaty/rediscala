@@ -5,8 +5,7 @@ import java.net.InetSocketAddress
 import akka.actor._
 import akka.testkit._
 import akka.util.ByteString
-import org.specs2.mutable.{SpecificationLike, Tags}
-import org.specs2.time.NoTimeConversions
+import org.specs2.mutable.SpecificationLike
 import redis.api.connection.Ping
 import redis.api.strings.Get
 import redis.{RedisDispatcher, Operation, Redis}
@@ -14,7 +13,7 @@ import redis.{RedisDispatcher, Operation, Redis}
 import scala.collection.mutable
 import scala.concurrent.{Await, Promise}
 
-class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
+class RedisClientActorSpec extends TestKit(ActorSystem()) with SpecificationLike with ImplicitSender {
 
   import scala.concurrent.duration._
 

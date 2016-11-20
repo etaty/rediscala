@@ -2,23 +2,22 @@ package redis
 
 import java.io.{InputStream, OutputStream}
 import java.net.Socket
-import java.nio.file.{Files, Path}
-import java.util.concurrent.TimeUnit
-
-import org.specs2.mutable.{SpecificationLike, Tags}
-import akka.util.Timeout
-import org.specs2.time.NoTimeConversions
-import akka.testkit.TestKit
-import org.specs2.specification.{Fragments, Step}
-import akka.actor.ActorSystem
+import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 
-import scala.io.Source
-import scala.collection.JavaConversions._
+import akka.actor.ActorSystem
+import akka.testkit.TestKit
+import akka.util.Timeout
+import org.specs2.concurrent.FutureAwait
+import org.specs2.mutable.SpecificationLike
+import org.specs2.specification.core.Fragments
+
+import scala.collection.JavaConverters._
 import scala.concurrent.Future
+import scala.io.Source
 import scala.reflect.io.File
-import scala.util.Try
 import scala.sys.process.{ProcessIO, _}
+import scala.util.Try
 import scala.util.control.NonFatal
 
 
@@ -46,7 +45,7 @@ object RedisServerHelper {
 }
 
 
-abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions {
+abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike with FutureAwait {
 
   import scala.concurrent.duration._
 
@@ -60,8 +59,8 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
   override def map(fs: => Fragments) = {
     setup()
     fs ^
-      Step({
-        system.shutdown()
+      step({
+        TestKit.shutdownActorSystem(system)
         cleanup()
       })
   }
@@ -273,13 +272,13 @@ abstract class RedisClusterClients() extends RedisHelper {
 
   def deleteDirectory(): Unit = {
     val fileStream = Files.newDirectoryStream(fileDir.toPath)
-    fileStream.iterator().toSeq.foreach(Files.delete)
+    fileStream.iterator().asScala.foreach(Files.delete)
     Files.delete(fileDir.toPath)
   }
 }
 
 
-import RedisServerHelper._
+import redis.RedisServerHelper._
 
 class RedisProcess(val port: Int) {
   var server: Process = null

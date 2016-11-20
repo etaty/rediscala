@@ -2,8 +2,7 @@ package redis.actors
 
 import akka.testkit._
 import akka.actor.{ActorRef, Props, ActorSystem}
-import org.specs2.mutable.{Tags, SpecificationLike}
-import org.specs2.time.NoTimeConversions
+import org.specs2.mutable.SpecificationLike
 import java.net.InetSocketAddress
 import akka.io.Tcp._
 import akka.util.ByteString
@@ -14,7 +13,7 @@ import akka.io.Tcp.Connect
 import akka.io.Tcp.CommandFailed
 import redis.Redis
 
-class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike with Tags with NoTimeConversions with ImplicitSender {
+class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike with ImplicitSender {
 
   import scala.concurrent.duration._
 
