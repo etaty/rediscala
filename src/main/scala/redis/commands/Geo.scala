@@ -9,7 +9,7 @@ import scala.concurrent.Future
 
 trait Geo extends Request {
 
-  def geoAdd[K](key: String, lat: Double, lng: Double, loc: String) =
+  def geoAdd[K](key: String, lat: Double, lng: Double, loc: String): Future[Long] =
     send(GeoAdd(key, lat, lng, loc))
 
   def geoRadius[K](key: String, lat: Double, lng: Double, radius: Double, dim: Measurement = Kilometer): Future[Seq[String]] =
@@ -18,14 +18,15 @@ trait Geo extends Request {
   def geoRadiusByMember[K](key: String, member: String, dist:Int, dim: Measurement = Meter): Future[Seq[String]] =
     send(GeoRadiusByMember(key, member, dist, dim))
 
-  def geoRadiusByMemberWithOpt[K](key: String, member: String, dist:Int, dim: Measurement = Meter, opt: WithOption = WithDist, count: Int = Int.MaxValue): Future[Seq[String]] =
+  def geoRadiusByMemberWithOpt[K](key: String, member: String, dist:Int, dim: Measurement = Meter, opt: WithOption = WithDist,
+                                  count: Int = Int.MaxValue)=
     send(GeoRadiusByMemberWithOpt(key, member, dist, dim, opt,count))
 
-  def geoDist[K] (key: String ,member1: String, member2: String, unit: Measurement = Meter ) =
+  def geoDist[K] (key: String ,member1: String, member2: String, unit: Measurement = Meter ): Future[Double] =
     send(GeoDist(key, member1, member2, unit))
 
-  def geoHash[K] (key: String ,members: String *) = send(GeoHash(key, members))
+  def geoHash[K] (key: String ,members: String *): Future[Seq[String]] = send(GeoHash(key, members))
 
-  def geoPos[K] (key: String ,members: String *) = send(GeoPos(key, members))
+  def geoPos[K] (key: String ,members: String *): Future[Seq[String]] = send(GeoPos(key, members))
 
 }

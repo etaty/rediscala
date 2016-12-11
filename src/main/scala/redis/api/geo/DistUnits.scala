@@ -1,8 +1,5 @@
 package redis.api.geo
 
-/**
-  * Created by avilevi on 08/12/2016.
-  */
 object DistUnits{
   sealed trait Measurement{
     def value:String = {
@@ -18,5 +15,4 @@ object DistUnits{
   case object Kilometer extends Measurement
   case object Mile extends Measurement
   case object Feet extends Measurement
-
 }
