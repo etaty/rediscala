@@ -106,6 +106,13 @@ object MultiBulkConverter {
     }).getOrElse(Seq.empty)
   }
 
+  def toStringsSeq(rd : RedisReply ): Seq[String] = rd match {
+    case MultiBulk(Some(v)) => v.flatMap(r => toStringsSeq(r))
+    case Bulk(b) => b.map(_.decodeString("US-ASCII")).toSeq
+    case Integer(i) => Seq(i.decodeString("US-ASCII"))
+    case _ => Nil
+  }
+
 }
 
 @implicitNotFound(msg = "No ByteString serializer found for type ${K}. Try to implement an implicit ByteStringSerializer for this type.")
