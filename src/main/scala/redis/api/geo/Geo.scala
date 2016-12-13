@@ -22,7 +22,8 @@ case class GeoRadius[K](key: K, lat: Double, lng: Double, radius: Double, unit: 
   def decodeReply(mb: MultiBulk): Seq[String]  = MultiBulkConverter.toStringsSeq(mb)
 }
 
-case class GeoRadiusByMember[K](key: K, member:String, dist:Int, unit: Measurement)(implicit redisKey: ByteStringSerializer[K])
+case class GeoRadiusByMember[K](key: K, member:String, dist:Int, unit: Measurement)
+                               (implicit redisKey: ByteStringSerializer[K])
   extends SimpleClusterKey[K] with RedisCommandMultiBulk[Seq[String]] {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("GEORADIUSBYMEMBER", Seq(redisKey.serialize(key), ByteString(member),
@@ -36,7 +37,6 @@ case class GeoRadiusByMemberWithOpt[K](key: K, member:String, dist:Int, unit: Me
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("GEORADIUSBYMEMBER", Seq(redisKey.serialize(key), ByteString(member),
     ByteString(dist.toString), ByteString(unit.value), ByteString(opt.value),ByteString("COUNT"), ByteString(count.toString)))
-
   def decodeReply(mb: MultiBulk): Seq[String]  = MultiBulkConverter.toStringsSeq(mb)
 
 }
