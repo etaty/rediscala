@@ -25,6 +25,7 @@ trait RedisCommands
   with Server
   with HyperLogLog
   with Clusters
+  with Geo
 
 abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher, connectTimeout: Option[FiniteDuration] = None) extends ActorRequest {
   var host: String
