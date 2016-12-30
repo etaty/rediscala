@@ -24,6 +24,11 @@ case class Exists[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends
   val encodedRequest: ByteString = encode("EXISTS", Seq(keyAsString))
 }
 
+case class ExistsMany[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey[K] with RedisCommandIntegerLong {
+  val isMasterOnly = false
+  val encodedRequest: ByteString = encode("EXISTS", keys.map(redisKey.serialize))
+}
+
 case class Expire[K](key: K, seconds: Long)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("EXPIRE", Seq(keyAsString, ByteString(seconds.toString)))
