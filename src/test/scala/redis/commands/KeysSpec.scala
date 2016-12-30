@@ -44,6 +44,19 @@ class KeysSpec extends RedisStandaloneServer {
       Await.result(r, timeOut)
     }
 
+    "EXISTS variadic" in {
+      val r = for {
+        s <- redis.set("existsKey", "value")
+        e <- redis.existsMany("existsKey", "existsKeyNonexisting")
+        e2 <- redis.existsMany("existsKeyNonexisting")
+      } yield {
+        s mustEqual true
+        e mustEqual 1
+        e2 mustEqual 0
+      }
+      Await.result(r, timeOut)
+    }
+
     "EXPIRE" in {
       val r = for {
         s <- redis.set("expireKey", "value")

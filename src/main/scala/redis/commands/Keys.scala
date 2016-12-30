@@ -17,6 +17,9 @@ trait Keys extends Request {
   def exists(key: String): Future[Boolean] =
     send(Exists(key))
 
+  def existsMany(keys: String*): Future[Long] =
+    send(ExistsMany(keys))
+
   def expire(key: String, seconds: Long): Future[Boolean] =
     send(Expire(key, seconds))
 
