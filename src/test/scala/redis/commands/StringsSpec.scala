@@ -64,12 +64,14 @@ class StringsSpec extends RedisStandaloneServer {
         v2 <- redis.bitpos("bitposKey", 1)
         v3 <- redis.bitpos("bitposKey", 1, 1)
         v4 <- redis.bitpos("bitposKey", 0, 3)
+        v5 <- redis.bitpos("bitposKey", 0, 1, 2)
       } yield {
         s1 mustEqual true
         v1 mustEqual 0
         v2 mustEqual 1
         v3 mustEqual 10
         v4 mustEqual -1
+        v5 mustEqual 8
       }
       Await.result(r, timeOut)
     }
