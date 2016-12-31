@@ -31,6 +31,9 @@ trait Strings extends Request {
   def bitop(operation: BitOperator, destkey: String, keys: String*): Future[Long] =
     send(Bitop(operation, destkey, keys))
 
+  def bitpos(key: String, bit: Long, start: Long = 0, end: Long = -1): Future[Long] =
+    send(Bitpos(key, bit, start, end))
+
   def decr(key: String): Future[Long] =
     send(Decr(key))
 
