@@ -18,7 +18,7 @@ From version 1.8.0:
  * use akka 2.4.12 (java 1.8)
  * released for scala 2.11 & 2.12
 ```scala
-libraryDependencies += "com.github.etaty" %% "rediscala" % "1.8.0-SNAPSHOT"
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.8.0"
 ```
 
 From version 1.3.1: 
