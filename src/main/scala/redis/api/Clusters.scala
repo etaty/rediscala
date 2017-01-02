@@ -3,7 +3,7 @@ package redis.api.clusters
 import akka.util.ByteString
 import redis.{MultiBulkConverter, RedisCommand, RedisCommandMultiBulk, RedisCommandStatusString}
 import redis.api.connection.Ping._
-import redis.protocol.{DecodeResult, MultiBulk, RedisProtocolReply, RedisReply}
+import redis.protocol.{DecodeResult, Bulk, MultiBulk, RedisProtocolReply, RedisReply}
 
 import scala.math.Ordering
 
@@ -69,5 +69,27 @@ case class ClusterSlots() extends RedisCommand[MultiBulk,Seq[ClusterSlot]] {
       RedisProtocolReply.decodeReplyMultiBulk(bs)
     }
 
+  }
+}
+
+case class ClusterInfo() extends RedisCommand[Bulk, scala.collection.immutable.Map[String, String]] {
+  val isMasterOnly = false
+  val encodedRequest: ByteString = encode("CLUSTER INFO")
+  def decodeReply(b: Bulk): scala.collection.immutable.Map[String, String] = {
+    b.response.map(_.utf8String.split("\r\n").map(_.split(":")).map(s => (s(0),s(1))).toMap).getOrElse(Map.empty)
+  }
+  override val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Bulk]] = {
+    case s => RedisProtocolReply.decodeReplyBulk(s)
+  }
+}
+
+case class ClusterNodes() extends RedisCommand[Bulk, Array[scala.collection.immutable.Map[String, String]]] {
+  val isMasterOnly = false
+  val encodedRequest: ByteString = encode("CLUSTER NODES")
+  def decodeReply(b: Bulk): Array[scala.collection.immutable.Map[String, String]] = {
+    b.response.map(_.utf8String.split("\n").map(_.split(" ")).map(s => scala.collection.immutable.Map("id" -> s(0), "ip-port" -> s(1), "flags" -> s(2), "master" -> s(3), "ping-sent" -> s(4), "pong-recv" -> s(5), "config-epoch" -> s(6), "link-state" -> s(7), "slots" -> s.drop(8).mkString(" ")))).getOrElse(Array.empty)
+  }
+  override val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Bulk]] = {
+    case s => RedisProtocolReply.decodeReplyBulk(s)
   }
 }
