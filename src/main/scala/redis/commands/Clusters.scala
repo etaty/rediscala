@@ -13,7 +13,7 @@ trait Clusters extends Request {
 
   def clusterSlots(): Future[Seq[ClusterSlot]] = send(ClusterSlots())
 
-  def clusterInfo(): Future[scala.collection.immutable.Map[String, String]] = send(ClusterInfo())
+  def clusterInfo(): Future[Map[String, String]] = send(ClusterInfo())
   
-  def clusterNodes(): Future[Array[scala.collection.immutable.Map[String, String]]] = send(ClusterNodes())
+  def clusterNodes(): Future[Array[Map[String, String]]] = send(ClusterNodes())
 }
