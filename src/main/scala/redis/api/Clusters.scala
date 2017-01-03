@@ -82,12 +82,12 @@ case class ClusterInfo() extends RedisCommand[Bulk, Map[String, String]] {
     case s => RedisProtocolReply.decodeReplyBulk(s)
   }
 }
-
-case class ClusterNodes() extends RedisCommand[Bulk, Array[Map[String, String]]] {
+case class ClusterNodeInfo(id:String, ip_port:String, flags:String, master:String, ping_sent:Long, pong_recv:Long, config_epoch:Long, link_state:String, slots:Array[String])
+case class ClusterNodes() extends RedisCommand[Bulk, Array[ClusterNodeInfo]] {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("CLUSTER NODES")
-  def decodeReply(b: Bulk): Array[Map[String, String]] = {
-    b.response.map(_.utf8String.split("\n").map(_.split(" ")).map(s => scala.collection.immutable.Map("id" -> s(0), "ip-port" -> s(1), "flags" -> s(2), "master" -> s(3), "ping-sent" -> s(4), "pong-recv" -> s(5), "config-epoch" -> s(6), "link-state" -> s(7), "slots" -> s.drop(8).mkString(" ")))).getOrElse(Array.empty)
+  def decodeReply(b: Bulk): Array[ClusterNodeInfo] = {
+    b.response.map(_.utf8String.split("\n").map(_.split(" ")).map(s => ClusterNodeInfo(s(0), s(1), s(2), s(3), s(4).toLong, s(5).toLong, s(6).toLong, s(7), s.drop(8)))).getOrElse(Array.empty)
   }
   override val decodeRedisReply: PartialFunction[ByteString, DecodeResult[Bulk]] = {
     case s => RedisProtocolReply.decodeReplyBulk(s)

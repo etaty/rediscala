@@ -15,5 +15,5 @@ trait Clusters extends Request {
 
   def clusterInfo(): Future[Map[String, String]] = send(ClusterInfo())
   
-  def clusterNodes(): Future[Array[Map[String, String]]] = send(ClusterNodes())
+  def clusterNodes(): Future[Array[ClusterNodeInfo]] = send(ClusterNodes())
 }

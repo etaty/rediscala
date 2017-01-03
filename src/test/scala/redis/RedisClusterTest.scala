@@ -137,12 +137,11 @@ class RedisClusterTest extends RedisClusterClients {
       val res = Await.result(redisCluster.clusterNodes(), timeOut)
       res must not be empty
       for (m <- res) {
-        println(m.map(e => s"${e._1} : ${e._2}").mkString(" | "))
+        println(m.toString)
       }
-      res.count(_.size >= 8) mustEqual 6
       res.size mustEqual 6
-      res.count(_("master") != "-") mustEqual 3
-      res.count(_("link-state") == "connected") mustEqual 6
+      res.count(_.master != "-") mustEqual 3
+      res.count(_.link_state == "connected") mustEqual 6
     }
   }
 }
