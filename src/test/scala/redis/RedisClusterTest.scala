@@ -118,5 +118,30 @@ class RedisClusterTest extends RedisClusterClients {
 
   }
 
+  "clusterInfo" should {
+    "just work" in {
+      val res = Await.result(redisCluster.clusterInfo(), timeOut)
+      res must not be empty
+      for (v <- res) {
+        println(s"Key  ${v._1} value ${v._2}")
+      }
+      res("cluster_state") mustEqual "ok"
+      res("cluster_slots_ok") mustEqual "16384"
+      res("cluster_known_nodes") mustEqual "6"
+      res("cluster_size") mustEqual "3"
+    }
+  }
 
+  "clusterNodes" should {
+    "just work" in {
+      val res = Await.result(redisCluster.clusterNodes(), timeOut)
+      res must not be empty
+      for (m <- res) {
+        println(m.toString)
+      }
+      res.size mustEqual 6
+      res.count(_.master != "-") mustEqual 3
+      res.count(_.link_state == "connected") mustEqual 6
+    }
+  }
 }
