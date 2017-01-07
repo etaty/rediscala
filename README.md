@@ -260,7 +260,11 @@ object DumbClass {
 Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleByteStringFormatter.scala)
 
 ### Scaladoc
-[Rediscala scaladoc API (latest version 1.6)](http://etaty.github.io/rediscala/latest/api/index.html#package)
+[Rediscala scaladoc API (version 1.8)](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/etaty/rediscala_2.11/1.8.0/rediscala_2.11-1.8.0-javadoc.jar/!/index.html#package)
+
+[Rediscala scaladoc API (version 1.7)](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/etaty/rediscala_2.11/1.7.0/rediscala_2.11-1.7.0-javadoc.jar/!/index.html#package)
+
+[Rediscala scaladoc API (version 1.6)](http://etaty.github.io/rediscala/1.6.0/api/index.html#package)
 
 [Rediscala scaladoc API (version 1.5)](http://etaty.github.io/rediscala/1.5.0/api/index.html#package)
 
