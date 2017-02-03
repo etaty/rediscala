@@ -45,8 +45,11 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
     if (this.host != host || this.port != port ) {
       this.host = host
       this.port = port
-      redisConnection ! new InetSocketAddress(host, port)
     }
+
+    // Always reset the InetSocketAddress, to re-resolve the hostname's IP.
+    // The JVM will do some caching internally anyway.
+    redisConnection ! new InetSocketAddress(host, port)
   }
 
   def onConnect(redis: RedisCommands): Unit = {
