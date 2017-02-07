@@ -195,6 +195,22 @@ You can use it with `evalshaOrEval` which run your script even if it wasn't alre
 
 Full example: [ExampleScripting](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleScripting.scala)
 
+
+`RedisScriptCache` is a helper class for loading and caching scripts included in the resource path.
+Calling `registerScripts` will load all scripts from a provided path and cache them by name, so they can be evaluated later without having to lazily load or read from source file at runtime.
+
+```scala
+  val redis = RedisClient()
+  
+  Await.result(
+    RedisScriptCache( 
+      redis = redis,
+      root = "/luaDirectory",
+      extension = ".lua"
+    ).registerScripts()
+  , 5.seconds)
+```
+
 ### Redis Sentinel
 
 [SentinelClient](http://etaty.github.io/rediscala/latest/api/index.html#redis.SentinelClient) connect to a redis sentinel server.
