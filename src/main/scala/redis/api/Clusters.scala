@@ -1,7 +1,7 @@
 package redis.api.clusters
 
 import akka.util.ByteString
-import redis.{MultiBulkConverter, RedisCommand, RedisCommandMultiBulk, RedisCommandStatusString}
+import redis.{MultiBulkConverter, RedisCommand, RedisCommandMultiBulk, RedisCommandStatusString, RedisServer}
 import redis.api.connection.Ping._
 import redis.protocol.{DecodeResult, Bulk, MultiBulk, RedisProtocolReply, RedisReply}
 
@@ -9,7 +9,9 @@ import scala.math.Ordering
 
 
 
-case class ClusterNode(host:String, port:Int, id:String)
+case class ClusterNode(host:String, port:Int, id:String) {
+  def hostAndPort = RedisServer(host, port)
+}
 case class ClusterSlot(begin:Int, end:Int, master:ClusterNode, slaves:Seq[ClusterNode])  extends Comparable[ClusterSlot] {
   override def compareTo(x: ClusterSlot): Int = {
     this.begin.compare(x.begin)

@@ -11,27 +11,32 @@ import redis.protocol.RedisReply
 import redis.util.CRC16
 
 import scala.annotation.tailrec
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.concurrent.stm.Ref
 import scala.concurrent.{Await, Future, Promise}
 import scala.util.control.NonFatal
 
 
 case class RedisCluster(redisServers: Seq[RedisServer],
-                           name: String = "RedisClientPool")
+                           name: String = "RedisClientPool",
+                           password: Option[String] = None)
                           (implicit _system: ActorSystem,
                            redisDispatcher: RedisDispatcher = Redis.dispatcher
                           ) extends RedisClientPoolLike(_system, redisDispatcher)  with RedisCommands {
 
   val log = Logging.getLogger(_system, this)
 
-  override val redisServerConnections = {
-    redisServers.map { server =>
-      makeRedisConnection(server, defaultActive = true)
-    } toMap
+  override val redisServerConnections = collection.mutable.Map {
+    redisServers.map(makeConnection): _*
   }
   refreshConnections()
 
+  def makeConnection(server: RedisServer) = {
+    makeRedisConnection(
+      server = server.copy(password = password, db = None),
+      defaultActive = true
+    )
+  }
 
   def equalsHostPort(clusterNode:ClusterNode,server:RedisServer) = {
     clusterNode.host == server.host &&  clusterNode.port == server.port
@@ -55,15 +60,17 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
   val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
   val lockClusterSlots = Ref(true)
-  Await.result(asyncRefreshClusterSlots(force=true), Duration(10,TimeUnit.SECONDS))
+  Await.result(asyncRefreshClusterSlots(force=true), 10.seconds)
 
   def getClusterSlots(): Future[Map[ClusterSlot, RedisConnection]] = {
 
     def resolveClusterSlots(retry:Int): Future[Map[ClusterSlot, RedisConnection]] = {
       clusterSlots().map { clusterSlots =>
-        clusterSlots.flatMap { clusterSlot =>
-          val maybeServerConnection = redisServerConnections.find { case (server, _) => equalsHostPort(clusterSlot.master, server) }
-          maybeServerConnection.map { case (_, redisConnection) => (clusterSlot, redisConnection) }
+        clusterSlots.map { clusterSlot =>
+          val server = clusterSlot.master.hostAndPort
+          val connection = redisServerConnections
+            .getOrElseUpdate(server, makeConnection(server)._2)
+          (clusterSlot, connection)
         }.toMap
       }.recoverWith {
         case e =>
@@ -83,6 +90,13 @@ case class RedisCluster(redisServers: Seq[RedisServer],
        getClusterSlots().map { clusterSlot =>
          log.info("refreshClusterSlots: " + clusterSlot.toString())
          clusterSlotsRef.single.set(Some(clusterSlot))
+         val serverSet = clusterSlot.keysIterator.map(_.master.hostAndPort).toSet
+         redisServerConnections.keys.foreach { server =>
+           if (!serverSet.contains(server)) {
+             redisServerConnections.remove(server)
+               .map(connection => _system.scheduler.scheduleOnce(1.second)(_system.stop(connection.actor)))
+           }
+         }
          lockClusterSlots.single.compareAndSet(true, false)
          ()
        }.recoverWith {
