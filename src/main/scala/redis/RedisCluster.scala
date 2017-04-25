@@ -26,10 +26,16 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
   val log = Logging.getLogger(_system, this)
 
+  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
+
+  val lockClusterSlots = Ref(true)
+
   override val redisServerConnections = collection.mutable.Map {
     redisServers.map(makeConnection): _*
   }
   refreshConnections()
+
+  Await.result(asyncRefreshClusterSlots(force=true), 10.seconds)
 
   def makeConnection(server: RedisServer) = {
     makeRedisConnection(
@@ -57,10 +63,6 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
     }
   }
-
-  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
-  val lockClusterSlots = Ref(true)
-  Await.result(asyncRefreshClusterSlots(force=true), 10.seconds)
 
   def getClusterSlots(): Future[Map[ClusterSlot, RedisConnection]] = {
 
