@@ -80,42 +80,45 @@ object RediscalaBuild extends Build {
         "-language:postfixOps",
         "-unchecked"
       ),
-      scalacOptions in (Compile, doc) <++= baseDirectory in LocalProject("rediscala") map { bd =>
+      scalacOptions in (Compile, doc) ++= {
         Seq(
-          "-sourcepath", bd.getAbsolutePath
+          "-sourcepath", (baseDirectory in LocalProject("rediscala")).value.getAbsolutePath
         )
       },
       autoAPIMappings := true,
       apiURL := Some(url("http://etaty.github.io/rediscala/")),
-      scalacOptions in (Compile, doc) <++= version in LocalProject("rediscala") map { version =>
-        val branch = if(version.trim.endsWith("SNAPSHOT")) "master" else version
+      scalacOptions in (Compile, doc) ++= {
+        val v = (version in LocalProject("rediscala")).value
+        val branch = if(v.trim.endsWith("SNAPSHOT")) "master" else v
         Seq[String](
           "-doc-source-url", baseSourceUrl + branch +"€{FILE_PATH}.scala"
         )
       }
   ) ++ site.settings ++ ghpages.settings ++ Seq(
-      siteMappings <++= (mappings in packageDoc in Compile, version in LocalProject("rediscala")) { (mm, version) =>
-        mm.map{ m =>
-          for((f, d) <- m) yield (f, version + "/api/" + d)
-        }
+      siteMappings ++= {
+        for((f, d) <- (mappings in packageDoc in Compile).value) yield (f, (version in LocalProject("rediscala")).value + "/api/" + d)
       },
-      cleanSite <<= (updatedRepository, git.gitRunner, streams, version in LocalProject("rediscala")) map { (dir, git, s, v) =>
+      cleanSite := {
+        val dir = updatedRepository.value
+        val v = (version in LocalProject("rediscala")).value
         val toClean = IO.listFiles(dir).filter{ f =>
           val p = f.getName
           p.startsWith("latest") || p.startsWith(v)
         }.map(_.getAbsolutePath).toList
         if(toClean.nonEmpty)
-          git(("rm" :: "-r" :: "-f" :: "--ignore-unmatch" :: toClean) :_*)(dir, s.log)
+          git.gitRunner.value.apply(("rm" :: "-r" :: "-f" :: "--ignore-unmatch" :: toClean) :_*)(dir, streams.value.log)
         ()
       },
-      synchLocal <<= (cleanSite, privateMappings, updatedRepository, ghpagesNoJekyll, git.gitRunner, streams) map { (clean, mappings, repo, noJekyll, git, s) =>
+      synchLocal := {
+        val clean = cleanSite.value
+        val repo = updatedRepository.value
         // TODO - an sbt.Synch with cache of previous mappings to make this more efficient. */
-        val betterMappings = mappings map { case (file, target) => (file, repo / target) }
+        val betterMappings = privateMappings.value map { case (file, target) => (file, repo / target) }
         // First, remove 'stale' files.
         //cleanSite.
         // Now copy files.
         IO.copy(betterMappings)
-        if(noJekyll) IO.touch(repo / ".nojekyll")
+        if(ghpagesNoJekyll.value) IO.touch(repo / ".nojekyll")
         repo
       }
   ) ++ site.includeScaladoc("latest/api")
@@ -123,12 +126,12 @@ object RediscalaBuild extends Build {
   lazy val BenchTest = config("bench") extend Test
 
   lazy val benchTestSettings = inConfig(BenchTest)(Defaults.testSettings ++ Seq(
-    sourceDirectory in BenchTest <<= baseDirectory / "src/benchmark",
+    sourceDirectory in BenchTest := baseDirectory.value / "src/benchmark",
     //testOptions in BenchTest += Tests.Argument("-preJDK7"),
     testFrameworks in BenchTest := Seq(new TestFramework("org.scalameter.ScalaMeterFramework")),
 
     //https://github.com/sbt/sbt/issues/539 => bug fixed in sbt 0.13.x
-    testGrouping in BenchTest <<= definedTests in BenchTest map partitionTests
+    testGrouping in BenchTest := (definedTests in BenchTest map partitionTests).value
   ))
 
   lazy val root = Project(id = "rediscala",
