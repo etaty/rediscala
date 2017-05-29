@@ -177,20 +177,20 @@ case class RedisClientMasterSlaves(master: RedisServer,
 
 
 case class SentinelMonitoredRedisClientMasterSlaves(
-    sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)), master: String)
+    sentinels: Seq[(String, Int)] = Seq(("localhost", 26379)), master: String, password: Option[String] = None, db: Option[Int] = None)
     (implicit _system: ActorSystem, redisDispatcher: RedisDispatcher = Redis.dispatcher)
   extends SentinelMonitored(_system, redisDispatcher) with ActorRequest with RedisCommands with Transactions {
 
   val masterClient: RedisClient = withMasterAddr(
     (ip, port) => {
-      new RedisClient(ip, port, name = "SMRedisClient")
+      new RedisClient(ip, port, name = "SMRedisClient", password = password, db = db)
     })
 
   val slavesClients: RedisClientMutablePool = withSlavesAddr(
     slavesHostPort => {
       val slaves = slavesHostPort.map {
         case (ip, port) =>
-          new RedisServer(ip, port)
+          new RedisServer(ip, port, password = password, db = db)
       }
       new RedisClientMutablePool(slaves, name = "SMRedisClient")
     })
@@ -198,12 +198,12 @@ case class SentinelMonitoredRedisClientMasterSlaves(
 
   val onNewSlave = (ip: String, port: Int) => {
     log.info(s"onNewSlave $ip:$port")
-    slavesClients.addServer(RedisServer(ip, port))
+    slavesClients.addServer(RedisServer(ip, port, password = password, db = db))
   }
 
   val onSlaveDown = (ip: String, port: Int) => {
     log.info(s"onSlaveDown $ip:$port")
-    slavesClients.removeServer(RedisServer(ip, port))
+    slavesClients.removeServer(RedisServer(ip, port, password = password, db = db))
   }
 
   val onMasterChange = (ip: String, port: Int) => {
