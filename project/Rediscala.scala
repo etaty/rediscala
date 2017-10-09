@@ -17,7 +17,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.4.12"
+  val akkaVersion = "2.5.6"
 
   import sbt._
 
