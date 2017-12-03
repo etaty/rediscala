@@ -138,6 +138,9 @@ abstract class RedisSentinelClients(val masterName: String = "mymaster") extends
     SentinelMonitoredRedisClient(master = masterName,
       sentinels = Seq((redisHost, sentinelPort1), (redisHost, sentinelPort2)))
 
+  def failingSentinelMonitoredRedisClient  =
+    SentinelMonitoredRedisClient(master = masterName,
+      sentinels = Seq((redisHost, 29292), (redisHost, sentinelPort1), (redisHost, sentinelPort2)))
 
   val redisManager = new RedisManager()
 
