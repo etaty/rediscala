@@ -44,32 +44,32 @@ object Dependencies {
 }
 
 object RediscalaBuild extends Build {
-  val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
+  val baseSourceUrl = "https://github.com/Ma27/rediscala/tree/"
 
 
   lazy val standardSettings = Defaults.defaultSettings ++
     Seq(
       name := "rediscala",
-      organization := "com.github.etaty",
+      organization := "com.github.Ma27",
       scalaVersion := "2.11.8",
       crossScalaVersions := Seq(scalaVersion.value, "2.12.0"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
-      homepage := Some(url("https://github.com/etaty/rediscala")),
-      scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
+      homepage := Some(url("https://github.com/Ma27/rediscala")),
+      scmInfo := Some(ScmInfo(url("https://github.com/Ma27/rediscala"), "scm:git:git@github.com:Ma27/rediscala.git")),
       apiURL := Some(url("http://etaty.github.io/rediscala/latest/api/")),
       pomExtra := (
         <developers>
           <developer>
-            <id>etaty</id>
+            <id>Ma27</id>
             <name>Valerian Barbot</name>
-            <url>http://github.com/etaty/</url>
+            <url>http://github.com/Ma27/</url>
           </developer>
         </developers>
         ),
       resolvers ++= Resolvers.resolversList,
 
       publishMavenStyle := true,
-      git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
+      git.gitRemoteRepo := "git@github.com:Ma27/rediscala.git",
 
       scalacOptions ++= Seq(
         "-encoding", "UTF-8",
@@ -86,7 +86,7 @@ object RediscalaBuild extends Build {
         )
       },
       autoAPIMappings := true,
-      apiURL := Some(url("http://etaty.github.io/rediscala/")),
+      apiURL := Some(url("http://Ma27.github.io/rediscala/")),
       scalacOptions in (Compile, doc) <++= version in LocalProject("rediscala") map { version =>
         val branch = if(version.trim.endsWith("SNAPSHOT")) "master" else version
         Seq[String](
