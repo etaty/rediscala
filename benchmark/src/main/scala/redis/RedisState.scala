@@ -3,6 +3,7 @@ package redis
 import org.openjdk.jmh.annotations.{Setup, Level, TearDown}
 
 import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 case class RedisState(initF: () => Unit = () => ()) {
   val akkaSystem = akka.actor.ActorSystem()
@@ -17,8 +18,8 @@ case class RedisState(initF: () => Unit = () => ()) {
   @TearDown(Level.Trial)
   def down: Unit = {
     redis.stop()
-    akkaSystem.shutdown
-    akkaSystem.awaitTermination()
+    akkaSystem.terminate
+    Await.result(akkaSystem.whenTerminated, Duration.Inf)
   }
 }
 
