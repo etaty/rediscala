@@ -64,7 +64,7 @@ object Main extends App {
   })
   Await.result(futurePong, 5 seconds)
 
-  akkaSystem.shutdown()
+  akkaSystem.terminate()
 }
 ```
 
@@ -149,7 +149,7 @@ object ExamplePubSub extends App {
   akkaSystem.scheduler.schedule(2 seconds, 2 seconds)(redis.publish("time", System.currentTimeMillis()))
   akkaSystem.scheduler.schedule(2 seconds, 5 seconds)(redis.publish("pattern.match", "pattern value"))
   // shutdown Akka in 20 seconds
-  akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.shutdown())
+  akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.terminate())
 
   val channels = Seq("time")
   val patterns = Seq("pattern.*")
