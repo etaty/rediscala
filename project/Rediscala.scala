@@ -52,7 +52,7 @@ object RediscalaBuild extends Build {
       name := "rediscala",
       organization := "com.github.Ma27",
       scalaVersion := "2.11.8",
-      crossScalaVersions := Seq(scalaVersion.value, "2.12.4"),
+      crossScalaVersions := Seq(scalaVersion.value, "2.12.0"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       homepage := Some(url("https://github.com/Ma27/rediscala")),
       scmInfo := Some(ScmInfo(url("https://github.com/Ma27/rediscala"), "scm:git:git@github.com:Ma27/rediscala.git")),
