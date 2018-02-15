@@ -15,10 +15,11 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
 From version 1.8.0: 
- * use akka 2.4.12 (java 1.8)
- * released for scala 2.11 & 2.12
+ * use Akka 2.5 (Java 1.8)
+ * released for Scala 2.11 & 2.12
+
 ```scala
-libraryDependencies += "com.github.etaty" %% "rediscala" % "1.8.0"
+libraryDependencies += "com.github.Ma27" %% "rediscala" % "1.8.1"
 ```
 
 From version 1.3.1: 
