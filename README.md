@@ -1,7 +1,7 @@
 rediscala [![Build Status](https://travis-ci.org/Ma27/rediscala.svg)](https://travis-ci.org/Ma27/rediscala) [![Coverage Status](https://img.shields.io/coveralls/Ma27/rediscala.svg)](https://coveralls.io/r/Ma27/rediscala?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.Ma27/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.Ma27/rediscala_2.11)
 =========
 
-A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
+A [Redis](http://redis.io/) client for Scala (2.11+) and (AKKA 2.5+) with non-blocking and asynchronous I/O operations.
 
  * Reactive : Redis requests/replies are wrapped in Futures.
 
