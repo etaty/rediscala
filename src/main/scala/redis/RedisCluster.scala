@@ -23,6 +23,9 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
   val log = Logging.getLogger(_system, this)
 
+  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
+  val lockClusterSlots = Ref(true)
+
   override val redisServerConnections = {
     redisServers.map { server =>
       makeRedisConnection(server, defaultActive = true)
@@ -50,10 +53,6 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
     }
   }
-
-  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
-  val lockClusterSlots = Ref(true)
-  Await.result(asyncRefreshClusterSlots(force=true), Duration(10,TimeUnit.SECONDS))
 
   def getClusterSlots(): Future[Map[ClusterSlot, RedisConnection]] = {
 
@@ -183,6 +182,7 @@ case class RedisCluster(redisServers: Seq[RedisServer],
     }.values.toSeq
   }
 
+  Await.result(asyncRefreshClusterSlots(force=true), Duration(10,TimeUnit.SECONDS))
 }
 
 
