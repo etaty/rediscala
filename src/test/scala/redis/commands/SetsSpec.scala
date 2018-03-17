@@ -1,9 +1,9 @@
 package redis.commands
 
-import redis._
-import scala.concurrent.Await
 import akka.util.ByteString
-import scala.util.Success
+import redis._
+
+import scala.concurrent.Await
 
 class SetsSpec extends RedisStandaloneServer {
 

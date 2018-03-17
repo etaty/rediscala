@@ -2,13 +2,13 @@ package redis
 
 import java.net.InetSocketAddress
 
-import akka.actor.{Props, ActorRef, ActorSystem}
+import akka.actor.{ActorRef, ActorSystem}
+import redis.actors.RedisClientActor
+import redis.commands.Transactions
+import redis.protocol.RedisReply
 
 import scala.concurrent.stm._
-import redis.actors.RedisClientActor
-import scala.concurrent.{Future, ExecutionContext}
-import redis.protocol.RedisReply
-import redis.commands.Transactions
+import scala.concurrent.{ExecutionContext, Future}
 
 case class RedisServer(host: String = "localhost",
                        port: Int = 6379,

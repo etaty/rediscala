@@ -2,7 +2,7 @@ name := "rediscala"
 
 organization := "com.github.Ma27"
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.12.4"
 
 crossScalaVersions := Seq(scalaVersion.value, "2.11.11")
 

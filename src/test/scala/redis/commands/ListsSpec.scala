@@ -1,9 +1,9 @@
 package redis.commands
 
-import redis._
-import scala.concurrent.Await
 import akka.util.ByteString
-import scala.util.Success
+import redis._
+
+import scala.concurrent.Await
 
 class ListsSpec extends RedisStandaloneServer {
 
@@ -17,9 +17,9 @@ class ListsSpec extends RedisStandaloneServer {
         world <- redis.lindex("lindexKey", 1)
         none <- redis.lindex("lindexKey", 2)
       } yield {
-        hello mustEqual Some(ByteString("Hello"))
-        world mustEqual Some(ByteString("World"))
-        none mustEqual None
+        hello must beSome(ByteString("Hello"))
+        world must beSome(ByteString("World"))
+        none must be(None)
       }
       Await.result(r, timeOut)
     }

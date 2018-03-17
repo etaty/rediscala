@@ -1,9 +1,9 @@
 package redis.commands
 
-import redis.protocol.MultiBulk
-import redis.{Cursor, ByteStringDeserializer, ByteStringSerializer, Request}
-import scala.concurrent.Future
 import redis.api.hashes._
+import redis.{ByteStringDeserializer, ByteStringSerializer, Cursor, Request}
+
+import scala.concurrent.Future
 
 trait Hashes extends Request {
 

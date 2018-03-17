@@ -215,9 +215,9 @@ abstract class RedisClusterClients() extends RedisHelper {
   val fileDir = new java.io.File("/tmp/redis" + System.currentTimeMillis())
 
   def newNode(port: Int) =
-    s"$redisServerCmd --port $port --cluster-enabled yes --cluster-config-file nodes-${port}.conf --cluster-node-timeout 30000 --appendonly yes --appendfilename appendonly-${port}.aof --dbfilename dump-${port}.rdb --logfile ${port}.log --daemonize yes"
+    s"$redisServerCmd --port $port --cluster-enabled yes --cluster-config-file nodes-$port}.conf --cluster-node-timeout 30000 --appendonly yes --appendfilename appendonly-${port}.aof --dbfilename dump-${port}.rdb --logfile ${port}.log --daemonize yes"
 
-  val nodePorts = ((0 to 5).map(_ => portNumber.getAndIncrement()))
+  val nodePorts = (0 to 5).map(_ => portNumber.getAndIncrement())
 
   override def setup() = {
     println("Setup")
@@ -227,8 +227,8 @@ abstract class RedisClusterClients() extends RedisHelper {
     Thread.sleep(2000)
     val nodes = nodePorts.map(s => redisHost + ":" + s).mkString(" ")
 
-    println(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}")
-    val redisTrib = Process(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}").run(
+    println(s"$redisServerPath/redis-trib.rb create --replicas 1 $nodes")
+    Process(s"$redisServerPath/redis-trib.rb create --replicas 1 $nodes").run(
 
       new ProcessIO(
         (writeInput: OutputStream) => {

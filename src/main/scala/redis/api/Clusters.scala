@@ -1,12 +1,8 @@
 package redis.api.clusters
 
 import akka.util.ByteString
-import redis.{MultiBulkConverter, RedisCommand, RedisCommandMultiBulk, RedisCommandStatusString}
-import redis.api.connection.Ping._
-import redis.protocol.{DecodeResult, Bulk, MultiBulk, RedisProtocolReply, RedisReply}
-
-import scala.math.Ordering
-
+import redis.RedisCommand
+import redis.protocol._
 
 
 case class ClusterNode(host:String, port:Int, id:String)
@@ -22,7 +18,7 @@ case class ClusterSlots() extends RedisCommand[MultiBulk,Seq[ClusterSlot]] {
   val encodedRequest: ByteString = encode("CLUSTER SLOTS")
 
   def buildClusterNode(vect:Seq[RedisReply]): ClusterNode = {
-    ClusterNode(vect(0).toByteString.utf8String,vect(1).toByteString.utf8String.toInt,vect(2).toByteString.utf8String)
+    ClusterNode(vect.head.toByteString.utf8String,vect(1).toByteString.utf8String.toInt,vect(2).toByteString.utf8String)
   }
 
   def decodeReply(mb: MultiBulk): Seq[ClusterSlot] = {

@@ -38,7 +38,6 @@ class RedisClusterTest extends RedisClusterClients {
     "encoding" in {
       val clusterSlotsAsByteString = ByteString(new sun.misc.BASE64Decoder().decodeBuffer("KjMNCio0DQo6MA0KOjU0NjANCiozDQokOQ0KMTI3LjAuMC4xDQo6NzAwMA0KJDQwDQplNDM1OTlkZmY2ZTNhN2I5ZWQ1M2IxY2EwZGI0YmQwMDlhODUwYmE1DQoqMw0KJDkNCjEyNy4wLjAuMQ0KOjcwMDMNCiQ0MA0KYzBmNmYzOWI2NDg4MTVhMTllNDlkYzQ1MzZkMmExM2IxNDdhOWY1MA0KKjQNCjoxMDkyMw0KOjE2MzgzDQoqMw0KJDkNCjEyNy4wLjAuMQ0KOjcwMDINCiQ0MA0KNDhkMzcxMjBmMjEzNTc4Y2IxZWFjMzhlNWYyYmY1ODlkY2RhNGEwYg0KKjMNCiQ5DQoxMjcuMC4wLjENCjo3MDA1DQokNDANCjE0Zjc2OWVlNmU1YWY2MmZiMTc5NjZlZDRlZWRmMTIxOWNjYjE1OTINCio0DQo6NTQ2MQ0KOjEwOTIyDQoqMw0KJDkNCjEyNy4wLjAuMQ0KOjcwMDENCiQ0MA0KYzhlYzM5MmMyMjY5NGQ1ODlhNjRhMjA5OTliNGRkNWNiNDBlNDIwMQ0KKjMNCiQ5DQoxMjcuMC4wLjENCjo3MDA0DQokNDANCmVmYThmZDc0MDQxYTNhOGQ3YWYyNWY3MDkwM2I5ZTFmNGMwNjRhMjENCg=="))
       val clusterSlotsAsBulk: DecodeResult[RedisReply] = RedisProtocolReply.decodeReply(clusterSlotsAsByteString)
-      var decodeValue = ""
       val dr: DecodeResult[String] = clusterSlotsAsBulk.map({
         case a: MultiBulk =>
           ClusterSlots().decodeReply(a).toString()
@@ -67,7 +66,7 @@ class RedisClusterTest extends RedisClusterClients {
       Await.result(redisCluster.exists("foo"), timeOut) mustEqual(true)
 
       println("get")
-      val value = Await.result(redisCluster.get[String]("foo"), timeOut)  mustEqual Some("FOO")
+      Await.result(redisCluster.get[String]("foo"), timeOut)  must beSome("FOO")
 
       println("del")
       Await.result(redisCluster.del("foo","foo"), timeOut)

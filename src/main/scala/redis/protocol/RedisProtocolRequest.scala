@@ -1,9 +1,9 @@
 package redis.protocol
 
-import akka.util.ByteString
 import java.nio.charset.Charset
-import scala.collection.mutable
-import scala.Array
+
+import akka.util.ByteString
+
 import scala.compat.Platform._
 
 object RedisProtocolRequest {
