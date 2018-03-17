@@ -1,10 +1,10 @@
 package redis.commands
 
-import redis._
-import scala.concurrent.{Await, Future}
 import akka.util.ByteString
-import redis.protocol.{Bulk, MultiBulk}
+import redis._
 import redis.actors.ReplyErrorException
+
+import scala.concurrent.{Await, Future}
 
 class StringsSpec extends RedisStandaloneServer {
 
@@ -17,7 +17,7 @@ class StringsSpec extends RedisStandaloneServer {
           redis.get("appendKey")
         })
       })
-      Await.result(r, timeOut) mustEqual Some(ByteString("Hello World"))
+      Await.result(r, timeOut) must beSome(ByteString("Hello World"))
     }
 
     "BITCOUNT" in {
@@ -42,16 +42,16 @@ class StringsSpec extends RedisStandaloneServer {
         not <- redis.bitopNOT("NOTbitopKey", "bitopKey1")
       } yield {
         "AND" in {
-          Await.result(redis.get("ANDbitopKey"), timeOut) mustEqual Some(ByteString("a`bc`ab a"))
+          Await.result(redis.get("ANDbitopKey"), timeOut) must beSome(ByteString("a`bc`ab a"))
         }
         "OR" in {
-          Await.result(redis.get("ORbitopKey"), timeOut) mustEqual Some(ByteString("agoofev a"))
+          Await.result(redis.get("ORbitopKey"), timeOut) must beSome(ByteString("agoofev a"))
         }
         "XOR" in {
-          Await.result(redis.get("XORbitopKey"), timeOut) mustEqual Some(ByteString(0, 7, 13, 12, 6, 4, 20, 0, 0))
+          Await.result(redis.get("XORbitopKey"), timeOut) must beSome(ByteString(0, 7, 13, 12, 6, 4, 20, 0, 0))
         }
         "NOT" in {
-          Await.result(redis.get("NOTbitopKey"), timeOut) mustEqual Some(ByteString(-98, -103, -112, -112, -99, -98, -115, -33, -98))
+          Await.result(redis.get("NOTbitopKey"), timeOut) must beSome(ByteString(-98, -103, -112, -112, -99, -98, -115, -33, -98))
         }
       }
       Await.result(r, timeOut)

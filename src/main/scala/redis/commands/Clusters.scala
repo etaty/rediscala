@@ -1,11 +1,9 @@
 package redis.commands
 
-import redis.api.blists._
-import redis.{ByteStringDeserializer, Request}
+import redis.Request
+import redis.api.clusters._
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
-import redis.api.clusters._
 /**
  * Blocking commands on the Lists
  */

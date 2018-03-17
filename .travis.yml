@@ -5,7 +5,8 @@ after_success:
   - "sbt coverageReport coverageAggregate"
   - "sbt coveralls"
 scala:
-  - "2.11.8"
+  - "2.11.11"
+  - "2.12.4"
 jdk:
   - oraclejdk8
 
@@ -20,3 +21,8 @@ env:
 branches:
   only:
     - master
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.ivy2

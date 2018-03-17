@@ -6,11 +6,9 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.event.Logging
 import akka.util.ByteString
 import redis.api.clusters.{ClusterNode, ClusterSlot}
-import redis.commands.Transactions
 import redis.protocol.RedisReply
 import redis.util.CRC16
 
-import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.concurrent.stm.Ref
 import scala.concurrent.{Await, Future, Promise}
@@ -24,6 +22,9 @@ case class RedisCluster(redisServers: Seq[RedisServer],
                           ) extends RedisClientPoolLike(_system, redisDispatcher)  with RedisCommands {
 
   val log = Logging.getLogger(_system, this)
+
+  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
+  val lockClusterSlots = Ref(true)
 
   override val redisServerConnections = {
     redisServers.map { server =>
@@ -52,10 +53,6 @@ case class RedisCluster(redisServers: Seq[RedisServer],
 
     }
   }
-
-  val clusterSlotsRef:Ref[Option[Map[ClusterSlot, RedisConnection]]] = Ref(Option.empty[Map[ClusterSlot, RedisConnection]])
-  val lockClusterSlots = Ref(true)
-  Await.result(asyncRefreshClusterSlots(force=true), Duration(10,TimeUnit.SECONDS))
 
   def getClusterSlots(): Future[Map[ClusterSlot, RedisConnection]] = {
 
@@ -185,6 +182,7 @@ case class RedisCluster(redisServers: Seq[RedisServer],
     }.values.toSeq
   }
 
+  Await.result(asyncRefreshClusterSlots(force=true), Duration(10,TimeUnit.SECONDS))
 }
 
 

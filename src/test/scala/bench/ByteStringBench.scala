@@ -1,10 +1,10 @@
-package redis.bench
+package bench
 
 import org.scalameter.api._
 import akka.util.ByteString
 import redis.protocol.ParseNumber
 
-object ByteStringBench extends PerformanceTest.Microbenchmark {
+object ByteStringBench extends Bench.ForkedTime {
 
   val sizes = Gen.range("size")(200000, 800000, 100000)
 

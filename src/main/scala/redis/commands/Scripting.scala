@@ -1,10 +1,10 @@
 package redis.commands
 
 import redis._
-import scala.concurrent.Future
-import redis.protocol._
-import redis.api.scripting._
 import redis.actors.ReplyErrorException
+import redis.api.scripting._
+
+import scala.concurrent.Future
 
 trait Scripting extends Request {
   /**

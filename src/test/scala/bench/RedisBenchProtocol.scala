@@ -1,19 +1,19 @@
-package redis.bench
+package bench
 
 import redis.protocol.RedisProtocolRequest
 import akka.util.ByteString
 import org.scalameter.api._
 
-object RedisBenchProtocol extends PerformanceTest.Regression {
+object RedisBenchProtocol extends Bench.ForkedTime {
 
-  override def reporter: Reporter = Reporter.Composite(
+  override def reporter = Reporter.Composite(
     new RegressionReporter(
       RegressionReporter.Tester.Accepter(),
       RegressionReporter.Historian.Complete()),
     HtmlReporter(embedDsv = true)
   )
 
-  def persistor = new SerializationPersistor()
+  override def persistor = new SerializationPersistor()
 
   val sizes = Gen.range("size")(20000, 80000, 10000)
 
@@ -24,14 +24,7 @@ object RedisBenchProtocol extends PerformanceTest.Regression {
 
   performance of "Protocol request encode" in {
     val argsBulk = Seq(ByteString("i"), ByteString("abc"), ByteString("iksjdlkgdfgjfdgjdfkgjjqsdqlksdqklsjdqljsdqkjsd"))
-    /*
-    measure method "stupid" in {
-      using(sizes) in {
-        i =>
-          println(i)
-      }
-    }*/
-    ///*
+
     measure method "multiBulk (slow)" in {
       using(ranges) in {
         i =>

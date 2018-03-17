@@ -1,7 +1,7 @@
-rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.svg)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11)
+rediscala [![Build Status](https://travis-ci.org/Ma27/rediscala.svg)](https://travis-ci.org/Ma27/rediscala) [![Coverage Status](https://img.shields.io/coveralls/Ma27/rediscala.svg)](https://coveralls.io/r/Ma27/rediscala?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.Ma27/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.Ma27/rediscala_2.11)
 =========
 
-A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
+A [Redis](http://redis.io/) client for Scala (2.11+) and (AKKA 2.5+) with non-blocking and asynchronous I/O operations.
 
  * Reactive : Redis requests/replies are wrapped in Futures.
 
@@ -15,10 +15,11 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 If you use SBT, you just have to edit `build.sbt` and add the following:
 
 From version 1.8.0: 
- * use akka 2.4.12 (java 1.8)
- * released for scala 2.11 & 2.12
+ * use Akka 2.5 (Java 1.8)
+ * released for Scala 2.11 & 2.12
+
 ```scala
-libraryDependencies += "com.github.etaty" %% "rediscala" % "1.8.0"
+libraryDependencies += "com.github.Ma27" %% "rediscala" % "1.8.2"
 ```
 
 From version 1.3.1: 
@@ -64,7 +65,7 @@ object Main extends App {
   })
   Await.result(futurePong, 5 seconds)
 
-  akkaSystem.shutdown()
+  akkaSystem.terminate()
 }
 ```
 
@@ -149,7 +150,7 @@ object ExamplePubSub extends App {
   akkaSystem.scheduler.schedule(2 seconds, 2 seconds)(redis.publish("time", System.currentTimeMillis()))
   akkaSystem.scheduler.schedule(2 seconds, 5 seconds)(redis.publish("pattern.match", "pattern value"))
   // shutdown Akka in 20 seconds
-  akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.shutdown())
+  akkaSystem.scheduler.scheduleOnce(20 seconds)(akkaSystem.terminate())
 
   val channels = Seq("time")
   val patterns = Seq("pattern.*")

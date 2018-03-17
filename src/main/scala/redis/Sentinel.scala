@@ -1,12 +1,13 @@
 package redis
 
-import redis.commands.Sentinel
-import akka.actor.{ActorSystem, Props, ActorRef}
-import akka.event.Logging
-import redis.api.pubsub.{PMessage, Message}
-import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress
-import scala.collection.Map
+
+import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.event.Logging
+import redis.actors.RedisSubscriberActorWithCallback
+import redis.api.pubsub.{Message, PMessage}
+import redis.commands.Sentinel
+
 import scala.concurrent.{Await, Future}
 
 trait SentinelCommands

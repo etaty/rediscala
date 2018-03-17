@@ -25,8 +25,6 @@ class SentinelSpec(implicit ee: ExecutionEnv) extends RedisSentinelClients("Sent
         sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, port)
       }, 30.seconds.dilated)
 
-      val firstFailover = sentinelMonitoredRedisClient.redisClient.port
-
       awaitAssert({
         Await.result(sentinelClient.failover(masterName), timeOut) must beTrue
       }, 30.seconds.dilated)

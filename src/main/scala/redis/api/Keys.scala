@@ -102,7 +102,7 @@ case class Pttl[K](key: K)(implicit redisKey: ByteStringSerializer[K]) extends S
   val encodedRequest: ByteString = encode("PTTL", Seq(keyAsString))
 }
 
-case class Randomkey[R](implicit deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
+case class Randomkey[R]()(implicit deserializerR: ByteStringDeserializer[R]) extends RedisCommandBulkOptionByteString[R] {
   val isMasterOnly = false
   val encodedRequest: ByteString = encode("RANDOMKEY")
   val deserializer: ByteStringDeserializer[R] = deserializerR

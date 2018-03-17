@@ -1,15 +1,15 @@
 package redis
 
+import java.net.InetSocketAddress
+import java.util.concurrent.atomic.AtomicLong
+
 import akka.actor._
 import akka.util.Helpers
-import redis.commands._
-import scala.concurrent._
-import java.net.InetSocketAddress
-import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
+import redis.actors.{RedisClientActor, RedisSubscriberActorWithCallback}
 import redis.api.pubsub._
-import java.util.concurrent.atomic.AtomicLong
-import akka.event.Logging
+import redis.commands._
 
+import scala.concurrent._
 import scala.concurrent.duration.FiniteDuration
 
 trait RedisCommands

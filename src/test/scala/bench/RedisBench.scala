@@ -1,44 +1,36 @@
-package redis.bench
+package bench
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import org.scalameter.api._
 
 import akka.actor.ActorSystem
 import scala.collection.Iterator
 
 import org.scalameter._
-import org.scalameter.api.Executor
-import org.scalameter.api.Aggregator
-import org.scalameter.api.Gen
-import org.scalameter.api.PerformanceTest
-import org.scalameter.api.Reporter
-import org.scalameter.Executor.Warmer
-import org.scalameter.utils
+import org.scalameter.api.{Executor,Aggregator,Gen,Reporter,RegressionReporter,HtmlReporter,SerializationPersistor}
 import redis.RedisClient
 import org.scalameter.execution
 
-object RedisBench extends PerformanceTest {
+import org.scalameter.picklers.noPickler._
 
-  override def reporter: Reporter = Reporter.Composite(
-    new RegressionReporter(
+object RedisBench extends Bench[Double] {
+
+  override def reporter: Reporter[Double] = Reporter.Composite(
+    new RegressionReporter[Double](
       RegressionReporter.Tester.Accepter(),
       RegressionReporter.Historian.Complete()),
     HtmlReporter(embedDsv = true)
   )
 
-  def warmer: Executor.Warmer = FixDefault()
-
   import Executor.Measurer
 
-  def aggregator = Aggregator.complete(Aggregator.average)
+  def aggregator = Aggregator.average
 
-  def measurer: Measurer = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation with Measurer.OutlierElimination with Measurer.RelativeNoise
+  def measurer: Measurer[Double] = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation[Double] with Measurer.OutlierElimination[Double] with Measurer.RelativeNoise {
+    def numeric: Numeric[Double] = implicitly[Numeric[Double]]
+  }
 
-  //def measurer: Measurer = new Executor.Measurer.MemoryFootprint
-
-  def executor: Executor = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
-
+  def executor: Executor[Double] = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
 
   def persistor = new SerializationPersistor()
 
@@ -47,7 +39,7 @@ object RedisBench extends PerformanceTest {
       Iterator.single(((until - from) / 2, new RedisBenchContext()))
     }
 
-    def dataset = Iterator.iterate(from)(_ * factor).takeWhile(_ <= until).map(x => Parameters(axisName -> x))
+    def dataset = Iterator.iterate(from)(_ * factor).takeWhile(_ <= until).map(x => Parameters(new Parameter[String](axisName) -> x))
 
     def generate(params: Parameters) = {
       (params[Int](axisName), new RedisBenchContext())
@@ -125,61 +117,9 @@ object RedisBench extends PerformanceTest {
   def redisTearDown(data: (Int, RedisBenchContext)) = data match {
     case (i: Int, redisBench: RedisBenchContext) =>
       redisBench.redis.stop()
-      redisBench.akkaSystem.shutdown()
-      redisBench.akkaSystem.awaitTermination()
+      redisBench.akkaSystem.terminate()
+      Await.result(redisBench.akkaSystem.whenTerminated, Duration.Inf)
   }
 }
 
 class RedisBenchContext(var redis: RedisClient = null, var akkaSystem: ActorSystem = null)
-
-/*
-https://github.com/axel22/scalameter/pull/17
- */
-case class FixDefault() extends Warmer {
-  def name = "Warmer.FixDefault"
-
-  def warming(ctx: Context, setup: () => Any, teardown: () => Any) = new Foreach[Int] {
-    val minwarmups = ctx.goe(exec.minWarmupRuns, 10)
-    val maxwarmups = ctx.goe(exec.maxWarmupRuns, 50)
-    val covThreshold = ctx.goe(exec.warmupCovThreshold, 0.1)
-
-    def foreach[U](f: Int => U): Unit = {
-      val withgc = new utils.SlidingWindow(minwarmups)
-      val withoutgc = new utils.SlidingWindow(minwarmups)
-      @volatile var nogc = true
-
-      log.verbose(s"Starting warmup.")
-
-      utils.withGCNotification {
-        n =>
-          nogc = false
-          log.verbose("GC detected.")
-      } apply {
-        var i = 0
-        while (i < maxwarmups) {
-
-          setup()
-          nogc = true
-          val start = System.nanoTime
-          f(i)
-          val end = System.nanoTime
-          val runningtime = (end - start) / 1000000.0
-
-          if (nogc) withoutgc.add(runningtime)
-          withgc.add(runningtime)
-          teardown()
-
-          val covNoGC = withoutgc.cov
-          val covGC = withgc.cov
-
-          log.verbose(f"$i. warmup run running time: $runningtime (covNoGC: ${covNoGC}%.4f, covGC: ${covGC}%.4f)")
-          if ((withoutgc.size >= minwarmups && covNoGC < covThreshold) || (withgc.size >= minwarmups && covGC < covThreshold)) {
-            log.verbose(s"Steady-state detected.")
-            i = maxwarmups
-          } else i += 1
-        }
-        log.verbose(s"Ending warmup.")
-      }
-    }
-  }
-}

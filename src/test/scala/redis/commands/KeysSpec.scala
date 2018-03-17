@@ -1,11 +1,10 @@
 package redis.commands
 
-import redis._
-import scala.concurrent.{Future, Await}
 import akka.util.ByteString
-import scala.util.Success
-import scala.sys.process.Process
+import redis._
 import redis.api._
+
+import scala.concurrent.{Await, Future}
 
 class KeysSpec extends RedisStandaloneServer {
 
@@ -26,7 +25,7 @@ class KeysSpec extends RedisStandaloneServer {
         d <- redis.dump("dumpKey")
       } yield {
         s mustEqual true
-        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
+        d must beSome(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
       }
       Await.result(r, timeOut)
     }
