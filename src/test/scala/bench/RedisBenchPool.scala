@@ -1,43 +1,39 @@
-package redis.bench
+package bench
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import org.scalameter.api._
 
 import akka.actor.ActorSystem
 import scala.collection.Iterator
 
 import org.scalameter._
-import org.scalameter.api.Executor
-import org.scalameter.api.Aggregator
-import org.scalameter.api.Gen
-import org.scalameter.api.PerformanceTest
-import org.scalameter.api.Reporter
-import org.scalameter.Executor.Warmer
-import org.scalameter.utils
 import redis.{RedisServer, RedisClientPool, RedisClient}
 import org.scalameter.execution
 
-object RedisBenchPool extends PerformanceTest {
+import org.scalameter.api.{Executor,Aggregator,Gen,Reporter,RegressionReporter,HtmlReporter,SerializationPersistor}
 
-  override def reporter: Reporter = Reporter.Composite(
-    new RegressionReporter(
+import org.scalameter.picklers.noPickler._
+
+object RedisBenchPool extends Bench[Double] {
+
+  override def reporter: Reporter[Double] = Reporter.Composite(
+    new RegressionReporter[Double](
       RegressionReporter.Tester.Accepter(),
       RegressionReporter.Historian.Complete()),
     HtmlReporter(embedDsv = true)
   )
 
-  def warmer: Executor.Warmer = FixDefault()
-
   import Executor.Measurer
 
-  def aggregator = Aggregator.complete(Aggregator.average)
+  def aggregator = Aggregator.average
 
-  def measurer: Measurer = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation with Measurer.OutlierElimination with Measurer.RelativeNoise
+  def measurer: Measurer[Double] = new Measurer.IgnoringGC with Measurer.PeriodicReinstantiation[Double] with Measurer.OutlierElimination[Double] with Measurer.RelativeNoise {
+    def numeric: Numeric[Double] = implicitly[Numeric[Double]]
+  }
 
   //def measurer: Measurer = new Executor.Measurer.MemoryFootprint
 
-  def executor: Executor = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
+  def executor: Executor[Double] = new execution.SeparateJvmsExecutor(warmer, aggregator, measurer)
 
 
   def persistor = new SerializationPersistor()
@@ -47,7 +43,7 @@ object RedisBenchPool extends PerformanceTest {
       Iterator.single(((until - from) / 2, new RedisBenchContextPool()))
     }
 
-    def dataset = Iterator.iterate(from)(_ * factor).takeWhile(_ <= until).map(x => Parameters(axisName -> x))
+    def dataset = Iterator.iterate(from)(_ * factor).takeWhile(_ <= until).map(x => Parameters(new Parameter[String](axisName) -> x))
 
     def generate(params: Parameters) = {
       (params[Int](axisName), new RedisBenchContextPool())
@@ -115,18 +111,17 @@ object RedisBenchPool extends PerformanceTest {
   }
 
   def redisSetUp(init: RedisClient => Unit = _ => {})(data: (Int, RedisBenchContextPool)) = data match {
-    case (i: Int, redisBench: RedisBenchContextPool) => {
+    case (i: Int, redisBench: RedisBenchContextPool) =>
       redisBench.akkaSystem = akka.actor.ActorSystem()
       redisBench.redis = RedisClientPool(Seq(RedisServer(), RedisServer(), RedisServer()))(redisBench.akkaSystem)
       Await.result(redisBench.redis.ping(), 2 seconds)
-    }
   }
 
   def redisTearDown(data: (Int, RedisBenchContextPool)) = data match {
     case (i: Int, redisBench: RedisBenchContextPool) =>
       redisBench.redis.stop()
-      redisBench.akkaSystem.shutdown()
-      redisBench.akkaSystem.awaitTermination()
+      redisBench.akkaSystem.terminate()
+      Await.result(redisBench.akkaSystem.whenTerminated, Duration.Inf)
   }
 }
 
