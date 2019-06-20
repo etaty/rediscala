@@ -17,7 +17,7 @@ object Resolvers {
 }
 
 object Dependencies {
-  val akkaVersion = "2.4.12"
+  val akkaVersion = "2.5.23"
 
   import sbt._
 
@@ -25,11 +25,11 @@ object Dependencies {
 
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-  val specs2 = "org.specs2" %% "specs2-core" % "3.8.6"
+  val specs2 = "org.specs2" %% "specs2-core" % "4.5.1"
 
-  val stm = "org.scala-stm" %% "scala-stm" % "0.8"
+  val stm = "org.scala-stm" %% "scala-stm" % "0.9.1"
 
-  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.13.4"
+  val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.0"
 
   //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
@@ -46,13 +46,14 @@ object Dependencies {
 object RediscalaBuild extends Build {
   val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
+  val Scala211 = "2.11.12"
 
-  lazy val standardSettings = Defaults.defaultSettings ++
+  lazy val standardSettings =
     Seq(
       name := "rediscala",
       organization := "com.github.etaty",
-      scalaVersion := "2.11.8",
-      crossScalaVersions := Seq(scalaVersion.value, "2.12.0"),
+      scalaVersion := Scala211,
+      crossScalaVersions := Seq(Scala211, "2.12.8", "2.13.0"),
       licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
       homepage := Some(url("https://github.com/etaty/rediscala")),
       scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
@@ -75,7 +76,6 @@ object RediscalaBuild extends Build {
         "-encoding", "UTF-8",
         "-Xlint",
         "-deprecation",
-        "-Xfatal-warnings",
         "-feature",
         "-language:postfixOps",
         "-unchecked"
@@ -132,10 +132,10 @@ object RediscalaBuild extends Build {
   ))
 
   lazy val root = Project(id = "rediscala",
-    base = file("."),
-    settings = standardSettings ++ Seq(
-      libraryDependencies ++= Dependencies.rediscalaDependencies
-    )
+    base = file(".")
+  ).settings(
+    standardSettings,
+    libraryDependencies ++= Dependencies.rediscalaDependencies
   ).configs(BenchTest)
     //.settings(benchTestSettings: _* )
 
@@ -146,7 +146,7 @@ object RediscalaBuild extends Build {
       id = "benchmark",
       base = file("benchmark")
     ).settings(Seq(
-      scalaVersion := "2.11.7",
+      scalaVersion := Scala211,
       libraryDependencies += "net.debasishg" %% "redisclient" % "3.0"
     ))
       .enablePlugins(JmhPlugin)

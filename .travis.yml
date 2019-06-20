@@ -1,13 +1,16 @@
 sudo: false
+dist: xenial
 language: scala
-script: "sbt clean coverage test"
+script: travis_retry sbt "++ ${TRAVIS_SCALA_VERSION}" coverage test
 after_success:
   - "sbt coverageReport coverageAggregate"
   - "sbt coveralls"
 scala:
-  - "2.11.8"
+  - "2.11.12"
+  - "2.12.8"
+  - "2.13.0"
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 before_install:
   - ./install-redis.sh

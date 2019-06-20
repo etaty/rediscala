@@ -114,7 +114,7 @@ case class FullyDecoded[A](result: A, rest: ByteString) extends DecodeResult[A] 
 }
 
 object DecodeResult {
-  val unit: DecodeResult[Unit] = FullyDecoded(Unit, ByteString.empty)
+  val unit: DecodeResult[Unit] = FullyDecoded((), ByteString.empty)
 }
 
 
