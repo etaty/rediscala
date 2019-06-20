@@ -55,7 +55,7 @@ class RedisReplyDecoder() extends Actor {
         result
       }
     } else {
-      FullyDecoded(Unit, bs)
+      FullyDecoded((), bs)
     }
   }
 

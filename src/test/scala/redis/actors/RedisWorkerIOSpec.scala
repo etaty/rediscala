@@ -71,7 +71,7 @@ class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike wi
       probeMock.expectMsg(WriteSent) mustEqual WriteSent
 
       redisWorkerIO ! "PING"
-      probeTcpWorker.expectNoMsg(1 seconds)
+      probeTcpWorker.expectNoMessage(1 seconds)
       probeTcpWorker.send(redisWorkerIO, WriteAck)
       probeTcpWorker.expectMsgType[Write] mustEqual Write(ByteString("PING"), WriteAck)
       probeMock.expectMsg(WriteSent) mustEqual WriteSent
