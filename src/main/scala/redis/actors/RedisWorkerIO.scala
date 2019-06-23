@@ -44,6 +44,9 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
 
   override def postStop() {
     log.info("RedisWorkerIO stop")
+    if (tcpWorker != null) {
+      tcpWorker ! Close
+    }
   }
 
   def initConnectedBuffer() {
