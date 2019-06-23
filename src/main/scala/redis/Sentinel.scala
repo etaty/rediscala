@@ -6,7 +6,6 @@ import akka.event.Logging
 import redis.api.pubsub.{PMessage, Message}
 import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress
-import scala.collection.Map
 import scala.concurrent.{Await, Future}
 
 trait SentinelCommands

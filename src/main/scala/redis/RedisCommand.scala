@@ -2,7 +2,6 @@ package redis
 
 import akka.util.ByteString
 import redis.protocol._
-import redis.util.CRC16
 
 
 trait RedisCommand[RedisReplyT <: RedisReply, +T] {
