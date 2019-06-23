@@ -80,7 +80,7 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
   /**
    * Disconnect from the server (stop the actor)
    */
-  def stop() {
+  def stop(): Unit = {
     redisConnectionPool.foreach { redisConnection =>
       system stop redisConnection
     }
@@ -112,7 +112,7 @@ case class RedisClientMutablePool(redisServers: Seq[RedisServer],
     collection.mutable.Map(m: _*)
   }
 
-  def addServer(server: RedisServer) {
+  def addServer(server: RedisServer): Unit = {
     if (!redisServerConnections.contains(server)) {
       redisServerConnections.synchronized {
         if (!redisServerConnections.contains(server)) {
@@ -122,7 +122,7 @@ case class RedisClientMutablePool(redisServers: Seq[RedisServer],
     }
   }
 
-  def removeServer(askServer: RedisServer) {
+  def removeServer(askServer: RedisServer): Unit = {
     if (redisServerConnections.contains(askServer)) {
       redisServerConnections.synchronized {
         redisServerConnections.get(askServer).foreach { redisServerConnection =>

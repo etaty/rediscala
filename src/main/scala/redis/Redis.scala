@@ -70,7 +70,7 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   /**
    * Disconnect from the server (stop the actor)
    */
-  def stop() {
+  def stop(): Unit = {
     system stop redisConnection
   }
 }
@@ -120,23 +120,23 @@ case class RedisPubSub(
   /**
    * Disconnect from the server (stop the actor)
    */
-  def stop() {
+  def stop(): Unit = {
     system stop redisConnection
   }
 
-  def subscribe(channels: String*) {
+  def subscribe(channels: String*): Unit = {
     redisConnection ! SUBSCRIBE(channels: _*)
   }
 
-  def unsubscribe(channels: String*) {
+  def unsubscribe(channels: String*): Unit = {
     redisConnection ! UNSUBSCRIBE(channels: _*)
   }
 
-  def psubscribe(patterns: String*) {
+  def psubscribe(patterns: String*): Unit = {
     redisConnection ! PSUBSCRIBE(patterns: _*)
   }
 
-  def punsubscribe(patterns: String*) {
+  def punsubscribe(patterns: String*): Unit = {
     redisConnection ! PUNSUBSCRIBE(patterns: _*)
   }
 

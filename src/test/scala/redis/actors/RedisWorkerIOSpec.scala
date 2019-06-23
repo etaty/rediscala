@@ -259,15 +259,15 @@ class RedisWorkerIOMock(probeTcp: ActorRef, address: InetSocketAddress, probeMoc
     case s: String => write(ByteString(s))
   }
 
-  def onConnectionClosed() {
+  def onConnectionClosed(): Unit = {
     probeMock ! OnConnectionClosed
   }
 
-  def onDataReceived(dataByteString: ByteString) {
+  def onDataReceived(dataByteString: ByteString): Unit = {
     probeMock ! dataByteString
   }
 
-  def onWriteSent() {
+  def onWriteSent(): Unit = {
     probeMock ! WriteSent
   }
 

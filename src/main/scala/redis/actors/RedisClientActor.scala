@@ -52,20 +52,20 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
     case KillOldRepliesDecoder => killOldRepliesDecoder()
   }
 
-  def onDataReceived(dataByteString: ByteString) {
+  def onDataReceived(dataByteString: ByteString): Unit = {
     repliesDecoder ! dataByteString
   }
 
-  def onDataReceivedOnClosingConnection(dataByteString: ByteString) {
+  def onDataReceivedOnClosingConnection(dataByteString: ByteString): Unit = {
     oldRepliesDecoder.foreach(oldRepliesDecoder => oldRepliesDecoder ! dataByteString)
   }
 
-  def onWriteSent() {
+  def onWriteSent(): Unit = {
     repliesDecoder ! QueuePromises(queuePromises)
     queuePromises = mutable.Queue[Operation[_, _]]()
   }
 
-  def onConnectionClosed() {
+  def onConnectionClosed(): Unit = {
     queuePromises.foreach(op => {
       op.completeFailed(NoConnectionException)
     })
