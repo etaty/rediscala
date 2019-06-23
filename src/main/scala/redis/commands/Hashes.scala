@@ -1,6 +1,5 @@
 package redis.commands
 
-import redis.protocol.MultiBulk
 import redis.{Cursor, ByteStringDeserializer, ByteStringSerializer, Request}
 import scala.concurrent.Future
 import redis.api.hashes._

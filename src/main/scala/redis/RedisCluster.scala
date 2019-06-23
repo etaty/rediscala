@@ -6,11 +6,9 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.event.Logging
 import akka.util.ByteString
 import redis.api.clusters.{ClusterNode, ClusterSlot}
-import redis.commands.Transactions
 import redis.protocol.RedisReply
 import redis.util.CRC16
 
-import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.concurrent.stm.Ref
 import scala.concurrent.{Await, Future, Promise}

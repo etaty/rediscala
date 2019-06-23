@@ -8,7 +8,7 @@ import akka.util.ByteString
 import org.specs2.mutable.SpecificationLike
 import redis.api.connection.Ping
 import redis.api.strings.Get
-import redis.{RedisDispatcher, Operation, Redis}
+import redis.{Operation, Redis}
 
 import scala.collection.mutable
 import scala.concurrent.{Await, Promise}

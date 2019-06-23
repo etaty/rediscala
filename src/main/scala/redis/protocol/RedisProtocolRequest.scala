@@ -2,7 +2,6 @@ package redis.protocol
 
 import akka.util.ByteString
 import java.nio.charset.Charset
-import scala.collection.mutable
 import scala.Array
 import scala.compat.Platform._
 

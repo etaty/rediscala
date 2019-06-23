@@ -1,7 +1,6 @@
 package redis
 
 import scala.concurrent._
-import scala.concurrent.stm._
 import redis.api.connection.Select
 import scala.concurrent.duration._
 class RedisPoolSpec extends RedisStandaloneServer {
