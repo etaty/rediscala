@@ -1,7 +1,7 @@
-rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.svg)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.11)
+rediscala [![Build Status](https://travis-ci.org/etaty/rediscala.svg)](https://travis-ci.org/etaty/rediscala) [![Coverage Status](https://img.shields.io/coveralls/etaty/rediscala.svg)](https://coveralls.io/r/etaty/rediscala?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.etaty/rediscala_2.12)
 =========
 
-A [Redis](http://redis.io/) client for Scala (2.10+) and (AKKA 2.2+) with non-blocking and asynchronous I/O operations.
+A [Redis](http://redis.io/) client for Scala with non-blocking and asynchronous I/O operations.
 
  * Reactive : Redis requests/replies are wrapped in Futures.
 
@@ -13,6 +13,16 @@ A worker actor handles I/O operations (I/O bounds), another handles decoding of 
 ### Set up your project dependencies
 
 If you use SBT, you just have to edit `build.sbt` and add the following:
+
+From version 1.9.0: 
+ * use akka 2.5.23 (java 1.8)
+ * released for scala
+   * 2.11
+   * 2.12
+   * 2.13
+```scala
+libraryDependencies += "com.github.etaty" %% "rediscala" % "1.9.0"
+```
 
 From version 1.8.0: 
  * use akka 2.4.12 (java 1.8)
@@ -260,6 +270,9 @@ object DumbClass {
 Full example: [ExampleByteStringFormatter](https://github.com/etaty/rediscala-demo/blob/master/src/main/scala/ExampleByteStringFormatter.scala)
 
 ### Scaladoc
+
+[Rediscala scaladoc API (version 1.9)](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/etaty/rediscala_2.12/1.9.0/rediscala_2.12-1.9.0-javadoc.jar/!/redis/index.html)
+
 [Rediscala scaladoc API (version 1.8)](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/etaty/rediscala_2.11/1.8.0/rediscala_2.11-1.8.0-javadoc.jar/!/index.html#package)
 
 [Rediscala scaladoc API (version 1.7)](https://oss.sonatype.org/service/local/repositories/releases/archive/com/github/etaty/rediscala_2.11/1.7.0/rediscala_2.11-1.7.0-javadoc.jar/!/index.html#package)
