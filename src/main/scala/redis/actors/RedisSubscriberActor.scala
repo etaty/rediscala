@@ -41,7 +41,7 @@ abstract class RedisSubscriberActor(
   var channelsSubscribed = channels.toSet
   var patternsSubscribed = patterns.toSet
 
-  override def preStart() {
+  override def preStart(): Unit = {
     super.preStart()
     if(channelsSubscribed.nonEmpty){
       write(SUBSCRIBE(channelsSubscribed.toSeq: _*).toByteString)
@@ -65,31 +65,31 @@ abstract class RedisSubscriberActor(
     }
   }
 
-  def subscribe(channels: String*) {
+  def subscribe(channels: String*): Unit = {
     self ! SUBSCRIBE(channels: _*)
   }
 
-  def unsubscribe(channels: String*) {
+  def unsubscribe(channels: String*): Unit = {
     self ! UNSUBSCRIBE(channels: _*)
   }
 
-  def psubscribe(patterns: String*) {
+  def psubscribe(patterns: String*): Unit = {
     self ! PSUBSCRIBE(patterns: _*)
   }
 
-  def punsubscribe(patterns: String*) {
+  def punsubscribe(patterns: String*): Unit = {
     self ! PUNSUBSCRIBE(patterns: _*)
   }
 
-  def onConnectionClosed() {}
+  def onConnectionClosed(): Unit = {}
 
-  def onWriteSent() {}
+  def onWriteSent(): Unit = {}
 
-  def onDataReceived(dataByteString: ByteString) {
+  def onDataReceived(dataByteString: ByteString): Unit = {
     decodeReplies(dataByteString)
   }
 
-  def onDecodedReply(reply: RedisReply) {
+  def onDecodedReply(reply: RedisReply): Unit = {
     reply match {
       case MultiBulk(Some(list)) if list.length == 3 && list.head.toByteString.utf8String == "message" => {
         onMessage(Message(list(1).toByteString.utf8String, list(2).toByteString))

@@ -15,7 +15,7 @@ class RedisReplyDecoder() extends Actor {
 
   val log = Logging(context.system, this)
 
-  override def postStop() {
+  override def postStop(): Unit = {
     queuePromises.foreach(op => {
       op.completeFailed(InvalidRedisReply)
     })
@@ -30,7 +30,7 @@ class RedisReplyDecoder() extends Actor {
 
   var partiallyDecoded: DecodeResult[Unit] = DecodeResult.unit
 
-  def decodeReplies(dataByteString: ByteString) {
+  def decodeReplies(dataByteString: ByteString): Unit = {
     partiallyDecoded = if (partiallyDecoded.isFullyDecoded) {
       decodeRepliesRecur(partiallyDecoded.rest ++ dataByteString)
     } else {
@@ -81,7 +81,7 @@ object InvalidRedisReply extends RuntimeException("Could not decode the redis re
 trait DecodeReplies {
   var partiallyDecoded: DecodeResult[Unit] = DecodeResult.unit
 
-  def decodeReplies(dataByteString: ByteString) {
+  def decodeReplies(dataByteString: ByteString): Unit = {
     partiallyDecoded = if (partiallyDecoded.isFullyDecoded) {
       decodeRepliesRecur(dataByteString)
     } else {
@@ -104,7 +104,7 @@ trait DecodeReplies {
     }
   }
 
-  def onDecodedReply(reply: RedisReply)
+  def onDecodedReply(reply: RedisReply): Unit
 }
 
 case class QueuePromises(queue: mutable.Queue[Operation[_, _]])

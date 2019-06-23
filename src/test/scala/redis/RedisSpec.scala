@@ -65,9 +65,9 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
       })
   }
 
-  def setup()
+  def setup(): Unit
 
-  def cleanup()
+  def cleanup(): Unit
 
 
 }

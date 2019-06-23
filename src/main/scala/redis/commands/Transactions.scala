@@ -37,15 +37,15 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
   //val operations = Queue.newBuilder[Operation[_, _]]
   val watcher = Set.newBuilder[String]
 
-  def unwatch() {
+  def unwatch(): Unit = {
     watcher.clear()
   }
 
-  def watch(keys: String*) {
+  def watch(keys: String*): Unit = {
     watcher ++= keys
   }
 
-  def discard() {
+  def discard(): Unit = {
     operations.result().map(operation => {
       operation.completeFailed(TransactionDiscardedException)
     })
@@ -64,7 +64,7 @@ case class TransactionBuilder(redisConnection: ActorRef)(implicit val executionC
 
 case class Transaction(watcher: Set[String], operations: Queue[Operation[_, _]], redisConnection: ActorRef)(implicit val executionContext: ExecutionContext) {
 
-  def process(promise: Promise[MultiBulk]) {
+  def process(promise: Promise[MultiBulk]): Unit = {
     val multiOp = Operation(Multi, Promise[Boolean]())
     val execOp = Operation(Exec, execPromise(promise))
 

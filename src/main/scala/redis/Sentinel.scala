@@ -99,7 +99,7 @@ case class SentinelClient(var host: String = "localhost",
   /**
     * Disconnect from the server (stop the actors)
     */
-  override def stop() {
+  override def stop(): Unit = {
     system stop redisConnection
     system stop redisPubSubConnection
   }
@@ -128,17 +128,17 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
   def makeSentinelClientKey(host: String, port: Int) = s"$host:$port"
 
 
-  def internalOnNewSlave(masterName: String, ip: String, port: Int) {
+  def internalOnNewSlave(masterName: String, ip: String, port: Int): Unit = {
     if (master == masterName)
       onNewSlave(ip, port)
   }
 
-  def internalOnSlaveDown(masterName: String, ip: String, port: Int) {
+  def internalOnSlaveDown(masterName: String, ip: String, port: Int): Unit = {
     if (master == masterName)
       onSlaveDown(ip, port)
   }
 
-  def onSwitchMaster(masterName: String, ip: String, port: Int) {
+  def onSwitchMaster(masterName: String, ip: String, port: Int): Unit = {
     if (master == masterName) {
       onMasterChange(ip, port)
       onSlaveDown(ip, port)
@@ -149,7 +149,7 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
     new SentinelClient(host, port, onSwitchMaster, onNewSentinel, onSentinelDown, internalOnNewSlave, internalOnSlaveDown, "SMSentinelClient")(system)
   }
 
-  def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int) {
+  def onNewSentinel(masterName: String, sentinelip: String, sentinelport: Int): Unit = {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && !sentinelClients.contains(k)) {
       sentinelClients.synchronized {
@@ -159,7 +159,7 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
     }
   }
 
-  def onSentinelDown(masterName: String, sentinelip: String, sentinelport: Int) {
+  def onSentinelDown(masterName: String, sentinelip: String, sentinelport: Int): Unit = {
     val k = makeSentinelClientKey(sentinelip, sentinelport)
     if (master == masterName && sentinelClients.contains(k)) {
       sentinelClients.synchronized {

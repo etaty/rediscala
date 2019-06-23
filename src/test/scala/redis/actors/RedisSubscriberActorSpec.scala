@@ -73,7 +73,7 @@ class SubscriberActor(address: InetSocketAddress,
     probeMock ! m
   }
 
-  def onPMessage(pm: PMessage) {
+  def onPMessage(pm: PMessage): Unit = {
     probeMock ! pm
   }
 }

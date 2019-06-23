@@ -136,11 +136,11 @@ class RedisClientActorMock(probeReplyDecoder: ActorRef, probeMock: ActorRef, get
   extends RedisClientActor(new InetSocketAddress("localhost", 6379), getConnectOperations, onConnectStatus, Redis.dispatcher.name) {
   override def initRepliesDecoder() = probeReplyDecoder
 
-  override def preStart() {
+  override def preStart(): Unit = {
     // disable preStart of RedisWorkerIO
   }
 
-  override def write(byteString: ByteString) {
+  override def write(byteString: ByteString): Unit = {
     probeMock ! WriteMock
   }
 }
