@@ -2,8 +2,7 @@ package redis.protocol
 
 import akka.util.ByteString
 import java.nio.charset.Charset
-import scala.Array
-import scala.compat.Platform._
+import java.lang.System.arraycopy
 
 object RedisProtocolRequest {
   val UTF8_CHARSET = Charset.forName("UTF-8")

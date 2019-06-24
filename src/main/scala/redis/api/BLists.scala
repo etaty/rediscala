@@ -19,7 +19,7 @@ private[redis] abstract class BXpop[KK, R](command: String)(implicit redisKeys: 
   val keys: Seq[KK]
   val timeout: FiniteDuration
 
-  val encodedRequest: ByteString = encode(command, keys.map(redisKeys.serialize).seq ++ Seq(ByteString(timeout.toSeconds.toString)))
+  val encodedRequest: ByteString = encode(command, keys.map(redisKeys.serialize) ++ Seq(ByteString(timeout.toSeconds.toString)))
 
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toOptionStringByteString(mb)
 }
