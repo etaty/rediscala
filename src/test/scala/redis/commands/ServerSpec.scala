@@ -55,7 +55,7 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "DBSIZE" in {
-      Await.result(redis.dbsize(), timeOut) must be_>=(0l)
+      Await.result(redis.dbsize(), timeOut) must be_>=(0L)
     }
 
     "DEBUG OBJECT" in {
@@ -86,7 +86,7 @@ class ServerSpec extends RedisStandaloneServer {
     }
 
     "LASTSAVE" in {
-      Await.result(redis.lastsave(), timeOut) must be_>=(0l)
+      Await.result(redis.lastsave(), timeOut) must be_>=(0L)
     }
 
     "SAVE" in {
