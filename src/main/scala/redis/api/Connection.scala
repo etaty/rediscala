@@ -31,3 +31,8 @@ case class Select(index: Int) extends RedisCommandStatusBoolean {
   val isMasterOnly = true
   val encodedRequest: ByteString = encode("SELECT", Seq(ByteString(index.toString)))
 }
+
+case class Swapdb(index1: Int, index2: Int) extends RedisCommandStatusBoolean {
+  val isMasterOnly = true
+  val encodedRequest: ByteString = encode("SWAPDB", Seq(ByteString(index1.toString), ByteString(index2.toString)))
+}
