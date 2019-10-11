@@ -379,5 +379,15 @@ class KeysSpec extends RedisStandaloneServer {
       Await.result(r, timeOut)
     }
 
+    "UNLINK" in {
+      val r = for {
+        s <- redis.set("unlinkKey", "value")
+        d <- redis.unlink("unlinkKey", "unlinkKeyNonexisting")
+      } yield {
+        s mustEqual true
+        d mustEqual 1
+      }
+      Await.result(r, timeOut)
+    }
   }
 }
