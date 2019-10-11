@@ -24,7 +24,7 @@ class KeysSpec extends RedisStandaloneServer {
         d <- redis.dump("dumpKey")
       } yield {
         s mustEqual true
-        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 8, 0, 56, -37, 45, -121, 104, -77, 17, 86))
+        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 9, 0, 81, 4, -112, -12, -107, 44, -8, -33))
       }
       Await.result(r, timeOut)
     }
@@ -349,7 +349,7 @@ class KeysSpec extends RedisStandaloneServer {
         restore <- redis.restore("restoreKey", serializedValue = dump.get)
       } yield {
         s mustEqual true
-        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 8, 0, 56, -37, 45, -121, 104, -77, 17, 86))
+        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 9, 0, 81, 4, -112, -12, -107, 44, -8, -33))
         restore mustEqual true
       }
       Await.result(r, timeOut)
