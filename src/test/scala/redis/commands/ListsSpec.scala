@@ -77,16 +77,16 @@ class ListsSpec extends RedisStandaloneServer {
       val r = for {
         _ <- redis.del("lpushxKey")
         _ <- redis.del("lpushxKeyOther")
-        i <- redis.rpush("lpushxKey", "world")
-        ii <- redis.lpushx("lpushxKey", "hello")
-        zero <- redis.lpushx("lpushxKeyOther", "hello")
+        i <- redis.rpush("lpushxKey", "c")
+        ii <- redis.lpushx("lpushxKey", "b", "a")
+        zero <- redis.lpushx("lpushxKeyOther", "b", "a")
         list <- redis.lrange("lpushxKey", 0, -1)
         listOther <- redis.lrange("lpushxKeyOther", 0, -1)
       } yield {
         i mustEqual 1
-        ii mustEqual 2
+        ii mustEqual 3
         zero mustEqual 0
-        list mustEqual Seq(ByteString("hello"), ByteString("world"))
+        list mustEqual Seq(ByteString("a"), ByteString("b"), ByteString("c"))
         listOther must beEmpty
       }
       Await.result(r, timeOut)
@@ -197,16 +197,16 @@ class ListsSpec extends RedisStandaloneServer {
       val r = for {
         _ <- redis.del("rpushxKey")
         _ <- redis.del("rpushxKeyOther")
-        i <- redis.rpush("rpushxKey", "hello")
-        ii <- redis.rpushx("rpushxKey", "world")
-        zero <- redis.rpushx("rpushxKeyOther", "world")
+        i <- redis.rpush("rpushxKey", "a")
+        ii <- redis.rpushx("rpushxKey", "b", "c")
+        zero <- redis.rpushx("rpushxKeyOther", "a", "b")
         list <- redis.lrange("rpushxKey", 0, -1)
         listOther <- redis.lrange("rpushxKeyOther", 0, -1)
       } yield {
         i mustEqual 1
-        ii mustEqual 2
+        ii mustEqual 3
         zero mustEqual 0
-        list mustEqual Seq(ByteString("hello"), ByteString("world"))
+        list mustEqual Seq(ByteString("a"), ByteString("b"), ByteString("c"))
         listOther must beEmpty
       }
       Await.result(r, timeOut)
