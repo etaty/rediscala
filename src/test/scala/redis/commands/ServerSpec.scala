@@ -70,8 +70,16 @@ class ServerSpec extends RedisStandaloneServer {
       Await.result(redis.flushall(), timeOut) must beTrue
     }
 
+    "FLUSHALL ASYNC" in {
+      Await.result(redis.flushall(async = true), timeOut) must beTrue
+    }
+
     "FLUSHDB" in {
       Await.result(redis.flushdb(), timeOut) must beTrue
+    }
+
+    "FLUSHDB ASYNC" in {
+      Await.result(redis.flushdb(async = true), timeOut) must beTrue
     }
 
     "INFO" in {

@@ -81,14 +81,14 @@ case object DebugSegfault extends RedisCommandStatusString {
   val encodedRequest: ByteString = encode("DEBUG SEGFAULT")
 }
 
-case object Flushall extends RedisCommandStatusBoolean {
+case class Flushall(async: Boolean = false) extends RedisCommandStatusBoolean {
   val isMasterOnly: Boolean = true
-  val encodedRequest: ByteString = encode("FLUSHALL")
+  val encodedRequest: ByteString = encode("FLUSHALL", if (async) Seq(ByteString("ASYNC")) else Seq.empty)
 }
 
-case object Flushdb extends RedisCommandStatusBoolean {
+case class Flushdb(async: Boolean = false) extends RedisCommandStatusBoolean {
   val isMasterOnly: Boolean = true
-  val encodedRequest: ByteString = encode("FLUSHDB")
+  val encodedRequest: ByteString = encode("FLUSHDB", if (async) Seq(ByteString("ASYNC")) else Seq.empty)
 }
 
 case class Info(section: Option[String] = None) extends RedisCommandBulk[String] {
