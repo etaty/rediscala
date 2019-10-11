@@ -100,6 +100,12 @@ object MultiBulkConverter {
     }).getOrElse(None)
   }
 
+  def toOptionStringByteStringDouble[R](reply: MultiBulk)(implicit deserializer: ByteStringDeserializer[R]): Option[(String, R, Double)] = {
+    reply.responses.map(r => {
+      Some((r(0).toString, deserializer.deserialize(r(1).toByteString), r(2).toByteString.utf8String.toDouble))
+    }).getOrElse(None)
+  }
+
   def toSeqBoolean(reply: MultiBulk): Seq[Boolean] = {
     reply.responses.map(r => {
       r.map(_.toString == "1")
