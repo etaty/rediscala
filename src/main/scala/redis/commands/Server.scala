@@ -40,11 +40,11 @@ trait Server extends Request {
   def debugSegfault(): Future[String] =
     send(DebugSegfault)
 
-  def flushall(): Future[Boolean] =
-    send(Flushall)
+  def flushall(async: Boolean = false): Future[Boolean] =
+    send(Flushall(async))
 
-  def flushdb(): Future[Boolean] =
-    send(Flushdb)
+  def flushdb(async: Boolean = false): Future[Boolean] =
+    send(Flushdb(async))
 
   def info(): Future[String] =
     send(Info())
