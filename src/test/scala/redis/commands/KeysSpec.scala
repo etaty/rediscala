@@ -110,10 +110,73 @@ class KeysSpec extends RedisStandaloneServer {
         val r = for {
           _ <- redis.set(key, "value")
           m <- redis.migrate("localhost", port, key, 0, 10 seconds)
-          get <- redisMigrate.get(key)
+          getSource <- redis.get(key)
+          getTarget <- redisMigrate.get(key)
         } yield {
           m must beTrue
-          get mustEqual Some(ByteString("value"))
+          getSource mustEqual None
+          getTarget mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE COPY" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key = "migrateCopyKey-" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key, "value")
+          m <- redis.migrate("localhost", port, key, 0, 10 seconds, copy = true)
+          getSource <- redis.get(key)
+          getTarget <- redisMigrate.get(key)
+        } yield {
+          m must beTrue
+          getSource mustEqual Some(ByteString("value"))
+          getTarget mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE KEYS" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key1 = "migrateKey1-" + System.currentTimeMillis()
+        val key2 = "migrateKey2" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key1, "value")
+          _ <- redis.set(key2, "value")
+          m <- redis.migrateMany("localhost", port, Seq(key1, key2), 0, 10 seconds)
+          get1 <- redisMigrate.get(key1)
+          get2 <- redisMigrate.get(key2)
+        } yield {
+          m must beTrue
+          get1 mustEqual Some(ByteString("value"))
+          get2 mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE REPLACE" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key = "migrateReplaceKey-" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key, "value1")
+          _ <- redisMigrate.set(key, "value2")
+          m2 <- redis.migrate("localhost", port, key, 0, 10 seconds, replace = true)
+          get <- redisMigrate.get(key)
+        } yield {
+          m2 must beTrue
+          get mustEqual Some(ByteString("value1"))
         }
         Await.result(r, timeOut)
       })
