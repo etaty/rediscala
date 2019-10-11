@@ -97,4 +97,6 @@ trait Keys extends Request {
   def scan(cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[Cursor[Seq[String]]] =
     send(Scan(cursor, count, matchGlob))
 
+  def unlink(keys: String*): Future[Long] =
+    send(Unlink(keys))
 }

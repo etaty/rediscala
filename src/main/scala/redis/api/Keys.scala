@@ -189,3 +189,10 @@ case class Scan[C](cursor: C, count: Option[Int], matchGlob: Option[String])(imp
 
   val empty: Seq[String] = Seq.empty
 }
+
+case class Unlink[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey[K] with RedisCommandIntegerLong {
+  val isMasterOnly = true
+  val encodedRequest: ByteString = encode("UNLINK", keys.map(redisKey.serialize))
+}
+
+
