@@ -35,9 +35,9 @@ case class Lpush[K, V](key: K, values: Seq[V])(implicit redisKey: ByteStringSeri
 }
 
 
-case class Lpushx[K, V](key: K, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
+case class Lpushx[K, V](key: K, values: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("LPUSHX", Seq(keyAsString, convert.serialize(value)))
+  val encodedRequest: ByteString = encode("LPUSHX", keyAsString +: values.map(v => convert.serialize(v)))
 }
 
 case class Lrange[K, R](key: K, start: Long, stop: Long)(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R]) extends SimpleClusterKey[K] with RedisCommandMultiBulk[Seq[R]] {
@@ -83,7 +83,7 @@ case class Rpush[K, V](key: K, values: Seq[V])(implicit redisKey: ByteStringSeri
   val encodedRequest: ByteString = encode("RPUSH", keyAsString +: values.map(v => convert.serialize(v)))
 }
 
-case class Rpushx[K, V](key: K, value: V)(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
+case class Rpushx[K, V](key: K, values: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends SimpleClusterKey[K] with RedisCommandIntegerLong {
   val isMasterOnly = true
-  val encodedRequest: ByteString = encode("RPUSHX", Seq(keyAsString, convert.serialize(value)))
+  val encodedRequest: ByteString = encode("RPUSHX", keyAsString +: values.map(v => convert.serialize(v)))
 }
