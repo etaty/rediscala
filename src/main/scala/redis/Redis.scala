@@ -25,6 +25,7 @@ trait RedisCommands
   with HyperLogLog
   with Clusters
   with Geo
+  with Streams
 
 trait RedisBlockingCommands
   extends BLists
