@@ -18,7 +18,7 @@ before_install:
 env:
   global:  
     - SBT_OPTS="-XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:PermSize=256M -XX:MaxPermSize=512M"
-    - REDIS_HOME=redis-3.2.0/src
+    - REDIS_HOME=redis-4.0.14/src
 # whitelist
 branches:
   only:
