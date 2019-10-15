@@ -31,8 +31,18 @@ class ConnectionSpec extends RedisStandaloneServer {
     "SELECT" in {
       Await.result(redis.select(1), timeOut) mustEqual true
       Await.result(redis.select(0), timeOut) mustEqual true
-      Await.result(redis.select(-1), timeOut) must throwA[ReplyErrorException]("ERR invalid DB index")
-      Await.result(redis.select(1000), timeOut) must throwA[ReplyErrorException]("ERR invalid DB index")
+      Await.result(redis.select(-1), timeOut) must throwA[ReplyErrorException]("ERR DB index is out of range")
+      Await.result(redis.select(1000), timeOut) must throwA[ReplyErrorException]("ERR DB index is out of range")
+    }
+    "SWAPDB" in {
+      Await.result(redis.select(0), timeOut) mustEqual true
+      Await.result(redis.set("key1", "value1"), timeOut) mustEqual true
+      Await.result(redis.select(1), timeOut) mustEqual true
+      Await.result(redis.set("key2", "value2"), timeOut) mustEqual true
+      Await.result(redis.swapdb(0, 1), timeOut) mustEqual true
+      Await.result(redis.get("key1"), timeOut) mustEqual Some(ByteString("value1"))
+      Await.result(redis.select(0), timeOut) mustEqual true
+      Await.result(redis.get("key2"), timeOut) mustEqual Some(ByteString("value2"))
     }
   }
 }

@@ -29,8 +29,12 @@ trait Keys extends Request {
   def keys(pattern: String): Future[Seq[String]] =
     send(Keys(pattern))
 
-  def migrate(host: String, port: Int, key: String, destinationDB: Int, timeout: FiniteDuration): Future[Boolean] = {
-    send(Migrate(host, port, key, destinationDB, timeout))
+  def migrate(host: String, port: Int, key: String, destinationDB: Int, timeout: FiniteDuration, copy: Boolean = false, replace: Boolean = false, password: Option[String] = None): Future[Boolean] = {
+    send(Migrate(host, port, Seq(key), destinationDB, timeout, copy, replace, password))
+  }
+
+  def migrateMany(host: String, port: Int, keys: Seq[String], destinationDB: Int, timeout: FiniteDuration, copy: Boolean = false, replace: Boolean = false, password: Option[String] = None): Future[Boolean] = {
+    send(Migrate(host, port, keys, destinationDB, timeout, copy, replace, password))
   }
 
   def move(key: String, db: Int): Future[Boolean] =
@@ -97,4 +101,6 @@ trait Keys extends Request {
   def scan(cursor: Int = 0, count: Option[Int] = None, matchGlob: Option[String] = None): Future[Cursor[Seq[String]]] =
     send(Scan(cursor, count, matchGlob))
 
+  def unlink(keys: String*): Future[Long] =
+    send(Unlink(keys))
 }

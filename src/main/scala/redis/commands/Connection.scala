@@ -21,5 +21,8 @@ trait Connection extends Request {
 
   def select(index: Int): Future[Boolean] =
     send(Select(index))
+
+  def swapdb(index1: Int, index2: Int): Future[Boolean] =
+    send(Swapdb(index1, index2))
 }
 

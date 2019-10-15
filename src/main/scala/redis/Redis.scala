@@ -25,6 +25,11 @@ trait RedisCommands
   with HyperLogLog
   with Clusters
   with Geo
+  with Streams
+
+trait RedisBlockingCommands
+  extends BLists
+  with BSortedSets
 
 abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisDispatcher, connectTimeout: Option[FiniteDuration] = None) extends ActorRequest {
   var host: String
@@ -94,7 +99,7 @@ case class RedisBlockingClient(var host: String = "localhost",
                                connectTimeout: Option[FiniteDuration] = None)
                               (implicit _system: ActorSystem,
                                redisDispatcher: RedisDispatcher = Redis.dispatcher
-                              ) extends RedisClientActorLike(_system, redisDispatcher, connectTimeout) with BLists {
+                              ) extends RedisClientActorLike(_system, redisDispatcher, connectTimeout) with RedisBlockingCommands {
 }
 
 case class RedisPubSub(

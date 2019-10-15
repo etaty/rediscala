@@ -30,6 +30,12 @@ trait SortedSets extends Request {
   def zinterstoreWeighted(destination: String, keys: Map[String, Double], aggregate: Aggregate = SUM): Future[Long] =
     send(ZinterstoreWeighted(destination, keys, aggregate))
 
+  def zpopmax[R: ByteStringDeserializer](key: String, count: Option[Long] = None): Future[Seq[(R, Double)]] =
+    send(Zpopmax(key, count))
+
+  def zpopmin[R: ByteStringDeserializer](key: String, count: Option[Long] = None): Future[Seq[(R, Double)]] =
+    send(Zpopmin(key, count))
+
   def zrange[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[R]] =
     send(Zrange(key, start, stop))
 

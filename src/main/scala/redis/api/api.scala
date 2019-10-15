@@ -74,3 +74,48 @@ object ZaddOption {
   }
 
 }
+
+sealed trait RequestStreamId {
+  def serialize: ByteString
+}
+
+case class StreamId(time: Long, sequence: Long = 0) extends RequestStreamId {
+  override def serialize: ByteString = ByteString(toString)
+  override def toString: String = s"${time}-${sequence}"
+  def next: StreamId = StreamId(time, sequence + 1)
+}
+
+protected[redis] class MagicStreamId(s: String) extends RequestStreamId {
+  val serialize: ByteString = ByteString(s)
+}
+
+object StreamId {
+  final val MIN = new MagicStreamId("-")
+  final val MAX = new MagicStreamId("+")
+  final val AUTOGENERATE = new MagicStreamId("*")
+  final val ADDED = new MagicStreamId("$")
+  final val UNDELIVERED = new MagicStreamId(">")
+  final val MIN_VALID = StreamId(0, 1)
+
+  def deserialize(s: ByteString): StreamId = {
+    val f = s.utf8String.split('-')
+    StreamId(f(0).toLong, f(1).toLong)
+  }
+}
+
+case class StreamEntry[F, V](id: StreamId, fields: Seq[(F, V)])
+
+sealed trait TrimStrategy {
+  def toByteString: Seq[ByteString]
+}
+
+case class MaxLength(count: Long, approximate: Boolean = false) extends TrimStrategy {
+  def toByteString: Seq[ByteString] = {
+    val builder = Seq.newBuilder[ByteString]
+    builder += ByteString("MAXLEN")
+    if (approximate)
+      builder += ByteString("~")
+    builder += ByteString(count.toString)
+    builder.result()
+  }
+}

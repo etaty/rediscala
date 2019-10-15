@@ -28,8 +28,8 @@ trait Lists extends Request {
   def lpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
     send(Lpush(key, values))
 
-  def lpushx[V: ByteStringSerializer](key: String, value: V): Future[Long] =
-    send(Lpushx(key, value))
+  def lpushx[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
+    send(Lpushx(key, values))
 
   def lrange[R: ByteStringDeserializer](key: String, start: Long, stop: Long): Future[Seq[R]] =
     send(Lrange(key, start, stop))
@@ -52,7 +52,7 @@ trait Lists extends Request {
   def rpush[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
     send(Rpush(key, values))
 
-  def rpushx[V: ByteStringSerializer](key: String, value: V): Future[Long] =
-    send(Rpushx(key, value))
+  def rpushx[V: ByteStringSerializer](key: String, values: V*): Future[Long] =
+    send(Rpushx(key, values))
 
 }

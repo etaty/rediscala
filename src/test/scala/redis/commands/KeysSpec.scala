@@ -24,7 +24,7 @@ class KeysSpec extends RedisStandaloneServer {
         d <- redis.dump("dumpKey")
       } yield {
         s mustEqual true
-        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
+        d mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 9, 0, 81, 4, -112, -12, -107, 44, -8, -33))
       }
       Await.result(r, timeOut)
     }
@@ -110,10 +110,73 @@ class KeysSpec extends RedisStandaloneServer {
         val r = for {
           _ <- redis.set(key, "value")
           m <- redis.migrate("localhost", port, key, 0, 10 seconds)
-          get <- redisMigrate.get(key)
+          getSource <- redis.get(key)
+          getTarget <- redisMigrate.get(key)
         } yield {
           m must beTrue
-          get mustEqual Some(ByteString("value"))
+          getSource mustEqual None
+          getTarget mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE COPY" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key = "migrateCopyKey-" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key, "value")
+          m <- redis.migrate("localhost", port, key, 0, 10 seconds, copy = true)
+          getSource <- redis.get(key)
+          getTarget <- redisMigrate.get(key)
+        } yield {
+          m must beTrue
+          getSource mustEqual Some(ByteString("value"))
+          getTarget mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE KEYS" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key1 = "migrateKey1-" + System.currentTimeMillis()
+        val key2 = "migrateKey2" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key1, "value")
+          _ <- redis.set(key2, "value")
+          m <- redis.migrateMany("localhost", port, Seq(key1, key2), 0, 10 seconds)
+          get1 <- redisMigrate.get(key1)
+          get2 <- redisMigrate.get(key2)
+        } yield {
+          m must beTrue
+          get1 mustEqual Some(ByteString("value"))
+          get2 mustEqual Some(ByteString("value"))
+        }
+        Await.result(r, timeOut)
+      })
+    }
+
+    "MIGRATE REPLACE" in {
+      import scala.concurrent.duration._
+
+      withRedisServer(port => {
+        val redisMigrate = RedisClient("localhost", port)
+        val key = "migrateReplaceKey-" + System.currentTimeMillis()
+        val r = for {
+          _ <- redis.set(key, "value1")
+          _ <- redisMigrate.set(key, "value2")
+          m2 <- redis.migrate("localhost", port, key, 0, 10 seconds, replace = true)
+          get <- redisMigrate.get(key)
+        } yield {
+          m2 must beTrue
+          get mustEqual Some(ByteString("value1"))
         }
         Await.result(r, timeOut)
       })
@@ -286,7 +349,7 @@ class KeysSpec extends RedisStandaloneServer {
         restore <- redis.restore("restoreKey", serializedValue = dump.get)
       } yield {
         s mustEqual true
-        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 7, 0, 126, -60, 20, -53, -55, 96, 78, 116))
+        dump mustEqual Some(ByteString(0, 5, 118, 97, 108, 117, 101, 9, 0, 81, 4, -112, -12, -107, 44, -8, -33))
         restore mustEqual true
       }
       Await.result(r, timeOut)
@@ -379,5 +442,15 @@ class KeysSpec extends RedisStandaloneServer {
       Await.result(r, timeOut)
     }
 
+    "UNLINK" in {
+      val r = for {
+        s <- redis.set("unlinkKey", "value")
+        d <- redis.unlink("unlinkKey", "unlinkKeyNonexisting")
+      } yield {
+        s mustEqual true
+        d mustEqual 1
+      }
+      Await.result(r, timeOut)
+    }
   }
 }

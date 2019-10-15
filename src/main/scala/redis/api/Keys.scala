@@ -46,17 +46,32 @@ case class Keys(pattern: String) extends RedisCommandMultiBulk[Seq[String]] {
   def decodeReply(mb: MultiBulk) = MultiBulkConverter.toSeqString(mb)
 }
 
-case class Migrate[K](host: String, port: Int, key: K, destinationDB: Int, timeout: FiniteDuration)(implicit redisKey: ByteStringSerializer[K])
+case class Migrate[K](host: String, port: Int, keys: Seq[K], destinationDB: Int, timeout: FiniteDuration, copy: Boolean = false, replace: Boolean = false, password: Option[String])(implicit redisKey: ByteStringSerializer[K])
   extends RedisCommandStatusBoolean {
   val isMasterOnly = true
-  val encodedRequest: ByteString =
-    encode("MIGRATE",
-      Seq(ByteString(host),
-        ByteString(port.toString),
-        redisKey.serialize(key),
-        ByteString(destinationDB.toString),
-        ByteString(timeout.toMillis.toString)
-      ))
+  val encodedRequest: ByteString = {
+    val builder = Seq.newBuilder[ByteString]
+
+    builder += ByteString(host)
+    builder += ByteString(port.toString)
+    builder += ByteString("")
+    builder += ByteString(destinationDB.toString)
+    builder += ByteString(timeout.toMillis.toString)
+
+    if (copy)
+      builder += ByteString("COPY")
+    if (replace)
+      builder += ByteString("REPLACE")
+    if (password.isDefined) {
+      builder += ByteString("AUTH")
+      builder += ByteString(password.get)
+    }
+
+    builder += ByteString("KEYS")
+    builder ++= keys.map(redisKey.serialize)
+
+    RedisProtocolRequest.multiBulk("MIGRATE", builder.result())
+  }
 }
 
 case class Move[K](key: K, db: Int)(implicit redisKey: ByteStringSerializer[K]) extends SimpleClusterKey[K] with RedisCommandIntegerBoolean {
@@ -189,3 +204,10 @@ case class Scan[C](cursor: C, count: Option[Int], matchGlob: Option[String])(imp
 
   val empty: Seq[String] = Seq.empty
 }
+
+case class Unlink[K](keys: Seq[K])(implicit redisKey: ByteStringSerializer[K]) extends MultiClusterKey[K] with RedisCommandIntegerLong {
+  val isMasterOnly = true
+  val encodedRequest: ByteString = encode("UNLINK", keys.map(redisKey.serialize))
+}
+
+
