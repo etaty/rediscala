@@ -1,17 +1,17 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbt.Tests.{InProcess, Group}
 
-val akkaVersion = "2.5.23"
+val akkaVersion = "2.5.25"
 
 val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
 
 val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
-val specs2 = "org.specs2" %% "specs2-core" % "4.5.1"
+val specs2 = "org.specs2" %% "specs2-core" % "4.8.0"
 
 val stm = "org.scala-stm" %% "scala-stm" % "0.9.1"
 
-val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.0"
+val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.2"
 
 //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
@@ -33,7 +33,7 @@ lazy val standardSettings = Def.settings(
   name := "rediscala",
   organization := "com.github.etaty",
   scalaVersion := Scala211,
-  crossScalaVersions := Seq(Scala211, "2.12.8", "2.13.0"),
+  crossScalaVersions := Seq(Scala211, "2.12.10", "2.13.0"),
   licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/etaty/rediscala")),
   scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
