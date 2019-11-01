@@ -84,6 +84,10 @@ class SentinelSpec(implicit ee: ExecutionEnv) extends RedisSentinelClients("Sent
     "reset master" in {
       Await.result(sentinelClient.resetMaster(masterName), timeOut)
     }
-  }
 
+    "skip failed nodes" in {
+      val failingClient = failingSentinelMonitoredRedisClient
+      Await.result(failingClient.ping(), timeOut) mustEqual "PONG"
+    }
+  }
 }
