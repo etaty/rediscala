@@ -48,7 +48,7 @@ case class Sismember[K, V](key: K, member: V)(implicit redisKey: ByteStringSeria
 }
 
 case class Smembers[K, R](key: K)(implicit redisKey: ByteStringSerializer[K], deserializerR: ByteStringDeserializer[R]) extends SimpleClusterKey[K] with RedisCommandMultiBulkSeqByteString[R] {
-  val isMasterOnly = true
+  val isMasterOnly = false
   val encodedRequest: ByteString = encode("SMEMBERS", Seq(keyAsString))
   val deserializer: ByteStringDeserializer[R] = deserializerR
 }
