@@ -10,10 +10,13 @@ import scala.concurrent.{Future, ExecutionContext}
 import redis.protocol.RedisReply
 import redis.commands.Transactions
 
+import scala.concurrent.duration.FiniteDuration
+
 case class RedisServer(host: String = "localhost",
                        port: Int = 6379,
                        password: Option[String] = None,
-                       db: Option[Int] = None)
+                       db: Option[Int] = None,
+                       connectTimeout: Option[FiniteDuration] = None)
 
 
 case class RedisConnection(actor: ActorRef, active: Ref[Boolean] = Ref(false))
@@ -86,14 +89,14 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
     }
   }
 
-  def makeRedisConnection(server: RedisServer, defaultActive: Boolean = false) = {
+  def makeRedisConnection(server: RedisServer, defaultActive: Boolean = false): (RedisServer, RedisConnection) = {
     val active = Ref(defaultActive)
     (server, RedisConnection(makeRedisClientActor(server, active), active))
   }
 
-  def makeRedisClientActor(server: RedisServer, active: Ref[Boolean]): ActorRef = {
+  private def makeRedisClientActor(server: RedisServer, active: Ref[Boolean]): ActorRef = {
     system.actorOf(RedisClientActor.props(new InetSocketAddress(server.host, server.port),
-      getConnectOperations(server), onConnectStatus(server, active), redisDispatcher.name)
+      getConnectOperations(server), onConnectStatus(server, active), redisDispatcher.name, server.connectTimeout)
       .withDispatcher(redisDispatcher.name),
       name + '-' + Redis.tempName()
     )
@@ -160,7 +163,7 @@ case class RedisClientMasterSlaves(master: RedisServer,
                                   extends RedisCommands with Transactions {
   implicit val executionContext = _system.dispatchers.lookup(redisDispatcher.name)
 
-  val masterClient = RedisClient(master.host, master.port, master.password, master.db)
+  val masterClient = RedisClient(master.host, master.port, master.password, master.db, connectTimeout = master.connectTimeout)
 
   val slavesClients = RedisClientPool(slaves)
 
