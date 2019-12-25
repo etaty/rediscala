@@ -26,6 +26,12 @@ class ScriptingSpec(implicit ee: ExecutionEnv) extends RedisStandaloneServer {
       r mustEqual MultiBulk(Some(Vector(Bulk(Some(ByteString("key"))), Bulk(Some(ByteString("arg"))))))
     }
 
+    "evalshaOrEvalBinary" in {
+      Await.result(redis.scriptFlush(), timeOut) must beTrue
+      val r = Await.result(redis.evalshaOrEvalBinary(redisScriptKeysArgs, Seq("key"), Seq(ByteString(255))), timeOut)
+      r mustEqual MultiBulk(Some(Vector(Bulk(Some(ByteString("key"))), Bulk(Some(ByteString(255))))))
+    }
+
     "EVAL" in {
       Await.result(redis.eval(redisScript.script), timeOut) mustEqual Bulk(Some(ByteString("rediscala")))
     }
