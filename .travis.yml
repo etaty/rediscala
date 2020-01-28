@@ -6,9 +6,8 @@ after_success:
   - "sbt coverageReport coverageAggregate"
   - "sbt coveralls"
 scala:
-  - "2.11.12"
   - "2.12.10"
-  - "2.13.0"
+  - "2.13.1"
 jdk:
   - openjdk8
 
