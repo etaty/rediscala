@@ -1,7 +1,7 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbt.Tests.{InProcess, Group}
 
-val akkaVersion = "2.6.2"
+val akkaVersion = "2.6.3"
 
 val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
 
@@ -11,7 +11,7 @@ val specs2 = "org.specs2" %% "specs2-core" % "4.8.0"
 
 val stm = "org.scala-stm" %% "scala-stm" % "0.9.1"
 
-val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.2"
+val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.3"
 
 //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
