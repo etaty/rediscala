@@ -1,6 +1,7 @@
 package redis.commands
 
 import redis._
+
 import scala.concurrent.{Await, Future}
 import akka.util.ByteString
 import redis.actors.ReplyErrorException
@@ -115,6 +116,13 @@ class StringsSpec extends RedisStandaloneServer {
         redis.get[DumbClass]("getDumbKey")
       })
       Await.result(r, timeOut) mustEqual Some(dumbObject)
+    }
+
+    "GET with deserialization failure" in {
+      val r = redis.set("getDumbKey", "value").flatMap(_ => {
+        redis.get[Double]("getDumbKey")
+      })
+      Await.result(r, timeOut) must throwA[NumberFormatException]
     }
 
     "GETBIT" in {
