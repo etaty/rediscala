@@ -13,7 +13,8 @@ import redis.commands.Transactions
 case class RedisServer(host: String = "localhost",
                        port: Int = 6379,
                        password: Option[String] = None,
-                       db: Option[Int] = None)
+                       db: Option[Int] = None,
+                       name: String = "")
 
 
 case class RedisConnection(actor: ActorRef, active: Ref[Boolean] = Ref(false))
