@@ -336,5 +336,21 @@ class SortedSetsSpec extends RedisStandaloneServer {
       }
       Await.result(r, timeOut)
     }
+
+    "ZPOPMIN" in {
+      val r = for {
+        _ <- redis.del("zpopminKey")
+        z1 <- redis.zadd("zpopminKey", (1, "one"))
+        z1r <-redis.zpopmin("zpopminKey")
+        z2 <- redis.zadd("zpopminKey", (3, "three"), (2, "two"), (1, "one"))
+        z2r <- redis.zpopmin("zpopminKey", 2)
+      } yield {
+        z1 mustEqual 1
+        z1r mustEqual Seq(ByteString("one"), ByteString("1"))
+        z2 mustEqual 2
+        z2r mustEqual Seq(ByteString("one"), ByteString("1"), ByteString("two"), ByteString("2"))
+      }
+      Await.result(r, timeOut)
+    }
   }
 }
