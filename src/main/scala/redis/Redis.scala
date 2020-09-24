@@ -34,7 +34,7 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   val db: Option[Int] = None
   implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
-  val redisConnection: ActorRef = system.actorOf(RedisClientActor.props(new InetSocketAddress(host, port),
+  lazy val redisConnection: ActorRef = system.actorOf(RedisClientActor.props(new InetSocketAddress(host, port),
     getConnectOperations, onConnectStatus, redisDispatcher.name, connectTimeout)
       .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
