@@ -50,7 +50,7 @@ lazy val standardSettings = Def.settings(
   publishTo := sonatypePublishTo.value,
   publishMavenStyle := true,
   git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
-
+  javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
     "-Xlint",
