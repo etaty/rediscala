@@ -111,7 +111,7 @@ case class RedisPubSub(
 
   val redisConnection: ActorRef = system.actorOf(
     Props(classOf[RedisSubscriberActorWithCallback],
-      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword,onConnectStatus)
+      new InetSocketAddress(host, port), channels, patterns, onMessage, onPMessage, authPassword,onConnectStatus())
       .withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )

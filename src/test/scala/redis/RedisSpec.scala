@@ -13,6 +13,7 @@ import org.specs2.mutable.SpecificationLike
 import org.specs2.specification.core.Fragments
 
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.io.Source
 import scala.reflect.io.File
@@ -49,9 +50,9 @@ abstract class RedisHelper extends TestKit(ActorSystem()) with SpecificationLike
 
   import scala.concurrent.duration._
 
-  implicit val executionContext = system.dispatchers.lookup(Redis.dispatcher.name)
+  implicit val executionContext: ExecutionContext = system.dispatchers.lookup(Redis.dispatcher.name)
 
-  implicit val timeout = Timeout(10 seconds)
+  implicit val timeout: Timeout = Timeout(10 seconds)
   val timeOut = 10 seconds
   val longTimeOut = 100 seconds
 

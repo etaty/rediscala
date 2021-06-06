@@ -6,7 +6,7 @@ import akka.event.Logging
 import redis.api.pubsub.{PMessage, Message}
 import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 trait SentinelCommands
   extends Sentinel
@@ -112,7 +112,7 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
   val onNewSlave: (String, Int) => Unit
   val onSlaveDown: (String, Int) => Unit
 
-  implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
+  implicit val executionContext: ExecutionContext = system.dispatchers.lookup(redisDispatcher.name)
 
   val log = Logging.getLogger(system, this)
 
@@ -163,7 +163,7 @@ abstract class SentinelMonitored(system: ActorSystem, redisDispatcher: RedisDisp
     if (master == masterName && sentinelClients.contains(k)) {
       sentinelClients.synchronized {
         if (sentinelClients.contains(k)) {
-          sentinelClients(k).stop
+          sentinelClients(k).stop()
           sentinelClients -= k
         }
       }

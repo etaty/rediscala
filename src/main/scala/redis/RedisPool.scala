@@ -23,7 +23,7 @@ abstract class RedisClientPoolLike(system: ActorSystem, redisDispatcher: RedisDi
   def redisServerConnections: scala.collection.Map[RedisServer, RedisConnection]
 
   val name: String
-  implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
+  implicit val executionContext: ExecutionContext = system.dispatchers.lookup(redisDispatcher.name)
 
   private val redisConnectionRef: Ref[Seq[ActorRef]] = Ref(Seq.empty)
   /**
@@ -107,7 +107,7 @@ case class RedisClientMutablePool(redisServers: Seq[RedisServer],
                                   redisDispatcher: RedisDispatcher = Redis.dispatcher
                                   ) extends RedisClientPoolLike (system, redisDispatcher) with RoundRobinPoolRequest with RedisCommands {
 
-  override val redisServerConnections = {
+  override val redisServerConnections: collection.mutable.Map[RedisServer, RedisConnection] = {
     val m = redisServers map { server => makeRedisConnection(server) }
     collection.mutable.Map(m: _*)
   }
