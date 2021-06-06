@@ -3,26 +3,29 @@ import sbt.Tests.{InProcess, Group}
 
 val akkaVersion = "2.5.25"
 
-val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion
+val akkaActor = "com.typesafe.akka" %% "akka-actor" % akkaVersion cross CrossVersion.for3Use2_13
 
-val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion cross CrossVersion.for3Use2_13
 
-val specs2 = "org.specs2" %% "specs2-core" % "4.8.0"
+val specs2 = "org.specs2" %% "specs2-core" % "4.8.0" cross CrossVersion.for3Use2_13
 
-val stm = "org.scala-stm" %% "scala-stm" % "0.9.1"
+val stm = "org.scala-stm" %% "scala-stm" % "0.11.1"
 
-val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.2"
+val scalacheck = Def.setting{
+  val v = if (scalaBinaryVersion.value == "2.11") "1.15.2" else "1.15.3"
+  "org.scalacheck" %% "scalacheck" % v
+}
 
 //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
-val rediscalaDependencies = Seq(
+val rediscalaDependencies = Def.setting(Seq(
   akkaActor,
   stm,
   akkaTestkit % "test",
   //scalameter % "test",
   specs2 % "test",
-  scalacheck % "test"
-)
+  scalacheck.value % "test"
+))
 
 
 val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
@@ -33,7 +36,7 @@ lazy val standardSettings = Def.settings(
   name := "rediscala",
   organization := "com.github.etaty",
   scalaVersion := Scala211,
-  crossScalaVersions := Seq(Scala211, "2.12.10", "2.13.0"),
+  crossScalaVersions := Seq(Scala211, "2.12.10", "2.13.0", "3.0.1-RC1"),
   licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/etaty/rediscala")),
   scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
@@ -50,13 +53,23 @@ lazy val standardSettings = Def.settings(
   publishTo := sonatypePublishTo.value,
   publishMavenStyle := true,
   git.gitRemoteRepo := "git@github.com:etaty/rediscala.git",
-
+  scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Seq(
+        "-source", "3.0-migration"
+      )
+    } else {
+      Seq(
+        "-Xlint"
+      )
+    }
+  },
   scalacOptions ++= Seq(
     "-encoding", "UTF-8",
-    "-Xlint",
     "-deprecation",
     "-feature",
     "-language:postfixOps",
+    "-language:implicitConversions",
     "-unchecked"
   ),
   scalacOptions in (Compile, doc) ++= {
@@ -119,7 +132,7 @@ lazy val root = Project(id = "rediscala",
   base = file(".")
 ).settings(
   standardSettings,
-  libraryDependencies ++= rediscalaDependencies
+  libraryDependencies ++= rediscalaDependencies.value
 ).configs(
   BenchTest
 ).enablePlugins(

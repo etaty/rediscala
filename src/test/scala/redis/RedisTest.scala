@@ -11,7 +11,7 @@ class RedisTest extends RedisStandaloneServer {
 
   "basic test" should {
     "ping" in {
-      Await.result(redis.ping, timeOut) mustEqual "PONG"
+      Await.result(redis.ping(), timeOut) mustEqual "PONG"
     }
     "set" in {
       Await.result(redis.set("key", "value"), timeOut) mustEqual true
@@ -47,7 +47,7 @@ class RedisTest extends RedisStandaloneServer {
         implicit val redisDispatcher = RedisDispatcher("no-this-dispatcher")
         RedisClient(port = port)
       })
-      test must throwA[ConfigurationException]
+      test() must throwA[ConfigurationException]
     }
   }
 

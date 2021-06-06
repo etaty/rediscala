@@ -7,7 +7,7 @@ import redis.protocol.{Bulk, RedisReply}
 case class DumbClass(s1: String, s2: String)
 
 object DumbClass {
-  implicit val byteStringFormatter = new ByteStringFormatter[DumbClass] {
+  implicit val byteStringFormatter: ByteStringFormatter[DumbClass]  = new ByteStringFormatter[DumbClass] {
     def serialize(data: DumbClass): ByteString = {
       ByteString(data.s1 + "|" + data.s2)
     }
@@ -18,7 +18,7 @@ object DumbClass {
     }
   }
 
-  implicit val redisReplyDeserializer =  new RedisReplyDeserializer[DumbClass] {
+  implicit val redisReplyDeserializer: RedisReplyDeserializer[DumbClass] = new RedisReplyDeserializer[DumbClass] {
     override def deserialize: PartialFunction[RedisReply, DumbClass] = {
       case Bulk(Some(bs)) => byteStringFormatter.deserialize(bs)
     }
