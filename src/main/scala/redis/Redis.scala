@@ -2,13 +2,13 @@ package redis
 
 import akka.actor._
 import akka.util.Helpers
-import redis.commands._
-import scala.concurrent._
-import java.net.InetSocketAddress
+import java.net.{InetSocketAddress, Socket, SocketTimeoutException}
+import java.util.concurrent.atomic.AtomicLong
+import javax.net.ssl.SSLContext
 import redis.actors.{RedisSubscriberActorWithCallback, RedisClientActor}
 import redis.api.pubsub._
-import java.util.concurrent.atomic.AtomicLong
-
+import redis.commands._
+import scala.concurrent._
 import scala.concurrent.duration.FiniteDuration
 
 trait RedisCommands
@@ -32,11 +32,18 @@ abstract class RedisClientActorLike(system: ActorSystem, redisDispatcher: RedisD
   val name: String
   val password: Option[String] = None
   val db: Option[Int] = None
+  val sslContext: Option[SSLContext] = None
   implicit val executionContext = system.dispatchers.lookup(redisDispatcher.name)
 
-  val redisConnection: ActorRef = system.actorOf(RedisClientActor.props(new InetSocketAddress(host, port),
-    getConnectOperations, onConnectStatus, redisDispatcher.name, connectTimeout)
-      .withDispatcher(redisDispatcher.name),
+  val redisConnection: ActorRef = system.actorOf(
+    RedisClientActor.props(
+      new InetSocketAddress(host, port),
+      getConnectOperations,
+      onConnectStatus,
+      redisDispatcher.name,
+      connectTimeout,
+      sslContext
+    ).withDispatcher(redisDispatcher.name),
     name + '-' + Redis.tempName()
   )
 
@@ -79,7 +86,8 @@ case class RedisClient(var host: String = "localhost",
                        override val password: Option[String] = None,
                        override val db: Option[Int] = None,
                        name: String = "RedisClient",
-                       connectTimeout: Option[FiniteDuration] = None)
+                       connectTimeout: Option[FiniteDuration] = None,
+                       override val sslContext: Option[SSLContext] = None)
                       (implicit _system: ActorSystem,
                        redisDispatcher: RedisDispatcher = Redis.dispatcher
                       ) extends RedisClientActorLike(_system, redisDispatcher, connectTimeout) with RedisCommands with Transactions {

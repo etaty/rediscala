@@ -4,15 +4,16 @@ import akka.actor.{ActorLogging, ActorRef, Actor}
 import akka.io.Tcp
 import akka.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
-import akka.io.Tcp._
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
-import akka.io.Tcp.CommandFailed
-import akka.io.Tcp.Received
+import javax.net.ssl.SSLContext
 import scala.concurrent.duration.FiniteDuration
 
-abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Boolean => Unit, connectTimeout: Option[FiniteDuration] = None) extends Actor with ActorLogging {
+abstract class RedisWorkerIO(
+    val address: InetSocketAddress,
+    onConnectStatus: Boolean => Unit,
+    connectTimeout: Option[FiniteDuration] = None,
+    sslContext: Option[SSLContext] = None
+) extends Actor with ActorLogging {
+  import Tcp._
 
   private var currAddress = address
 
@@ -188,6 +189,6 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
 }
 
 
-object WriteAck extends Event
+object WriteAck extends Tcp.Event
 
 object Reconnect
