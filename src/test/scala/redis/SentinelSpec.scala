@@ -2,7 +2,7 @@ package redis
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import akka.testkit._
+import org.apache.pekko.testkit._
 import org.specs2.concurrent.ExecutionEnv
 
 class SentinelSpec(implicit ee: ExecutionEnv) extends RedisSentinelClients("SentinelSpec") {
@@ -25,7 +25,7 @@ class SentinelSpec(implicit ee: ExecutionEnv) extends RedisSentinelClients("Sent
         sentinelMonitoredRedisClient.redisClient.port must beOneOf(slavePort1, slavePort2, port)
       }, 30.seconds.dilated)
 
-      val firstFailover = sentinelMonitoredRedisClient.redisClient.port
+      //val firstFailover = sentinelMonitoredRedisClient.redisClient.port
 
       awaitAssert({
         Await.result(sentinelClient.failover(masterName), timeOut) must beTrue

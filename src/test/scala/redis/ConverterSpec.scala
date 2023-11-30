@@ -1,7 +1,7 @@
 package redis
 
 import org.specs2.mutable.Specification
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.{Bulk, RedisReply}
 
 case class DumbClass(s1: String, s2: String)
