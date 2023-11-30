@@ -16,9 +16,11 @@ val scalacheck = "org.scalacheck" %% "scalacheck" % "1.14.2"
 //val scalameter = "com.github.axel22" %% "scalameter" % "0.4"
 
 val rediscalaDependencies = Seq(
-  akkaActor,
+  //akkaActor,
+  "org.apache.pekko" %% "pekko-actor-typed" % "0.0.0+26544-4c021960-SNAPSHOT",
   stm,
-  akkaTestkit % "test",
+  //akkaTestkit % "test",
+  "org.apache.pekko" %% "pekko-actor-testkit-typed" % "0.0.0+26544-4c021960-SNAPSHOT" % Test,
   //scalameter % "test",
   specs2 % "test",
   scalacheck % "test"
@@ -28,12 +30,16 @@ val rediscalaDependencies = Seq(
 val baseSourceUrl = "https://github.com/etaty/rediscala/tree/"
 
 val Scala211 = "2.11.12"
+val Scala212 = "2.12.8"
+
+lazy val pekkoResolver1 = "ApachePekkoSnapshots" at "https://repository.apache.org/content/groups/snapshots"
+lazy val pekkoResolver2 = "pekko-http-snapshot-repository" at "https://repository.apache.org/content/repositories/snapshots"
 
 lazy val standardSettings = Def.settings(
   name := "rediscala",
   organization := "com.github.etaty",
-  scalaVersion := Scala211,
-  crossScalaVersions := Seq(Scala211, "2.12.10", "2.13.0"),
+  scalaVersion := Scala212,
+  crossScalaVersions := Seq(Scala211, Scala212, "2.13.0"),
   licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/etaty/rediscala")),
   scmInfo := Some(ScmInfo(url("https://github.com/etaty/rediscala"), "scm:git:git@github.com:etaty/rediscala.git")),
@@ -119,6 +125,8 @@ lazy val root = Project(id = "rediscala",
   base = file(".")
 ).settings(
   standardSettings,
+  resolvers += pekkoResolver1,
+  resolvers += pekkoResolver2,
   libraryDependencies ++= rediscalaDependencies
 ).configs(
   BenchTest

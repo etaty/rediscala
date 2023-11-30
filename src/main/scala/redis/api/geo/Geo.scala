@@ -1,6 +1,6 @@
 package redis.api.geo
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis._
 import redis.api.geo.DistUnits.Measurement
 import redis.api.geo.GeoOptions.WithOption

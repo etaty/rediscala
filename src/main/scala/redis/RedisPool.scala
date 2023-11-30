@@ -2,7 +2,7 @@ package redis
 
 import java.net.InetSocketAddress
 
-import akka.actor.{ActorRef, ActorSystem}
+import org.apache.pekko.actor.{ActorRef, ActorSystem}
 
 import scala.concurrent.stm._
 import redis.actors.RedisClientActor

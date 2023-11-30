@@ -1,7 +1,7 @@
 package redis.api
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.MultiBulk
 
 case class SenMasters() extends RedisCommandMultiBulk[Seq[Map[String,String]]] {

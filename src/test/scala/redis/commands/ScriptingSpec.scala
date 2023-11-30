@@ -5,7 +5,7 @@ import java.io.File
 import redis._
 
 import scala.concurrent.Await
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import org.specs2.concurrent.ExecutionEnv
 import redis.protocol.{Bulk, MultiBulk}
 import redis.actors.ReplyErrorException

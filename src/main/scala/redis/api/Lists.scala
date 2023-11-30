@@ -1,7 +1,7 @@
 package redis.api.lists
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.api.ListPivot
 import redis.protocol.MultiBulk
 

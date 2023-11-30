@@ -5,9 +5,9 @@ import java.net.Socket
 import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 
-import akka.actor.ActorSystem
-import akka.testkit.TestKit
-import akka.util.Timeout
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.testkit.TestKit
+import org.apache.pekko.util.Timeout
 import org.specs2.concurrent.FutureAwait
 import org.specs2.mutable.SpecificationLike
 import org.specs2.specification.core.Fragments
@@ -228,7 +228,7 @@ abstract class RedisClusterClients() extends RedisHelper {
     val nodes = nodePorts.map(s => redisHost + ":" + s).mkString(" ")
 
     println(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}")
-    val redisTrib = Process(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}").run(
+    Process(s"$redisServerPath/redis-trib.rb create --replicas 1 ${nodes}").run(
 
       new ProcessIO(
         (writeInput: OutputStream) => {

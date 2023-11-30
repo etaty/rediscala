@@ -1,9 +1,9 @@
 package redis
 
-import akka.ConfigurationException
+import org.apache.pekko.ConfigurationException
 
 import scala.concurrent._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 class RedisTest extends RedisStandaloneServer {
 

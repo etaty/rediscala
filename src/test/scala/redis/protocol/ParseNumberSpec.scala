@@ -1,7 +1,7 @@
 package redis.protocol
 
 import org.specs2.mutable._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 class ParseNumberSpec extends Specification {
 

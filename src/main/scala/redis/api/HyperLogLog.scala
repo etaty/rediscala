@@ -1,6 +1,6 @@
 package redis.api.hyperloglog
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.{RedisCommandIntegerLong, RedisCommandStatusBoolean, ByteStringSerializer}
 
 case class Pfadd[K, V](key: K, values: Seq[V])(implicit redisKey: ByteStringSerializer[K], convert: ByteStringSerializer[V]) extends RedisCommandIntegerLong {

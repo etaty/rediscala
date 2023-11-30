@@ -1,7 +1,7 @@
 package redis.api.keys
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol._
 import scala.concurrent.duration.FiniteDuration
 import redis.api.Order

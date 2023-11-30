@@ -1,6 +1,6 @@
 package redis.protocol
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import org.scalacheck.Properties
 import org.scalacheck.Prop.forAll
 

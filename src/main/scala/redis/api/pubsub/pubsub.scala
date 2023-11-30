@@ -1,6 +1,6 @@
 package redis.api.pubsub
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.RedisProtocolRequest
 
 case class Message(channel: String, data: ByteString)

@@ -1,6 +1,7 @@
 package redis
 
-import akka.util.ByteString
+//import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol._
 import scala.util.Try
 import scala.annotation.{tailrec, implicitNotFound}

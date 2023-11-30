@@ -1,7 +1,7 @@
 package redis.api.hashes
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import scala.collection.mutable
 import scala.annotation.tailrec
 import redis.protocol.{RedisReply, MultiBulk}

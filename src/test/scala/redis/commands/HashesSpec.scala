@@ -2,7 +2,7 @@ package redis.commands
 
 import redis._
 import scala.concurrent.Await
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 class HashesSpec extends RedisStandaloneServer {
 

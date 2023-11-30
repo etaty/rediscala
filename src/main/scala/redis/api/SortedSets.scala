@@ -1,6 +1,6 @@
 package redis.api.sortedsets
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis._
 import redis.api.{Aggregate, Limit, SUM, ZaddOption}
 import redis.protocol.RedisReply

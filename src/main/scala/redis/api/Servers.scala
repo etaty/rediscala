@@ -1,7 +1,7 @@
 package redis.api.servers
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.{MultiBulk, Bulk}
 import redis.api.ShutdownModifier
 

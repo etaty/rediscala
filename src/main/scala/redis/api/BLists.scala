@@ -2,7 +2,7 @@ package redis.api.blists
 
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.{RedisReply, MultiBulk, Bulk}
 
 case class Blpop[KK: ByteStringSerializer, R: ByteStringDeserializer](keys: Seq[KK], timeout: FiniteDuration = Duration.Zero)

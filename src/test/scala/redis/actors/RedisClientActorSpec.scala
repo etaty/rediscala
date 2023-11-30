@@ -1,10 +1,9 @@
 package redis.actors
 
 import java.net.InetSocketAddress
-
-import akka.actor._
-import akka.testkit._
-import akka.util.ByteString
+import org.apache.pekko.actor._
+import org.apache.pekko.testkit._
+import org.apache.pekko.util.ByteString
 import org.specs2.mutable.SpecificationLike
 import redis.api.connection.Ping
 import redis.api.strings.Get

@@ -4,9 +4,9 @@ import scala.concurrent.Await
 import redis.api.pubsub._
 import redis.actors.RedisSubscriberActor
 import java.net.InetSocketAddress
-import akka.actor.{Props, ActorRef}
-import akka.testkit.{TestActorRef, TestProbe}
-import akka.util.ByteString
+import org.apache.pekko.actor.{Props, ActorRef}
+import org.apache.pekko.testkit.{TestActorRef, TestProbe}
+import org.apache.pekko.util.ByteString
 
 class RedisPubSubSpec extends RedisStandaloneServer {
 

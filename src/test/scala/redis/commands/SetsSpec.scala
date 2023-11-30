@@ -2,7 +2,7 @@ package redis.commands
 
 import redis._
 import scala.concurrent.Await
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 class SetsSpec extends RedisStandaloneServer {
 
@@ -158,7 +158,7 @@ class SetsSpec extends RedisStandaloneServer {
       } yield {
         Seq(ByteString("three"), ByteString("two"), ByteString("one")) must contain(equalTo(randmember.get))
         randmember2 must have size 2
-        randmemberNonExisting must beEmpty
+        randmemberNonExisting mustEqual  empty
       }
       Await.result(r, timeOut)
     }

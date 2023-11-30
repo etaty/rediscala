@@ -1,6 +1,6 @@
 package redis.actors
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.{Error, MultiBulk, RedisReply}
 import redis.api.pubsub._
 import java.net.InetSocketAddress

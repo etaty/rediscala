@@ -1,8 +1,10 @@
 package redis
 
 import redis.commands.Sentinel
-import akka.actor.{ActorSystem, Props, ActorRef}
-import akka.event.Logging
+//import akka.actor.{ActorSystem, Props, ActorRef}
+import org.apache.pekko.actor.{ActorRef, ActorSystem, Props}
+import org.apache.pekko.event.Logging
+//import akka.event.Logging
 import redis.api.pubsub.{PMessage, Message}
 import redis.actors.RedisSubscriberActorWithCallback
 import java.net.InetSocketAddress

@@ -1,8 +1,8 @@
 package redis.actors
 
-import akka.actor._
+import org.apache.pekko.actor._
 import org.specs2.mutable.SpecificationLike
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.api.hashes.Hgetall
 import redis.protocol.MultiBulk
 import scala.concurrent.{Await, Promise}
@@ -11,7 +11,7 @@ import java.net.InetSocketAddress
 import com.typesafe.config.ConfigFactory
 import redis.{Redis, Operation}
 import redis.api.connection.Ping
-import akka.testkit._
+import org.apache.pekko.testkit._
 
 class RedisReplyDecoderSpec
   extends TestKit(ActorSystem("testsystem", ConfigFactory.parseString( """akka.loggers = ["akka.testkit.TestEventListener"]""")))
