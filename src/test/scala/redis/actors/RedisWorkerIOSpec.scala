@@ -1,16 +1,16 @@
 package redis.actors
 
-import akka.testkit._
-import akka.actor.{ActorRef, Props, ActorSystem}
+import org.apache.pekko.testkit._
+import org.apache.pekko.actor.{ActorRef, Props, ActorSystem}
 import org.specs2.mutable.SpecificationLike
 import java.net.InetSocketAddress
-import akka.io.Tcp._
-import akka.util.ByteString
-import akka.io.Tcp.ErrorClosed
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
-import akka.io.Tcp.CommandFailed
+import org.apache.pekko.io.Tcp._
+import org.apache.pekko.util.ByteString
+import org.apache.pekko.io.Tcp.ErrorClosed
+import org.apache.pekko.io.Tcp.Connected
+import org.apache.pekko.io.Tcp.Register
+import org.apache.pekko.io.Tcp.Connect
+import org.apache.pekko.io.Tcp.CommandFailed
 import redis.Redis
 
 class RedisWorkerIOSpec extends TestKit(ActorSystem()) with SpecificationLike with ImplicitSender {

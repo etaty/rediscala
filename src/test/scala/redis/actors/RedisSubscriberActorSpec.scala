@@ -1,13 +1,13 @@
 package redis.actors
 
-import akka.testkit._
-import akka.actor._
+import org.apache.pekko.testkit._
+import org.apache.pekko.actor._
 import org.specs2.mutable.SpecificationLike
 import java.net.InetSocketAddress
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.RedisProtocolRequest
 import redis.Redis
-import akka.io.Tcp._
+import org.apache.pekko.io.Tcp._
 import redis.api.pubsub.Message
 import redis.api.pubsub.PMessage
 
