@@ -4,7 +4,7 @@ import java.io.File
 import java.security.MessageDigest
 import redis.protocol.{MultiBulk, Bulk}
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 object RedisScript {
   def fromFile(file: File): RedisScript = {

@@ -1,6 +1,6 @@
 package redis.api.clusters
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.RedisCommand
 import redis.protocol.{DecodeResult, Bulk, MultiBulk, RedisProtocolReply, RedisReply}
 

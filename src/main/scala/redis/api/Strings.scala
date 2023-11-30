@@ -1,7 +1,7 @@
 package redis.api.strings
 
 import redis._
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import redis.protocol.{RedisReply, MultiBulk, Status, RedisProtocolRequest}
 import redis.api.BitOperator
 
