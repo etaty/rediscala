@@ -3,7 +3,7 @@ package redis.api.geo
 object DistUnits{
   sealed trait Measurement{
     def value:String = {
-      this match {
+      this match {git add 
         case Meter => "m"
         case Kilometer => "km"
         case Mile => "mi"
