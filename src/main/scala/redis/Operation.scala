@@ -2,7 +2,8 @@ package redis
 
 import scala.concurrent.Promise
 import redis.protocol.{DecodeResult, RedisReply}
-import akka.util.ByteString
+//import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 case class Operation[RedisReplyT <: RedisReply, T](redisCommand: RedisCommand[RedisReplyT, T], promise: Promise[T]) {
   def decodeRedisReplyThenComplete(bs: ByteString): DecodeResult[Unit] = {

@@ -3,7 +3,7 @@ package redis
 import redis.protocol.RedisReply
 import scala.concurrent.{ExecutionContext, Promise, Future}
 import scala.collection.immutable.Queue
-import akka.actor.ActorRef
+import org.apache.pekko.actor.ActorRef
 import java.util.concurrent.atomic.AtomicInteger
 
 

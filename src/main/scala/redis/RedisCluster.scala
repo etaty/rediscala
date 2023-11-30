@@ -2,9 +2,9 @@ package redis
 
 import java.util.concurrent.{ThreadLocalRandom, TimeUnit}
 
-import akka.actor.{ActorRef, ActorSystem}
-import akka.event.Logging
-import akka.util.ByteString
+import org.apache.pekko.actor.{ActorRef, ActorSystem}
+import org.apache.pekko.event.Logging
+import org.apache.pekko.util.ByteString
 import redis.api.clusters.{ClusterNode, ClusterSlot}
 import redis.protocol.RedisReply
 import redis.util.CRC16

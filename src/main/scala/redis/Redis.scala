@@ -1,7 +1,9 @@
 package redis
 
-import akka.actor._
-import akka.util.Helpers
+//import akka.actor._
+import org.apache.pekko.actor.{ActorRef, ActorRefFactory, ActorSystem, Props}
+import org.apache.pekko.util.Helpers
+//import akka.util.Helpers
 import redis.commands._
 import scala.concurrent._
 import java.net.InetSocketAddress
