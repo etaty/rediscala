@@ -1,10 +1,10 @@
 package redis.actors
 
-import akka.actor.Actor
+import org.apache.pekko.actor.Actor
 import scala.collection.mutable
 import redis.protocol.{FullyDecoded, DecodeResult, RedisProtocolReply, RedisReply}
-import akka.util.ByteString
-import akka.event.Logging
+import org.apache.pekko.util.ByteString
+import org.apache.pekko.event.Logging
 import scala.annotation.tailrec
 import redis.Operation
 

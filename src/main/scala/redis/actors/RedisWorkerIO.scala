@@ -1,15 +1,15 @@
 package redis.actors
 
-import akka.actor.{ActorLogging, ActorRef, Actor}
-import akka.io.Tcp
-import akka.util.{ByteStringBuilder, ByteString}
+import org.apache.pekko.actor.{ActorLogging, ActorRef, Actor}
+import org.apache.pekko.io.Tcp
+import org.apache.pekko.util.{ByteStringBuilder, ByteString}
 import java.net.InetSocketAddress
-import akka.io.Tcp._
-import akka.io.Tcp.Connected
-import akka.io.Tcp.Register
-import akka.io.Tcp.Connect
-import akka.io.Tcp.CommandFailed
-import akka.io.Tcp.Received
+import org.apache.pekko.io.Tcp._
+import org.apache.pekko.io.Tcp.Connected
+import org.apache.pekko.io.Tcp.Register
+import org.apache.pekko.io.Tcp.Connect
+import org.apache.pekko.io.Tcp.CommandFailed
+import org.apache.pekko.io.Tcp.Received
 import scala.concurrent.duration.FiniteDuration
 
 abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Boolean => Unit, connectTimeout: Option[FiniteDuration] = None) extends Actor with ActorLogging {
@@ -18,7 +18,7 @@ abstract class RedisWorkerIO(val address: InetSocketAddress, onConnectStatus: Bo
 
   import context._
 
-  val tcp = akka.io.IO(Tcp)(context.system)
+  val tcp = org.apache.pekko.io.IO(Tcp)(context.system)
 
   // todo watch tcpWorker
   var tcpWorker: ActorRef = null

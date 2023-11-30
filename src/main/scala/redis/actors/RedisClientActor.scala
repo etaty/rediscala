@@ -1,10 +1,11 @@
 package redis.actors
 
+import org.apache.pekko.actor.{OneForOneStrategy, PoisonPill, Terminated}
+import org.apache.pekko.actor.TypedActor.dispatcher
 import java.net.InetSocketAddress
-
-import akka.actor.SupervisorStrategy.Stop
-import akka.actor._
-import akka.util.{ByteString, ByteStringBuilder}
+import org.apache.pekko.actor.SupervisorStrategy.Stop
+import org.apache.pekko.actor.{ActorRef, Props}
+import org.apache.pekko.util.{ByteString, ByteStringBuilder}
 import redis.{Operation, Transaction}
 
 import scala.collection.mutable
@@ -23,7 +24,7 @@ class RedisClientActor(override val address: InetSocketAddress, getConnectOperat
   Seq[Operation[_, _]], onConnectStatus: Boolean => Unit, dispatcherName: String, connectTimeout: Option[FiniteDuration] = None) extends RedisWorkerIO(address, onConnectStatus, connectTimeout) {
 
 
-  import context._
+  //import context._
 
   var repliesDecoder = initRepliesDecoder()
 
