@@ -1,6 +1,6 @@
 package redis.protocol
 
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 import org.specs2.mutable.Specification
 
 class ParseParse extends Specification {
@@ -44,7 +44,7 @@ class ParseParse extends Specification {
     }
 
     "multibulk" in {
-      val multibulkString0 = ByteString()
+      //val multibulkString0 = ByteString()
 
       val multibulkString = ByteString("*4\r\n$3\r\nfoo\r\n$3\r\nbar\r\n$5\r\nHello\r\n$5\r\nWorld\r\n")
 
