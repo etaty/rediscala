@@ -5,7 +5,7 @@ import redis.api._
 import redis.api.ZaddOption.{CH, NX, XX}
 
 import scala.concurrent.{Await, Future}
-import akka.util.ByteString
+import org.apache.pekko.util.ByteString
 
 class SortedSetsSpec extends RedisStandaloneServer {
 
